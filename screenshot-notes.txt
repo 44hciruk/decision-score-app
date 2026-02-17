@@ -1,0 +1,7 @@
+Screenshot review:
+- Home screen displays correctly with "決断スコア" title and subtitle
+- Empty state shows balance scale emoji and message
+- FAB button (purple +) visible at bottom right
+- Tab bar shows ホーム and 設定 tabs with correct icons
+- TypeScript: 0 errors
+- All 14 unit tests passing
