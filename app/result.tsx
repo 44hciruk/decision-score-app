@@ -60,14 +60,20 @@ export default function ResultScreen() {
   );
 
   // Calculate scores
-  const scores = useMemo(
-    () => calculateScores(candidates, criteria, rankings),
-    [candidates, criteria, rankings]
-  );
+  const scores = useMemo(() => {
+    const result = calculateScores(candidates, criteria, rankings);
+    console.log("[RESULT] Candidates:", candidates);
+    console.log("[RESULT] Criteria:", criteria);
+    console.log("[RESULT] Rankings:", rankings);
+    console.log("[RESULT] Calculated Scores:", result);
+    return result;
+  }, [candidates, criteria, rankings]);
 
   // Sort candidates by score (descending)
   const sortedCandidates = useMemo(() => {
-    return [...candidates].sort((a, b) => (scores[b] || 0) - (scores[a] || 0));
+    const sorted = [...candidates].sort((a, b) => (scores[b] || 0) - (scores[a] || 0));
+    console.log("[RESULT] Sorted Candidates:", sorted);
+    return sorted;
   }, [candidates, scores]);
 
   const winner = sortedCandidates[0] || "";

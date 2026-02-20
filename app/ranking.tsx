@@ -5,12 +5,10 @@ import {
   Pressable,
   Platform,
   StyleSheet,
-  Dimensions,
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import * as Haptics from "expo-haptics";
 import Animated, {
-  FadeInDown,
   FadeIn,
   useAnimatedStyle,
   useSharedValue,
@@ -46,6 +44,7 @@ export default function RankingScreen() {
 
   const [currentCriterionIndex, setCurrentCriterionIndex] = useState(0);
   const [rankings, setRankings] = useState<Record<string, string[]>>({});
+  // currentOrder は「視覚的な順序」を直接管理
   const [currentOrder, setCurrentOrder] = useState<string[]>([...candidates]);
 
   const currentCriterion = criteria[currentCriterionIndex] || "";
@@ -57,6 +56,10 @@ export default function RankingScreen() {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     }
 
+    // DEBUG: Log the current order
+    console.log(`[RANKING] Criterion: "${currentCriterion}"`);
+    console.log(`[RANKING] Current Order:`, currentOrder);
+
     const updatedRankings = {
       ...rankings,
       [currentCriterion]: [...currentOrder],
@@ -65,6 +68,7 @@ export default function RankingScreen() {
 
     if (isLast) {
       // Navigate to result
+      console.log(`[RANKING] All rankings:`, updatedRankings);
       router.push({
         pathname: "/result",
         params: {
@@ -86,7 +90,6 @@ export default function RankingScreen() {
     candidates,
     params,
     router,
-    currentCriterionIndex,
   ]);
 
   return (
@@ -183,41 +186,16 @@ function SortableList({
   onReorder: (items: string[]) => void;
   colors: ReturnType<typeof useColors>;
 }) {
-  const positions = useRef(items.map((_, i) => i));
-  const [order, setOrder] = useState(items.map((_, i) => i));
-
-  const updateOrder = useCallback(
-    (newPositions: number[]) => {
-      setOrder([...newPositions]);
-      const reordered = newPositions.map((pos) => items[pos]);
-      // Actually we need to map from position index to item
-      // positions[i] = which original item is at visual position i
-      // We want to reorder so that visual position 0 = 1st place
-      const result: string[] = [];
-      for (let visualPos = 0; visualPos < items.length; visualPos++) {
-        // Find which item is at this visual position
-        const originalIndex = newPositions.findIndex(
-          (p) => p === visualPos
-        );
-        if (originalIndex >= 0) {
-          result.push(items[originalIndex]);
-        }
-      }
-      onReorder(result.length === items.length ? result : items);
-    },
-    [items, onReorder]
-  );
-
   return (
     <View style={{ height: items.length * TOTAL_ITEM_HEIGHT }}>
-      {items.map((item, index) => (
+      {items.map((item, visualIndex) => (
         <DraggableItem
           key={item}
           item={item}
-          index={index}
+          visualIndex={visualIndex}
           itemCount={items.length}
-          positions={positions}
-          onReorder={updateOrder}
+          items={items}
+          onReorder={onReorder}
           colors={colors}
         />
       ))}
@@ -225,25 +203,31 @@ function SortableList({
   );
 }
 
+// ============================================================
+// Draggable Item Component
+// ============================================================
+
 function DraggableItem({
   item,
-  index,
+  visualIndex,
   itemCount,
-  positions,
+  items,
   onReorder,
   colors,
 }: {
   item: string;
-  index: number;
+  visualIndex: number;
   itemCount: number;
-  positions: React.MutableRefObject<number[]>;
-  onReorder: (positions: number[]) => void;
+  items: string[];
+  onReorder: (items: string[]) => void;
   colors: ReturnType<typeof useColors>;
 }) {
-  const translateY = useSharedValue(index * TOTAL_ITEM_HEIGHT);
+  const translateY = useSharedValue(visualIndex * TOTAL_ITEM_HEIGHT);
   const isActive = useSharedValue(false);
   const zIdx = useSharedValue(1);
-  const currentPosition = useRef(index);
+
+  // Track the current visual position of this item
+  const currentVisualPos = useRef(visualIndex);
 
   const triggerHaptic = useCallback(() => {
     if (Platform.OS !== "web") {
@@ -259,39 +243,53 @@ function DraggableItem({
       runOnJS(triggerHaptic)();
     })
     .onUpdate((event) => {
+      // Calculate the Y position based on drag
       const newY =
-        currentPosition.current * TOTAL_ITEM_HEIGHT + event.translationY;
-      translateY.value = Math.max(
+        currentVisualPos.current * TOTAL_ITEM_HEIGHT + event.translationY;
+      
+      // Clamp to valid range
+      const clampedY = Math.max(
         0,
         Math.min(newY, (itemCount - 1) * TOTAL_ITEM_HEIGHT)
       );
+      
+      translateY.value = clampedY;
 
-      // Calculate new position
-      const newPos = Math.round(translateY.value / TOTAL_ITEM_HEIGHT);
-      const clampedPos = Math.max(0, Math.min(newPos, itemCount - 1));
+      // Calculate which visual position this item should be at
+      const newVisualPos = Math.round(clampedY / TOTAL_ITEM_HEIGHT);
+      const clampedVisualPos = Math.max(0, Math.min(newVisualPos, itemCount - 1));
 
-      if (clampedPos !== positions.current[index]) {
-        // Swap
-        const oldPos = positions.current[index];
-        const otherIndex = positions.current.findIndex(
-          (p) => p === clampedPos
+      // If position changed, reorder the items
+      if (clampedVisualPos !== currentVisualPos.current) {
+        const oldPos = currentVisualPos.current;
+        const newPos = clampedVisualPos;
+
+        // Create new order by moving item from oldPos to newPos
+        const newItems = [...items];
+        const [movedItem] = newItems.splice(oldPos, 1);
+        newItems.splice(newPos, 0, movedItem);
+
+        console.log(
+          `[DRAG] Moving "${item}" from position ${oldPos} to ${newPos}`,
+          newItems
         );
-        if (otherIndex >= 0) {
-          positions.current[otherIndex] = oldPos;
-        }
-        positions.current[index] = clampedPos;
-        runOnJS(onReorder)([...positions.current]);
+
+        // Update the current position
+        currentVisualPos.current = newPos;
+
+        // Call the reorder callback with the new items
+        runOnJS(onReorder)(newItems);
       }
     })
     .onEnd(() => {
-      const finalPos = positions.current[index];
-      translateY.value = withSpring(finalPos * TOTAL_ITEM_HEIGHT, {
+      // Snap to the final position
+      const finalY = currentVisualPos.current * TOTAL_ITEM_HEIGHT;
+      translateY.value = withSpring(finalY, {
         damping: 20,
         stiffness: 200,
       });
       isActive.value = false;
       zIdx.value = 1;
-      currentPosition.current = finalPos;
     })
     .runOnJS(true);
 
@@ -306,8 +304,8 @@ function DraggableItem({
     };
   });
 
-  // Get visual rank (1-based)
-  const visualRank = positions.current[index] + 1;
+  // Visual rank (1-based)
+  const visualRank = currentVisualPos.current + 1;
 
   const getRankColor = (rank: number) => {
     if (rank === 1) return "#F59E0B";
