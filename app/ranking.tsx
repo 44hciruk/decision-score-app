@@ -187,7 +187,7 @@ function SortableList({
   colors: ReturnType<typeof useColors>;
 }) {
   return (
-    <View style={{ height: items.length * TOTAL_ITEM_HEIGHT }}>
+    <View style={styles.sortableListWrapper}>
       {items.map((item, visualIndex) => (
         <DraggableItem
           key={item}
@@ -222,7 +222,7 @@ function DraggableItem({
   onReorder: (items: string[]) => void;
   colors: ReturnType<typeof useColors>;
 }) {
-  const translateY = useSharedValue(visualIndex * TOTAL_ITEM_HEIGHT);
+  const translateY = useSharedValue(0);
   const isActive = useSharedValue(false);
   const zIdx = useSharedValue(1);
 
@@ -244,19 +244,14 @@ function DraggableItem({
     })
     .onUpdate((event) => {
       // Calculate the Y position based on drag
-      const newY =
-        currentVisualPos.current * TOTAL_ITEM_HEIGHT + event.translationY;
+      const newY = event.translationY;
       
-      // Clamp to valid range
-      const clampedY = Math.max(
-        0,
-        Math.min(newY, (itemCount - 1) * TOTAL_ITEM_HEIGHT)
-      );
-      
-      translateY.value = clampedY;
+      translateY.value = newY;
 
       // Calculate which visual position this item should be at
-      const newVisualPos = Math.round(clampedY / TOTAL_ITEM_HEIGHT);
+      const newVisualPos = Math.round(
+        (currentVisualPos.current * TOTAL_ITEM_HEIGHT + newY) / TOTAL_ITEM_HEIGHT
+      );
       const clampedVisualPos = Math.max(0, Math.min(newVisualPos, itemCount - 1));
 
       // If position changed, reorder the items
@@ -283,8 +278,7 @@ function DraggableItem({
     })
     .onEnd(() => {
       // Snap to the final position
-      const finalY = currentVisualPos.current * TOTAL_ITEM_HEIGHT;
-      translateY.value = withSpring(finalY, {
+      translateY.value = withSpring(0, {
         damping: 20,
         stiffness: 200,
       });
@@ -305,7 +299,7 @@ function DraggableItem({
   });
 
   // Visual rank (1-based)
-  const visualRank = currentVisualPos.current + 1;
+  const visualRank = visualIndex + 1;
 
   const getRankColor = (rank: number) => {
     if (rank === 1) return "#F59E0B";
@@ -414,11 +408,14 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
   },
+  sortableListWrapper: {
+    flex: 1,
+    position: "relative",
+  },
   draggableItem: {
-    position: "absolute",
-    left: 0,
-    right: 0,
+    position: "relative",
     height: ITEM_HEIGHT,
+    marginBottom: ITEM_GAP,
     borderRadius: 14,
     borderWidth: 1,
     flexDirection: "row",
