@@ -6,7 +6,6 @@ import {
   Pressable,
   ScrollView,
   Platform,
-  Alert,
   StyleSheet,
   KeyboardAvoidingView,
 } from "react-native";
@@ -18,6 +17,7 @@ import { ScreenContainer } from "@/components/screen-container";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useColors } from "@/hooks/use-colors";
 import { useProjectContext } from "@/lib/project-context";
+import { PremiumModal } from "@/components/premium-modal";
 
 export default function CandidatesScreen() {
   const router = useRouter();
@@ -27,15 +27,12 @@ export default function CandidatesScreen() {
   const limits = getLimits();
 
   const [candidates, setCandidates] = useState<string[]>(["", ""]);
+  const [showPremiumModal, setShowPremiumModal] = useState(false);
   const inputRefs = useRef<(TextInput | null)[]>([]);
 
   const handleAdd = useCallback(() => {
     if (candidates.length >= limits.candidates) {
-      Alert.alert(
-        "候補数の上限",
-        `無料版では${limits.candidates}個までです。プレミアム版にアップグレードすると最大10個まで追加できます。`,
-        [{ text: "OK" }]
-      );
+      setShowPremiumModal(true);
       return;
     }
     if (Platform.OS !== "web") {
@@ -85,171 +82,184 @@ export default function CandidatesScreen() {
   }, [canProceed, filledCandidates, params, router]);
 
   return (
-    <ScreenContainer edges={["top", "bottom", "left", "right"]}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.flex}
-      >
-        {/* Header */}
-        <View style={styles.navHeader}>
-          <Pressable
-            onPress={() => router.back()}
-            style={({ pressed }) => [
-              styles.navBtn,
-              pressed && { opacity: 0.5 },
-            ]}
-          >
-            <IconSymbol name="arrow.left" size={24} color={colors.foreground} />
-          </Pressable>
-          <Text style={[styles.navTitle, { color: colors.foreground }]}>
-            候補を入力
-          </Text>
-          <View style={styles.navBtn} />
-        </View>
-
-        <ScrollView
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled"
+    <>
+      <ScreenContainer edges={["top", "bottom", "left", "right"]}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={styles.flex}
         >
-          {/* Step indicator */}
-          <Animated.View entering={FadeInDown.duration(300)}>
-            <View style={styles.stepRow}>
-              <View style={[styles.stepDot, { backgroundColor: colors.primary }]} />
-              <View style={[styles.stepLine, { backgroundColor: colors.primary }]} />
-              <View style={[styles.stepDot, { backgroundColor: colors.primary }]} />
-              <View style={[styles.stepLine, { backgroundColor: colors.border }]} />
-              <View style={[styles.stepDot, { backgroundColor: colors.border }]} />
-            </View>
-            <Text style={[styles.stepLabel, { color: colors.muted }]}>
-              ステップ 2/3 — 候補を入力
-            </Text>
-          </Animated.View>
-
-          <Animated.View entering={FadeInDown.delay(100).duration(300)}>
-            <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
-              比較する候補を入力
-            </Text>
-
-            {/* Limit indicator */}
-            <View style={styles.limitRow}>
-              <Text style={[styles.limitText, { color: colors.muted }]}>
-                {candidates.length}/{limits.candidates} 候補
-                {limits.candidates <= 3 ? "（無料版上限）" : ""}
-              </Text>
-              <View style={[styles.limitBarBg, { backgroundColor: colors.border }]}>
-                <View
-                  style={[
-                    styles.limitBarFill,
-                    {
-                      backgroundColor: colors.primary,
-                      width: `${Math.min((candidates.length / limits.candidates) * 100, 100)}%`,
-                    },
-                  ]}
-                />
-              </View>
-            </View>
-          </Animated.View>
-
-          {/* Candidate inputs */}
-          {candidates.map((candidate, index) => (
-            <Animated.View
-              key={index}
-              entering={FadeInDown.delay(150 + index * 60).duration(300)}
-            >
-              <View style={styles.inputRow}>
-                <View
-                  style={[
-                    styles.indexBadge,
-                    { backgroundColor: colors.primary + "20" },
-                  ]}
-                >
-                  <Text style={[styles.indexText, { color: colors.primary }]}>
-                    {String.fromCharCode(65 + index)}
-                  </Text>
-                </View>
-                <TextInput
-                  ref={(ref) => {
-                    inputRefs.current[index] = ref;
-                  }}
-                  style={[
-                    styles.input,
-                    {
-                      backgroundColor: colors.surface,
-                      borderColor: colors.border,
-                      color: colors.foreground,
-                    },
-                  ]}
-                  placeholder={`候補${String.fromCharCode(65 + index)}の名前`}
-                  placeholderTextColor={colors.muted}
-                  value={candidate}
-                  onChangeText={(v) => handleChange(index, v)}
-                  returnKeyType="done"
-                />
-                {candidates.length > 2 && (
-                  <Pressable
-                    onPress={() => handleRemove(index)}
-                    style={({ pressed }) => [
-                      styles.removeBtn,
-                      pressed && { opacity: 0.5 },
-                    ]}
-                  >
-                    <IconSymbol name="xmark" size={18} color={colors.error} />
-                  </Pressable>
-                )}
-              </View>
-            </Animated.View>
-          ))}
-
-          {/* Add button */}
-          <Pressable
-            onPress={handleAdd}
-            style={({ pressed }) => [
-              styles.addBtn,
-              {
-                borderColor: colors.primary,
-                backgroundColor: colors.primary + "08",
-              },
-              pressed && { opacity: 0.7 },
-            ]}
-          >
-            <IconSymbol name="plus" size={20} color={colors.primary} />
-            <Text style={[styles.addBtnText, { color: colors.primary }]}>
-              候補を追加
-            </Text>
-          </Pressable>
-        </ScrollView>
-
-        {/* Bottom button */}
-        <View style={[styles.bottomBar, { borderTopColor: colors.border }]}>
-          <Pressable
-            onPress={handleNext}
-            disabled={!canProceed}
-            style={({ pressed }) => [
-              styles.nextBtn,
-              {
-                backgroundColor: canProceed ? colors.primary : colors.border,
-              },
-              pressed && canProceed && { transform: [{ scale: 0.97 }], opacity: 0.9 },
-            ]}
-          >
-            <Text
-              style={[
-                styles.nextBtnText,
-                { color: canProceed ? "#FFFFFF" : colors.muted },
+          {/* Header */}
+          <View style={styles.navHeader}>
+            <Pressable
+              onPress={() => router.back()}
+              style={({ pressed }) => [
+                styles.navBtn,
+                pressed && { opacity: 0.5 },
               ]}
             >
-              次へ — 評価項目を設定
+              <IconSymbol name="arrow.left" size={24} color={colors.foreground} />
+            </Pressable>
+            <Text style={[styles.navTitle, { color: colors.foreground }]}>
+              候補を入力
             </Text>
-            <IconSymbol
-              name="arrow.right"
-              size={20}
-              color={canProceed ? "#FFFFFF" : colors.muted}
-            />
-          </Pressable>
-        </View>
-      </KeyboardAvoidingView>
-    </ScreenContainer>
+            <View style={styles.navBtn} />
+          </View>
+
+          <ScrollView
+            contentContainerStyle={styles.scrollContent}
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+          >
+            {/* Step indicator */}
+            <Animated.View entering={FadeInDown.duration(300)}>
+              <View style={styles.stepRow}>
+                <View style={[styles.stepDot, { backgroundColor: colors.primary }]} />
+                <View style={[styles.stepLine, { backgroundColor: colors.primary }]} />
+                <View style={[styles.stepDot, { backgroundColor: colors.primary }]} />
+                <View style={[styles.stepLine, { backgroundColor: colors.border }]} />
+                <View style={[styles.stepDot, { backgroundColor: colors.border }]} />
+              </View>
+              <Text style={[styles.stepLabel, { color: colors.muted }]}>
+                ステップ 2/3 — 候補を入力
+              </Text>
+            </Animated.View>
+
+            <Animated.View entering={FadeInDown.delay(100).duration(300)}>
+              <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
+                比較する候補を入力
+              </Text>
+
+              {/* Limit indicator */}
+              <View style={styles.limitRow}>
+                <Text style={[styles.limitText, { color: colors.muted }]}>
+                  {candidates.length}/{limits.candidates} 候補
+                  {limits.candidates <= 3 ? "（無料版上限）" : ""}
+                </Text>
+                <View style={[styles.limitBarBg, { backgroundColor: colors.border }]}>
+                  <View
+                    style={[
+                      styles.limitBarFill,
+                      {
+                        backgroundColor: colors.primary,
+                        width: `${Math.min((candidates.length / limits.candidates) * 100, 100)}%`,
+                      },
+                    ]}
+                  />
+                </View>
+              </View>
+            </Animated.View>
+
+            {/* Candidate inputs */}
+            {candidates.map((candidate, index) => (
+              <Animated.View
+                key={index}
+                entering={FadeInDown.delay(150 + index * 60).duration(300)}
+              >
+                <View style={styles.inputRow}>
+                  <View
+                    style={[
+                      styles.indexBadge,
+                      { backgroundColor: colors.primary + "20" },
+                    ]}
+                  >
+                    <Text style={[styles.indexText, { color: colors.primary }]}>
+                      {String.fromCharCode(65 + index)}
+                    </Text>
+                  </View>
+                  <TextInput
+                    ref={(ref) => {
+                      inputRefs.current[index] = ref;
+                    }}
+                    style={[
+                      styles.input,
+                      {
+                        backgroundColor: colors.surface,
+                        borderColor: colors.border,
+                        color: colors.foreground,
+                      },
+                    ]}
+                    placeholder={`候補${String.fromCharCode(65 + index)}の名前`}
+                    placeholderTextColor={colors.muted}
+                    value={candidate}
+                    onChangeText={(v) => handleChange(index, v)}
+                    returnKeyType="done"
+                  />
+                  {candidates.length > 2 && (
+                    <Pressable
+                      onPress={() => handleRemove(index)}
+                      style={({ pressed }) => [
+                        styles.removeBtn,
+                        pressed && { opacity: 0.5 },
+                      ]}
+                    >
+                      <IconSymbol name="xmark" size={18} color={colors.error} />
+                    </Pressable>
+                  )}
+                </View>
+              </Animated.View>
+            ))}
+
+            {/* Add button */}
+            <Pressable
+              onPress={handleAdd}
+              style={({ pressed }) => [
+                styles.addBtn,
+                {
+                  borderColor: colors.primary,
+                  backgroundColor: colors.primary + "08",
+                },
+                pressed && { opacity: 0.7 },
+              ]}
+            >
+              <IconSymbol name="plus" size={20} color={colors.primary} />
+              <Text style={[styles.addBtnText, { color: colors.primary }]}>
+                候補を追加
+              </Text>
+            </Pressable>
+          </ScrollView>
+
+          {/* Bottom button */}
+          <View style={[styles.bottomBar, { borderTopColor: colors.border }]}>
+            <Pressable
+              onPress={handleNext}
+              disabled={!canProceed}
+              style={({ pressed }) => [
+                styles.nextBtn,
+                {
+                  backgroundColor: canProceed ? colors.primary : colors.border,
+                },
+                pressed && canProceed && { transform: [{ scale: 0.97 }], opacity: 0.9 },
+              ]}
+            >
+              <Text
+                style={[
+                  styles.nextBtnText,
+                  { color: canProceed ? "#FFFFFF" : colors.muted },
+                ]}
+              >
+                次へ — 評価項目を設定
+              </Text>
+              <IconSymbol
+                name="arrow.right"
+                size={20}
+                color={canProceed ? "#FFFFFF" : colors.muted}
+              />
+            </Pressable>
+          </View>
+        </KeyboardAvoidingView>
+      </ScreenContainer>
+
+      <PremiumModal
+        visible={showPremiumModal}
+        onClose={() => setShowPremiumModal(false)}
+        title="プレミアムプランで制限を解除"
+        message="より多くの候補や評価項目を追加して、複雑な意思決定をサポートします。"
+        onUpgrade={() => {
+          setShowPremiumModal(false);
+          router.push("/(tabs)/settings");
+        }}
+      />
+    </>
   );
 }
 

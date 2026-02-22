@@ -19,6 +19,7 @@ import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useColors } from "@/hooks/use-colors";
 import { useProjectContext } from "@/lib/project-context";
 import { TEMPLATES } from "@/lib/storage";
+import { PremiumModal } from "@/components/premium-modal";
 
 export default function CriteriaScreen() {
   const router = useRouter();
@@ -42,15 +43,12 @@ export default function CriteriaScreen() {
     : ["", ""];
 
   const [criteria, setCriteria] = useState<string[]>(initialCriteria);
+  const [showPremiumModal, setShowPremiumModal] = useState(false);
   const inputRefs = useRef<(TextInput | null)[]>([]);
 
   const handleAdd = useCallback(() => {
     if (criteria.length >= limits.criteria) {
-      Alert.alert(
-        "評価項目の上限",
-        `無料版では${limits.criteria}個までです。プレミアム版にアップグレードすると無制限に追加できます。`,
-        [{ text: "OK" }]
-      );
+      setShowPremiumModal(true);
       return;
     }
     if (Platform.OS !== "web") {
@@ -100,7 +98,8 @@ export default function CriteriaScreen() {
   }, [canProceed, candidates, filledCriteria, params.title, router]);
 
   return (
-    <ScreenContainer edges={["top", "bottom", "left", "right"]}>
+    <>
+      <ScreenContainer edges={["top", "bottom", "left", "right"]}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.flex}
@@ -267,7 +266,19 @@ export default function CriteriaScreen() {
           </Pressable>
         </View>
       </KeyboardAvoidingView>
-    </ScreenContainer>
+      </ScreenContainer>
+
+      <PremiumModal
+        visible={showPremiumModal}
+        onClose={() => setShowPremiumModal(false)}
+        title="プレミアムプランで制限を解除"
+        message="より多くの候補や評価項目を追加して、複雑な意思決定をサポートします。"
+        onUpgrade={() => {
+          setShowPremiumModal(false);
+          router.push("/(tabs)/settings");
+        }}
+      />
+    </>
   );
 }
 
