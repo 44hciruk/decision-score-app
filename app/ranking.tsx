@@ -240,7 +240,7 @@ function DraggableItem({
   }, []);
 
   const gesture = Gesture.Pan()
-    .activateAfterLongPress(150)
+    .activateAfterLongPress(100)
     .onStart(() => {
       isActive.value = true;
       zIdx.value = 100;
@@ -283,11 +283,11 @@ function DraggableItem({
       }
     })
     .onEnd(() => {
-      // Snap back to grid
+      // Snap back to grid - faster, smoother spring
       translateY.value = withSpring(0, {
-        damping: 15,
-        mass: 1,
-        stiffness: 100,
+        damping: 12,
+        mass: 0.8,
+        stiffness: 150,
       });
       isActive.value = false;
       shadowOpacity.value = 0;
@@ -299,7 +299,7 @@ function DraggableItem({
     return {
       transform: [
         { translateY: translateY.value },
-        { scale: withTiming(isActive.value ? 1.05 : 1, { duration: 100 }) },
+        { scale: withTiming(isActive.value ? 1.05 : 1, { duration: 80 }) },
       ],
       zIndex: zIdx.value,
       shadowOpacity: shadowOpacity.value,
