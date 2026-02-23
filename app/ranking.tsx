@@ -14,7 +14,6 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withTiming,
-  withSpring,
   runOnJS,
 } from "react-native-reanimated";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
@@ -23,7 +22,7 @@ import { ScreenContainer } from "@/components/screen-container";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useColors } from "@/hooks/use-colors";
 
-const ITEM_HEIGHT = 64;
+const ITEM_HEIGHT = 60;
 const ITEM_GAP = 8;
 
 export default function RankingScreen() {
@@ -100,10 +99,10 @@ export default function RankingScreen() {
             pressed && { opacity: 0.5 },
           ]}
         >
-          <IconSymbol name="arrow.left" size={24} color={colors.foreground} />
+          <IconSymbol name="chevron.left" size={24} color={colors.foreground} />
         </Pressable>
         <Text style={[styles.navTitle, { color: colors.foreground }]}>
-          並び替え
+          順位をつける
         </Text>
         <View style={styles.navBtn} />
       </View>
@@ -119,7 +118,7 @@ export default function RankingScreen() {
           />
         </View>
         <Text style={[styles.progressText, { color: colors.muted }]}>
-          {currentCriterionIndex + 1} / {criteria.length} 項目
+          {currentCriterionIndex + 1} / {criteria.length}
         </Text>
       </View>
 
@@ -129,9 +128,6 @@ export default function RankingScreen() {
         entering={FadeIn.duration(300)}
         style={styles.criterionContainer}
       >
-        <Text style={[styles.criterionLabel, { color: colors.muted }]}>
-          この項目で順位をつけてください
-        </Text>
         <Text style={[styles.criterionName, { color: colors.primary }]}>
           {currentCriterion}
         </Text>
@@ -160,9 +156,8 @@ export default function RankingScreen() {
           ]}
         >
           <Text style={styles.nextBtnText}>
-            {isLast ? "結果を見る" : "次の項目へ"}
+            {isLast ? "結果を見る" : "次へ"}
           </Text>
-          <IconSymbol name="arrow.right" size={20} color="#FFFFFF" />
         </Pressable>
       </View>
     </ScreenContainer>
@@ -182,11 +177,11 @@ function SortableList({
   onReorder: (items: string[]) => void;
   colors: ReturnType<typeof useColors>;
 }) {
-  const scrollViewRef = useRef<ScrollView>(null);
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [targetIndex, setTargetIndex] = useState<number | null>(null);
 
   return (
     <ScrollView
-      ref={scrollViewRef}
       scrollEnabled={false}
       style={styles.sortableListWrapper}
       contentContainerStyle={styles.listContent}
@@ -200,6 +195,14 @@ function SortableList({
           items={items}
           onReorder={onReorder}
           colors={colors}
+          isDragged={draggedIndex === visualIndex}
+          isTarget={targetIndex === visualIndex}
+          onDragStart={() => setDraggedIndex(visualIndex)}
+          onDragEnd={() => {
+            setDraggedIndex(null);
+            setTargetIndex(null);
+          }}
+          onTargetChange={(idx) => setTargetIndex(idx)}
         />
       ))}
     </ScrollView>
@@ -217,6 +220,11 @@ function DraggableItem({
   items,
   onReorder,
   colors,
+  isDragged,
+  isTarget,
+  onDragStart,
+  onDragEnd,
+  onTargetChange,
 }: {
   item: string;
   visualIndex: number;
@@ -224,13 +232,17 @@ function DraggableItem({
   items: string[];
   onReorder: (items: string[]) => void;
   colors: ReturnType<typeof useColors>;
+  isDragged: boolean;
+  isTarget: boolean;
+  onDragStart: () => void;
+  onDragEnd: () => void;
+  onTargetChange: (idx: number | null) => void;
 }) {
   const translateY = useSharedValue(0);
   const isActive = useSharedValue(false);
   const zIdx = useSharedValue(1);
-  const shadowOpacity = useSharedValue(0);
+  const scaleVal = useSharedValue(1);
 
-  // Track which visual position this item is currently at
   const currentVisualPos = useRef(visualIndex);
 
   const triggerHaptic = useCallback(() => {
@@ -240,32 +252,30 @@ function DraggableItem({
   }, []);
 
   const gesture = Gesture.Pan()
-    .activateAfterLongPress(100)
+    .activateAfterLongPress(120)
     .onStart(() => {
       isActive.value = true;
       zIdx.value = 100;
-      shadowOpacity.value = 0.3;
+      scaleVal.value = 1;
+      runOnJS(onDragStart)();
       runOnJS(triggerHaptic)();
     })
     .onUpdate((event) => {
-      // Update position based on drag
+      // Smooth position tracking
       translateY.value = event.translationY;
 
-      // Calculate which position the item should snap to
+      // Calculate target position
       const itemsPerPixel = 1 / (ITEM_HEIGHT + ITEM_GAP);
       const dragDistance = event.translationY * itemsPerPixel;
       const newVisualPos = visualIndex + dragDistance;
-
-      // Calculate the closest integer position
       const targetPos = Math.round(newVisualPos);
       const clampedPos = Math.max(0, Math.min(targetPos, itemCount - 1));
 
-      // If we've moved to a different position, reorder
+      // Update target indicator
       if (clampedPos !== currentVisualPos.current) {
         const oldPos = currentVisualPos.current;
         const newPos = clampedPos;
 
-        // Create new order by moving item from oldPos to newPos
         const newItems = [...items];
         const [movedItem] = newItems.splice(oldPos, 1);
         newItems.splice(newPos, 0, movedItem);
@@ -275,23 +285,20 @@ function DraggableItem({
           newItems
         );
 
-        // Update current position
         currentVisualPos.current = newPos;
-
-        // Call the reorder callback
         runOnJS(onReorder)(newItems);
+        runOnJS(onTargetChange)(newPos);
       }
     })
     .onEnd(() => {
-      // Snap back to grid - faster, smoother spring
-      translateY.value = withSpring(0, {
-        damping: 12,
-        mass: 0.8,
-        stiffness: 150,
+      // Smooth snap back with optimized spring
+      translateY.value = withTiming(0, {
+        duration: 250,
       });
       isActive.value = false;
-      shadowOpacity.value = 0;
       zIdx.value = 1;
+      scaleVal.value = 1;
+      runOnJS(onDragEnd)();
     })
     .runOnJS(true);
 
@@ -299,22 +306,12 @@ function DraggableItem({
     return {
       transform: [
         { translateY: translateY.value },
-        { scale: withTiming(isActive.value ? 1.05 : 1, { duration: 80 }) },
+        { scale: scaleVal.value },
       ],
       zIndex: zIdx.value,
-      shadowOpacity: shadowOpacity.value,
+      opacity: isActive.value ? 0.95 : 1,
     };
   });
-
-  // Visual rank (1-based)
-  const visualRank = visualIndex + 1;
-
-  const getRankColor = (rank: number) => {
-    if (rank === 1) return "#F59E0B";
-    if (rank === 2) return "#94A3B8";
-    if (rank === 3) return "#CD7F32";
-    return colors.muted;
-  };
 
   return (
     <GestureDetector gesture={gesture}>
@@ -322,30 +319,20 @@ function DraggableItem({
         style={[
           styles.draggableItem,
           {
-            backgroundColor: colors.surface,
-            borderColor: colors.border,
-            shadowColor: "#000",
-            shadowOffset: { width: 0, height: 4 },
-            shadowRadius: 8,
-            elevation: 5,
+            backgroundColor: isDragged
+              ? colors.primary + "15"
+              : isTarget
+                ? colors.primary + "08"
+                : colors.surface,
+            borderColor: isTarget ? colors.primary : colors.border,
+            borderWidth: isTarget ? 2 : 1,
+            borderStyle: isTarget ? "dashed" : "solid",
           },
           animatedStyle,
         ]}
       >
         <View style={styles.dragHandle}>
           <Text style={[styles.handleIcon, { color: colors.muted }]}>≡</Text>
-        </View>
-        <View
-          style={[
-            styles.rankBadge,
-            { backgroundColor: getRankColor(visualRank) + "20" },
-          ]}
-        >
-          <Text
-            style={[styles.rankText, { color: getRankColor(visualRank) }]}
-          >
-            {visualRank}
-          </Text>
         </View>
         <Text
           style={[styles.itemName, { color: colors.foreground }]}
@@ -378,39 +365,33 @@ const styles = StyleSheet.create({
   },
   progressContainer: {
     paddingHorizontal: 20,
-    marginBottom: 16,
+    marginBottom: 20,
   },
   progressBarBg: {
-    height: 6,
-    borderRadius: 3,
+    height: 4,
+    borderRadius: 2,
     overflow: "hidden",
-    marginBottom: 6,
+    marginBottom: 8,
   },
   progressBarFill: {
     height: "100%",
-    borderRadius: 3,
+    borderRadius: 2,
   },
   progressText: {
-    fontSize: 13,
+    fontSize: 12,
     textAlign: "right",
   },
   criterionContainer: {
     paddingHorizontal: 20,
-    marginBottom: 24,
-    alignItems: "center",
-  },
-  criterionLabel: {
-    fontSize: 14,
-    marginBottom: 8,
+    marginBottom: 20,
   },
   criterionName: {
-    fontSize: 28,
-    fontWeight: "800",
-    marginBottom: 8,
+    fontSize: 24,
+    fontWeight: "700",
+    marginBottom: 6,
   },
   criterionHint: {
     fontSize: 13,
-    textAlign: "center",
   },
   listContainer: {
     flex: 1,
@@ -425,36 +406,26 @@ const styles = StyleSheet.create({
   },
   draggableItem: {
     height: ITEM_HEIGHT,
-    borderRadius: 14,
+    borderRadius: 12,
     borderWidth: 1,
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 12,
-    gap: 10,
+    gap: 12,
   },
   dragHandle: {
-    width: 28,
+    width: 24,
     alignItems: "center",
+    justifyContent: "center",
   },
   handleIcon: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: "700",
-  },
-  rankBadge: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  rankText: {
-    fontSize: 15,
-    fontWeight: "800",
   },
   itemName: {
     flex: 1,
-    fontSize: 17,
-    fontWeight: "600",
+    fontSize: 16,
+    fontWeight: "500",
   },
   bottomBar: {
     paddingHorizontal: 20,
@@ -465,13 +436,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 16,
-    borderRadius: 14,
+    paddingVertical: 14,
+    borderRadius: 12,
     gap: 8,
   },
   nextBtnText: {
     fontSize: 16,
-    fontWeight: "700",
+    fontWeight: "600",
     color: "#FFFFFF",
   },
 });
