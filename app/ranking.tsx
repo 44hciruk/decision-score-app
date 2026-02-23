@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useMemo } from "react";
+import { useState, useCallback } from "react";
 import {
   Text,
   View,
@@ -138,11 +138,23 @@ export default function RankingScreen() {
 
       {/* Sortable list */}
       <View style={styles.listContainer}>
-        <SortableList
-          items={currentOrder}
-          onReorder={setCurrentOrder}
-          colors={colors}
-        />
+        <ScrollView
+          scrollEnabled={false}
+          style={styles.sortableListWrapper}
+          contentContainerStyle={styles.listContent}
+        >
+          {currentOrder.map((item, visualIndex) => (
+            <DraggableItem
+              key={item}
+              item={item}
+              visualIndex={visualIndex}
+              itemCount={currentOrder.length}
+              items={currentOrder}
+              onReorder={setCurrentOrder}
+              colors={colors}
+            />
+          ))}
+        </ScrollView>
       </View>
 
       {/* Bottom button */}
@@ -165,51 +177,6 @@ export default function RankingScreen() {
 }
 
 // ============================================================
-// Sortable List Component
-// ============================================================
-
-function SortableList({
-  items,
-  onReorder,
-  colors,
-}: {
-  items: string[];
-  onReorder: (items: string[]) => void;
-  colors: ReturnType<typeof useColors>;
-}) {
-  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
-  const [targetIndex, setTargetIndex] = useState<number | null>(null);
-
-  return (
-    <ScrollView
-      scrollEnabled={false}
-      style={styles.sortableListWrapper}
-      contentContainerStyle={styles.listContent}
-    >
-      {items.map((item, visualIndex) => (
-        <DraggableItem
-          key={item}
-          item={item}
-          visualIndex={visualIndex}
-          itemCount={items.length}
-          items={items}
-          onReorder={onReorder}
-          colors={colors}
-          isDragged={draggedIndex === visualIndex}
-          isTarget={targetIndex === visualIndex}
-          onDragStart={() => setDraggedIndex(visualIndex)}
-          onDragEnd={() => {
-            setDraggedIndex(null);
-            setTargetIndex(null);
-          }}
-          onTargetChange={(idx) => setTargetIndex(idx)}
-        />
-      ))}
-    </ScrollView>
-  );
-}
-
-// ============================================================
 // Draggable Item Component
 // ============================================================
 
@@ -220,11 +187,6 @@ function DraggableItem({
   items,
   onReorder,
   colors,
-  isDragged,
-  isTarget,
-  onDragStart,
-  onDragEnd,
-  onTargetChange,
 }: {
   item: string;
   visualIndex: number;
@@ -232,18 +194,13 @@ function DraggableItem({
   items: string[];
   onReorder: (items: string[]) => void;
   colors: ReturnType<typeof useColors>;
-  isDragged: boolean;
-  isTarget: boolean;
-  onDragStart: () => void;
-  onDragEnd: () => void;
-  onTargetChange: (idx: number | null) => void;
 }) {
+  const [isDragging, setIsDragging] = useState(false);
+  const [draggedOverIndex, setDraggedOverIndex] = useState<number | null>(null);
+
   const translateY = useSharedValue(0);
   const isActive = useSharedValue(false);
   const zIdx = useSharedValue(1);
-  const scaleVal = useSharedValue(1);
-
-  const currentVisualPos = useRef(visualIndex);
 
   const triggerHaptic = useCallback(() => {
     if (Platform.OS !== "web") {
@@ -252,16 +209,14 @@ function DraggableItem({
   }, []);
 
   const gesture = Gesture.Pan()
-    .activateAfterLongPress(120)
+    .activateAfterLongPress(100)
     .onStart(() => {
       isActive.value = true;
       zIdx.value = 100;
-      scaleVal.value = 1;
-      runOnJS(onDragStart)();
+      runOnJS(setIsDragging)(true);
       runOnJS(triggerHaptic)();
     })
     .onUpdate((event) => {
-      // Smooth position tracking
       translateY.value = event.translationY;
 
       // Calculate target position
@@ -271,45 +226,35 @@ function DraggableItem({
       const targetPos = Math.round(newVisualPos);
       const clampedPos = Math.max(0, Math.min(targetPos, itemCount - 1));
 
-      // Update target indicator
-      if (clampedPos !== currentVisualPos.current) {
-        const oldPos = currentVisualPos.current;
-        const newPos = clampedPos;
+      runOnJS(setDraggedOverIndex)(clampedPos);
 
+      // Reorder if position changed
+      if (clampedPos !== visualIndex) {
         const newItems = [...items];
-        const [movedItem] = newItems.splice(oldPos, 1);
-        newItems.splice(newPos, 0, movedItem);
+        const [movedItem] = newItems.splice(visualIndex, 1);
+        newItems.splice(clampedPos, 0, movedItem);
 
         console.log(
-          `[DRAG] Moving "${item}" from position ${oldPos} to ${newPos}`,
+          `[DRAG] Moving "${item}" from position ${visualIndex} to ${clampedPos}`,
           newItems
         );
 
-        currentVisualPos.current = newPos;
         runOnJS(onReorder)(newItems);
-        runOnJS(onTargetChange)(newPos);
       }
     })
     .onEnd(() => {
-      // Smooth snap back with optimized spring
-      translateY.value = withTiming(0, {
-        duration: 250,
-      });
+      translateY.value = withTiming(0, { duration: 200 });
       isActive.value = false;
       zIdx.value = 1;
-      scaleVal.value = 1;
-      runOnJS(onDragEnd)();
+      runOnJS(setIsDragging)(false);
+      runOnJS(setDraggedOverIndex)(null);
     })
     .runOnJS(true);
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
-      transform: [
-        { translateY: translateY.value },
-        { scale: scaleVal.value },
-      ],
+      transform: [{ translateY: translateY.value }],
       zIndex: zIdx.value,
-      opacity: isActive.value ? 0.95 : 1,
     };
   });
 
@@ -319,14 +264,15 @@ function DraggableItem({
         style={[
           styles.draggableItem,
           {
-            backgroundColor: isDragged
+            backgroundColor: isDragging
               ? colors.primary + "15"
-              : isTarget
+              : draggedOverIndex === visualIndex
                 ? colors.primary + "08"
                 : colors.surface,
-            borderColor: isTarget ? colors.primary : colors.border,
-            borderWidth: isTarget ? 2 : 1,
-            borderStyle: isTarget ? "dashed" : "solid",
+            borderColor:
+              draggedOverIndex === visualIndex ? colors.primary : colors.border,
+            borderWidth: draggedOverIndex === visualIndex ? 2 : 1,
+            borderStyle: draggedOverIndex === visualIndex ? "dashed" : "solid",
           },
           animatedStyle,
         ]}
