@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo, useRef } from "react";
 import {
   Text,
   View,
@@ -15,6 +15,7 @@ import Animated, {
   useSharedValue,
   withTiming,
   runOnJS,
+  Easing,
 } from "react-native-reanimated";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 
@@ -24,6 +25,27 @@ import { useColors } from "@/hooks/use-colors";
 
 const ITEM_HEIGHT = 60;
 const ITEM_GAP = 8;
+const ITEM_TOTAL = ITEM_HEIGHT + ITEM_GAP;
+
+// デバウンス処理用ユーティリティ
+function useDebounce<T extends (...args: any[]) => void>(
+  callback: T,
+  delay: number
+): T {
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  return useCallback(
+    (...args: any[]) => {
+      if (timeoutRef.current !== null) {
+        clearTimeout(timeoutRef.current);
+      }
+      timeoutRef.current = setTimeout(() => {
+        callback(...args);
+      }, delay);
+    },
+    [callback, delay]
+  ) as T;
+}
 
 export default function RankingScreen() {
   const router = useRouter();
@@ -208,6 +230,10 @@ function DraggableItem({
     }
   }, []);
 
+  // 方法2: デバウンス処理で状態更新の頻度を削減
+  const debouncedSetDraggedOverIndex = useDebounce(setDraggedOverIndex, 30);
+  const debouncedOnReorder = useDebounce(onReorder, 30);
+
   const gesture = Gesture.Pan()
     .activateAfterLongPress(100)
     .onStart(() => {
@@ -217,16 +243,16 @@ function DraggableItem({
       runOnJS(triggerHaptic)();
     })
     .onUpdate((event) => {
+      // 方法1: 位置計算を簡潔化
+      // 方法3: Animated.Valueで同期的に位置を追跡
       translateY.value = event.translationY;
 
-      // Calculate target position
-      const itemsPerPixel = 1 / (ITEM_HEIGHT + ITEM_GAP);
-      const dragDistance = event.translationY * itemsPerPixel;
-      const newVisualPos = visualIndex + dragDistance;
-      const targetPos = Math.round(newVisualPos);
-      const clampedPos = Math.max(0, Math.min(targetPos, itemCount - 1));
+      // シンプルな計算: translationY を直接 ITEM_TOTAL で割る
+      const targetPos = Math.round(event.translationY / ITEM_TOTAL);
+      const clampedPos = Math.max(0, Math.min(visualIndex + targetPos, itemCount - 1));
 
-      runOnJS(setDraggedOverIndex)(clampedPos);
+      // デバウンス処理で状態更新の頻度を削減
+      runOnJS(debouncedSetDraggedOverIndex)(clampedPos);
 
       // Reorder if position changed
       if (clampedPos !== visualIndex) {
@@ -239,11 +265,15 @@ function DraggableItem({
           newItems
         );
 
-        runOnJS(onReorder)(newItems);
+        runOnJS(debouncedOnReorder)(newItems);
       }
     })
     .onEnd(() => {
-      translateY.value = withTiming(0, { duration: 200 });
+      // スムーズなアニメーション: withTiming で 150ms で 0 に戻す
+      translateY.value = withTiming(0, {
+        duration: 150,
+        easing: Easing.out(Easing.cubic),
+      });
       isActive.value = false;
       zIdx.value = 1;
       runOnJS(setIsDragging)(false);
