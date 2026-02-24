@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useRef } from "react";
+import { useState, useCallback } from "react";
 import {
   Text,
   View,
@@ -214,8 +214,6 @@ function DraggableItem({
   const isActive = useSharedValue(false);
   const zIdx = useSharedValue(1);
   const scale = useSharedValue(1);
-
-  // 他のアイテムの移動アニメーション値
   const otherItemTranslateY = useSharedValue(0);
 
   const triggerHaptic = useCallback(() => {
@@ -239,12 +237,44 @@ function DraggableItem({
       runOnJS(triggerHaptic)();
     })
     .onUpdate((event) => {
-      // ドラッグ中のアイテムの位置を更新
       translateY.value = event.translationY;
       globalDragState.draggedTranslateY = event.translationY;
+
+      // 他のアイテムの位置を計算
+      if (globalDragState.draggedItemId && globalDragState.draggedItemId !== item) {
+        const draggedTranslateY = globalDragState.draggedTranslateY;
+        const draggedIndex = globalDragState.draggedIndex;
+        const currentIndex = visualIndex;
+        const draggedPosition = draggedIndex + draggedTranslateY / ITEM_TOTAL;
+
+        if (draggedPosition > currentIndex) {
+          if (draggedPosition >= currentIndex + 0.5) {
+            otherItemTranslateY.value = withTiming(ITEM_TOTAL, {
+              duration: 150,
+              easing: Easing.out(Easing.cubic),
+            });
+          } else {
+            otherItemTranslateY.value = withTiming(0, {
+              duration: 150,
+              easing: Easing.out(Easing.cubic),
+            });
+          }
+        } else if (draggedPosition < currentIndex) {
+          if (draggedPosition <= currentIndex - 0.5) {
+            otherItemTranslateY.value = withTiming(-ITEM_TOTAL, {
+              duration: 150,
+              easing: Easing.out(Easing.cubic),
+            });
+          } else {
+            otherItemTranslateY.value = withTiming(0, {
+              duration: 150,
+              easing: Easing.out(Easing.cubic),
+            });
+          }
+        }
+      }
     })
     .onEnd((event) => {
-      // ドラッグ終了時のアニメーション
       scale.value = withTiming(1, { duration: 100 });
       translateY.value = withTiming(0, {
         duration: 200,
@@ -252,9 +282,12 @@ function DraggableItem({
       });
       isActive.value = false;
       zIdx.value = 1;
+      otherItemTranslateY.value = withTiming(0, {
+        duration: 150,
+        easing: Easing.out(Easing.cubic),
+      });
       runOnJS(setIsDragging)(false);
 
-      // ドラッグ終了時に配列を更新
       const offset = Math.round(event.translationY / ITEM_TOTAL);
       const targetIndex = Math.max(
         0,
@@ -265,7 +298,6 @@ function DraggableItem({
         const newItems = [...items];
         const [movedItem] = newItems.splice(visualIndex, 1);
         newItems.splice(targetIndex, 0, movedItem);
-        // 親コンポーネントの状態を更新
         runOnJS(onReorder)(newItems);
       }
 
@@ -285,61 +317,7 @@ function DraggableItem({
     };
   });
 
-  // 他のアイテムの位置を計算してアニメーション
   const otherItemAnimatedStyle = useAnimatedStyle(() => {
-    if (
-      globalDragState.draggedItemId &&
-      globalDragState.draggedItemId !== item
-    ) {
-      const draggedTranslateY = globalDragState.draggedTranslateY;
-      const draggedIndex = globalDragState.draggedIndex;
-      const currentIndex = visualIndex;
-
-      // ドラッグ中のアイテムが現在位置より上に来たか下に来たかを判定
-      const draggedPosition = draggedIndex + draggedTranslateY / ITEM_TOTAL;
-
-      // このアイテムがドラッグ中のアイテムより上にある場合
-      if (draggedPosition > currentIndex) {
-        // ドラッグ中のアイテムがこのアイテムを越えたら、下に移動
-        if (draggedPosition >= currentIndex + 0.5) {
-          otherItemTranslateY.value = withTiming(ITEM_TOTAL, {
-            duration: 150,
-            easing: Easing.out(Easing.cubic),
-          });
-        } else {
-          otherItemTranslateY.value = withTiming(0, {
-            duration: 150,
-            easing: Easing.out(Easing.cubic),
-          });
-        }
-      }
-      // このアイテムがドラッグ中のアイテムより下にある場合
-      else if (draggedPosition < currentIndex) {
-        // ドラッグ中のアイテムがこのアイテムを越えたら、上に移動
-        if (draggedPosition <= currentIndex - 0.5) {
-          otherItemTranslateY.value = withTiming(-ITEM_TOTAL, {
-            duration: 150,
-            easing: Easing.out(Easing.cubic),
-          });
-        } else {
-          otherItemTranslateY.value = withTiming(0, {
-            duration: 150,
-            easing: Easing.out(Easing.cubic),
-          });
-        }
-      } else {
-        otherItemTranslateY.value = withTiming(0, {
-          duration: 150,
-          easing: Easing.out(Easing.cubic),
-        });
-      }
-    } else {
-      otherItemTranslateY.value = withTiming(0, {
-        duration: 150,
-        easing: Easing.out(Easing.cubic),
-      });
-    }
-
     return {
       transform: [{ translateY: otherItemTranslateY.value }],
     };
