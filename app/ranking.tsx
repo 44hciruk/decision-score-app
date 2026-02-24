@@ -27,6 +27,13 @@ const ITEM_HEIGHT = 60;
 const ITEM_GAP = 8;
 const ITEM_TOTAL = ITEM_HEIGHT + ITEM_GAP;
 
+// グローバルなドラッグ状態を管理
+let globalDragState = {
+  draggedItemId: null as string | null,
+  draggedFromIndex: -1,
+  currentOrder: [] as string[],
+};
+
 export default function RankingScreen() {
   const router = useRouter();
   const colors = useColors();
@@ -90,6 +97,11 @@ export default function RankingScreen() {
     router,
   ]);
 
+  const handleReorder = useCallback((newOrder: string[]) => {
+    setCurrentOrder(newOrder);
+    globalDragState.currentOrder = newOrder;
+  }, []);
+
   return (
     <ScreenContainer edges={["top", "bottom", "left", "right"]}>
       {/* Header */}
@@ -152,7 +164,7 @@ export default function RankingScreen() {
               visualIndex={visualIndex}
               itemCount={currentOrder.length}
               items={currentOrder}
-              onReorder={setCurrentOrder}
+              onReorder={handleReorder}
               colors={colors}
             />
           ))}
@@ -204,11 +216,8 @@ function DraggableItem({
   const zIdx = useSharedValue(1);
   const scale = useSharedValue(1);
 
-  // ドラッグ中の視覚的な位置（アニメーション値のみ）
-  const draggedOverIndex = useSharedValue<number | null>(null);
-
-  // ドラッグ開始時の位置
-  const startIndexRef = useRef(visualIndex);
+  // 現在のインデックス（配列の変化に応じて更新される）
+  const currentIndexRef = useRef(visualIndex);
 
   const triggerHaptic = useCallback(() => {
     if (Platform.OS !== "web") {
@@ -219,7 +228,11 @@ function DraggableItem({
   const gesture = Gesture.Pan()
     .activateAfterLongPress(50)
     .onStart(() => {
-      startIndexRef.current = visualIndex;
+      currentIndexRef.current = visualIndex;
+      globalDragState.draggedItemId = item;
+      globalDragState.draggedFromIndex = visualIndex;
+      globalDragState.currentOrder = items;
+
       isActive.value = true;
       zIdx.value = 100;
       scale.value = withTiming(1.02, { duration: 100 });
@@ -227,40 +240,35 @@ function DraggableItem({
       runOnJS(triggerHaptic)();
     })
     .onUpdate((event) => {
-      // ドラッグ中は translateY だけを更新（配列は変更しない）
+      // ドラッグ中は translateY だけを更新
       translateY.value = event.translationY;
 
-      // 視覚的な位置を計算（UI表示用）
+      // 目標位置を計算
       const offset = Math.round(event.translationY / ITEM_TOTAL);
       const targetIndex = Math.max(
         0,
         Math.min(visualIndex + offset, itemCount - 1)
       );
-      draggedOverIndex.value = targetIndex;
-    })
-    .onEnd((event) => {
-      // ドラッグ終了時に最終位置を計算
-      const offset = Math.round(event.translationY / ITEM_TOTAL);
-      const finalIndex = Math.max(
-        0,
-        Math.min(visualIndex + offset, itemCount - 1)
-      );
 
-      // 位置が変わった場合のみ並び替え（ドラッグ終了時に一度だけ）
-      if (finalIndex !== visualIndex) {
+      // 位置が変わった場合、配列を更新
+      if (targetIndex !== currentIndexRef.current) {
         const newItems = [...items];
         const [movedItem] = newItems.splice(visualIndex, 1);
-        newItems.splice(finalIndex, 0, movedItem);
+        newItems.splice(targetIndex, 0, movedItem);
+
+        currentIndexRef.current = targetIndex;
+        globalDragState.currentOrder = newItems;
 
         console.log(
-          `[DRAG] Moving "${item}" from position ${visualIndex} to ${finalIndex}`,
+          `[DRAG] Moving "${item}" from position ${visualIndex} to ${targetIndex}`,
           newItems
         );
 
         runOnJS(onReorder)(newItems);
       }
-
-      // アニメーション: 元の位置に戻す
+    })
+    .onEnd((event) => {
+      // ドラッグ終了時のアニメーション
       scale.value = withTiming(1, { duration: 100 });
       translateY.value = withTiming(0, {
         duration: 200,
@@ -269,7 +277,9 @@ function DraggableItem({
       isActive.value = false;
       zIdx.value = 1;
       runOnJS(setIsDragging)(false);
-      draggedOverIndex.value = null;
+
+      globalDragState.draggedItemId = null;
+      globalDragState.draggedFromIndex = -1;
     })
     .runOnJS(true);
 
@@ -280,6 +290,46 @@ function DraggableItem({
         { scale: scale.value },
       ],
       zIndex: zIdx.value,
+    };
+  });
+
+  // 他のアイテムが移動した場合、スムーズにアニメーション
+  const otherItemTranslateY = useSharedValue(0);
+
+  const otherItemAnimatedStyle = useAnimatedStyle(() => {
+    // ドラッグ中のアイテムが別のアイテムの上に来た場合、このアイテムを下に動かす
+    if (globalDragState.draggedItemId && globalDragState.draggedItemId !== item) {
+      const draggedIndex = globalDragState.currentOrder.indexOf(
+        globalDragState.draggedItemId
+      );
+      const currentIndex = globalDragState.currentOrder.indexOf(item);
+
+      // ドラッグ中のアイテムが上に来た場合、下に動く
+      if (draggedIndex < currentIndex && draggedIndex !== -1) {
+        otherItemTranslateY.value = withTiming(ITEM_TOTAL, {
+          duration: 150,
+          easing: Easing.out(Easing.cubic),
+        });
+      } else if (draggedIndex > currentIndex && draggedIndex !== -1) {
+        otherItemTranslateY.value = withTiming(-ITEM_TOTAL, {
+          duration: 150,
+          easing: Easing.out(Easing.cubic),
+        });
+      } else {
+        otherItemTranslateY.value = withTiming(0, {
+          duration: 150,
+          easing: Easing.out(Easing.cubic),
+        });
+      }
+    } else {
+      otherItemTranslateY.value = withTiming(0, {
+        duration: 150,
+        easing: Easing.out(Easing.cubic),
+      });
+    }
+
+    return {
+      transform: [{ translateY: otherItemTranslateY.value }],
     };
   });
 
@@ -296,7 +346,7 @@ function DraggableItem({
             borderWidth: 1,
             borderStyle: "solid",
           },
-          animatedStyle,
+          isDragging ? animatedStyle : otherItemAnimatedStyle,
         ]}
       >
         <View style={styles.dragHandle}>
