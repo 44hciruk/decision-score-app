@@ -27,13 +27,6 @@ const ITEM_HEIGHT = 60;
 const ITEM_GAP = 8;
 const ITEM_TOTAL = ITEM_HEIGHT + ITEM_GAP;
 
-// グローバルなドラッグ状態を管理
-let globalDragState = {
-  draggedItemId: null as string | null,
-  draggedFromIndex: -1,
-  currentOrder: [] as string[],
-};
-
 export default function RankingScreen() {
   const router = useRouter();
   const colors = useColors();
@@ -99,7 +92,6 @@ export default function RankingScreen() {
 
   const handleReorder = useCallback((newOrder: string[]) => {
     setCurrentOrder(newOrder);
-    globalDragState.currentOrder = newOrder;
   }, []);
 
   return (
@@ -194,6 +186,14 @@ export default function RankingScreen() {
 // Draggable Item Component
 // ============================================================
 
+// グローバルなドラッグ状態を管理
+let globalDragState = {
+  draggedItemId: null as string | null,
+  draggedTranslateY: 0,
+  draggedFromIndex: -1,
+  currentOrder: [] as string[],
+};
+
 function DraggableItem({
   item,
   visualIndex,
@@ -232,6 +232,7 @@ function DraggableItem({
       globalDragState.draggedItemId = item;
       globalDragState.draggedFromIndex = visualIndex;
       globalDragState.currentOrder = items;
+      globalDragState.draggedTranslateY = 0;
 
       isActive.value = true;
       zIdx.value = 100;
@@ -242,6 +243,7 @@ function DraggableItem({
     .onUpdate((event) => {
       // ドラッグ中は translateY だけを更新
       translateY.value = event.translationY;
+      globalDragState.draggedTranslateY = event.translationY;
 
       // 目標位置を計算
       const offset = Math.round(event.translationY / ITEM_TOTAL);
@@ -280,6 +282,7 @@ function DraggableItem({
 
       globalDragState.draggedItemId = null;
       globalDragState.draggedFromIndex = -1;
+      globalDragState.draggedTranslateY = 0;
     })
     .runOnJS(true);
 
@@ -293,43 +296,35 @@ function DraggableItem({
     };
   });
 
-  // 他のアイテムが移動した場合、スムーズにアニメーション
-  const otherItemTranslateY = useSharedValue(0);
-
+  // 他のアイテムの位置を計算
+  // ドラッグ中のアイテムの位置に基づいて、このアイテムがどこにあるべきかを計算
   const otherItemAnimatedStyle = useAnimatedStyle(() => {
-    // ドラッグ中のアイテムが別のアイテムの上に来た場合、このアイテムを下に動かす
-    if (globalDragState.draggedItemId && globalDragState.draggedItemId !== item) {
+    if (
+      globalDragState.draggedItemId &&
+      globalDragState.draggedItemId !== item
+    ) {
+      // ドラッグ中のアイテムの現在位置を計算
       const draggedIndex = globalDragState.currentOrder.indexOf(
         globalDragState.draggedItemId
       );
       const currentIndex = globalDragState.currentOrder.indexOf(item);
 
-      // ドラッグ中のアイテムが上に来た場合、下に動く
+      // このアイテムがドラッグ中のアイテムより上にある場合、下に移動
       if (draggedIndex < currentIndex && draggedIndex !== -1) {
-        otherItemTranslateY.value = withTiming(ITEM_TOTAL, {
-          duration: 150,
-          easing: Easing.out(Easing.cubic),
-        });
-      } else if (draggedIndex > currentIndex && draggedIndex !== -1) {
-        otherItemTranslateY.value = withTiming(-ITEM_TOTAL, {
-          duration: 150,
-          easing: Easing.out(Easing.cubic),
-        });
-      } else {
-        otherItemTranslateY.value = withTiming(0, {
-          duration: 150,
-          easing: Easing.out(Easing.cubic),
-        });
+        return {
+          transform: [{ translateY: ITEM_TOTAL }],
+        };
       }
-    } else {
-      otherItemTranslateY.value = withTiming(0, {
-        duration: 150,
-        easing: Easing.out(Easing.cubic),
-      });
+      // このアイテムがドラッグ中のアイテムより下にある場合、上に移動
+      else if (draggedIndex > currentIndex && draggedIndex !== -1) {
+        return {
+          transform: [{ translateY: -ITEM_TOTAL }],
+        };
+      }
     }
 
     return {
-      transform: [{ translateY: otherItemTranslateY.value }],
+      transform: [{ translateY: 0 }],
     };
   });
 
