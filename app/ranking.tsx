@@ -223,6 +223,7 @@ function DraggableItem({
   }, []);
 
   const gesture = Gesture.Pan()
+    .minDistance(5)
     .activateAfterLongPress(50)
     .onStart(() => {
       globalDragState.draggedItemId = item;
@@ -304,6 +305,26 @@ function DraggableItem({
       globalDragState.draggedItemId = null;
       globalDragState.draggedIndex = -1;
       globalDragState.draggedTranslateY = 0;
+    })
+    .onFinalize(() => {
+      // タッチキャンセルやジェスチャー失敗時の処理
+      if (isActive.value) {
+        scale.value = withTiming(1, { duration: 100 });
+        translateY.value = withTiming(0, {
+          duration: 200,
+          easing: Easing.out(Easing.cubic),
+        });
+        isActive.value = false;
+        zIdx.value = 1;
+        otherItemTranslateY.value = withTiming(0, {
+          duration: 150,
+          easing: Easing.out(Easing.cubic),
+        });
+        runOnJS(setIsDragging)(false);
+        globalDragState.draggedItemId = null;
+        globalDragState.draggedIndex = -1;
+        globalDragState.draggedTranslateY = 0;
+      }
     })
     .runOnJS(true);
 
