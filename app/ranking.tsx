@@ -27,26 +27,6 @@ const ITEM_HEIGHT = 60;
 const ITEM_GAP = 8;
 const ITEM_TOTAL = ITEM_HEIGHT + ITEM_GAP;
 
-// デバウンス処理用ユーティリティ
-function useDebounce<T extends (...args: any[]) => void>(
-  callback: T,
-  delay: number
-): T {
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  return useCallback(
-    (...args: any[]) => {
-      if (timeoutRef.current !== null) {
-        clearTimeout(timeoutRef.current);
-      }
-      timeoutRef.current = setTimeout(() => {
-        callback(...args);
-      }, delay);
-    },
-    [callback, delay]
-  ) as T;
-}
-
 export default function RankingScreen() {
   const router = useRouter();
   const colors = useColors();
@@ -223,6 +203,10 @@ function DraggableItem({
   const translateY = useSharedValue(0);
   const isActive = useSharedValue(false);
   const zIdx = useSharedValue(1);
+  const scale = useSharedValue(1);
+
+  // ドラッグ中の現在位置を追跡
+  const currentPositionRef = useRef(visualIndex);
 
   const triggerHaptic = useCallback(() => {
     if (Platform.OS !== "web") {
@@ -230,60 +214,61 @@ function DraggableItem({
     }
   }, []);
 
-  // 方法2: デバウンス処理で状態更新の頻度を削減
-  const debouncedSetDraggedOverIndex = useDebounce(setDraggedOverIndex, 30);
-  const debouncedOnReorder = useDebounce(onReorder, 30);
-
   const gesture = Gesture.Pan()
-    .activateAfterLongPress(100)
+    .activateAfterLongPress(50) // 50msに短縮
     .onStart(() => {
       isActive.value = true;
       zIdx.value = 100;
+      scale.value = withTiming(1.02, { duration: 100 });
       runOnJS(setIsDragging)(true);
       runOnJS(triggerHaptic)();
     })
     .onUpdate((event) => {
-      // 方法1: 位置計算を簡潔化
-      // 方法3: Animated.Valueで同期的に位置を追跡
+      // リアルタイムで translateY を更新（デバウンスなし）
       translateY.value = event.translationY;
 
-      // シンプルな計算: translationY を直接 ITEM_TOTAL で割る
-      const targetPos = Math.round(event.translationY / ITEM_TOTAL);
-      const clampedPos = Math.max(0, Math.min(visualIndex + targetPos, itemCount - 1));
+      // 目標位置を計算
+      const offset = Math.round(event.translationY / ITEM_TOTAL);
+      const targetIndex = Math.max(
+        0,
+        Math.min(visualIndex + offset, itemCount - 1)
+      );
 
-      // デバウンス処理で状態更新の頻度を削減
-      runOnJS(debouncedSetDraggedOverIndex)(clampedPos);
+      // 位置が変わった場合のみ並び替え
+      if (targetIndex !== currentPositionRef.current) {
+        currentPositionRef.current = targetIndex;
 
-      // Reorder if position changed
-      if (clampedPos !== visualIndex) {
+        // 新しい配列を作成
         const newItems = [...items];
         const [movedItem] = newItems.splice(visualIndex, 1);
-        newItems.splice(clampedPos, 0, movedItem);
+        newItems.splice(targetIndex, 0, movedItem);
 
-        console.log(
-          `[DRAG] Moving "${item}" from position ${visualIndex} to ${clampedPos}`,
-          newItems
-        );
-
-        runOnJS(debouncedOnReorder)(newItems);
+        // 状態を即座に更新（デバウンスなし）
+        runOnJS(onReorder)(newItems);
+        runOnJS(setDraggedOverIndex)(targetIndex);
       }
     })
     .onEnd(() => {
-      // スムーズなアニメーション: withTiming で 150ms で 0 に戻す
+      // ドラッグ終了時のアニメーション
+      scale.value = withTiming(1, { duration: 100 });
       translateY.value = withTiming(0, {
-        duration: 150,
+        duration: 200,
         easing: Easing.out(Easing.cubic),
       });
       isActive.value = false;
       zIdx.value = 1;
       runOnJS(setIsDragging)(false);
       runOnJS(setDraggedOverIndex)(null);
+      currentPositionRef.current = visualIndex;
     })
     .runOnJS(true);
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
-      transform: [{ translateY: translateY.value }],
+      transform: [
+        { translateY: translateY.value },
+        { scale: scale.value },
+      ],
       zIndex: zIdx.value,
     };
   });
