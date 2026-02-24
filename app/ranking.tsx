@@ -215,6 +215,9 @@ function DraggableItem({
   const zIdx = useSharedValue(1);
   const scale = useSharedValue(1);
 
+  // 他のアイテムの移動アニメーション値
+  const otherItemTranslateY = useSharedValue(0);
+
   const triggerHaptic = useCallback(() => {
     if (Platform.OS !== "web") {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -282,8 +285,7 @@ function DraggableItem({
     };
   });
 
-  // 他のアイテムの位置を計算
-  // ドラッグ中のアイテムの translateY 値に基づいて計算
+  // 他のアイテムの位置を計算してアニメーション
   const otherItemAnimatedStyle = useAnimatedStyle(() => {
     if (
       globalDragState.draggedItemId &&
@@ -300,24 +302,46 @@ function DraggableItem({
       if (draggedPosition > currentIndex) {
         // ドラッグ中のアイテムがこのアイテムを越えたら、下に移動
         if (draggedPosition >= currentIndex + 0.5) {
-          return {
-            transform: [{ translateY: ITEM_TOTAL }],
-          };
+          otherItemTranslateY.value = withTiming(ITEM_TOTAL, {
+            duration: 150,
+            easing: Easing.out(Easing.cubic),
+          });
+        } else {
+          otherItemTranslateY.value = withTiming(0, {
+            duration: 150,
+            easing: Easing.out(Easing.cubic),
+          });
         }
       }
       // このアイテムがドラッグ中のアイテムより下にある場合
       else if (draggedPosition < currentIndex) {
         // ドラッグ中のアイテムがこのアイテムを越えたら、上に移動
         if (draggedPosition <= currentIndex - 0.5) {
-          return {
-            transform: [{ translateY: -ITEM_TOTAL }],
-          };
+          otherItemTranslateY.value = withTiming(-ITEM_TOTAL, {
+            duration: 150,
+            easing: Easing.out(Easing.cubic),
+          });
+        } else {
+          otherItemTranslateY.value = withTiming(0, {
+            duration: 150,
+            easing: Easing.out(Easing.cubic),
+          });
         }
+      } else {
+        otherItemTranslateY.value = withTiming(0, {
+          duration: 150,
+          easing: Easing.out(Easing.cubic),
+        });
       }
+    } else {
+      otherItemTranslateY.value = withTiming(0, {
+        duration: 150,
+        easing: Easing.out(Easing.cubic),
+      });
     }
 
     return {
-      transform: [{ translateY: 0 }],
+      transform: [{ translateY: otherItemTranslateY.value }],
     };
   });
 
