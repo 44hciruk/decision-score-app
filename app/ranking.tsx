@@ -198,15 +198,17 @@ function DraggableItem({
   colors: ReturnType<typeof useColors>;
 }) {
   const [isDragging, setIsDragging] = useState(false);
-  const [draggedOverIndex, setDraggedOverIndex] = useState<number | null>(null);
 
   const translateY = useSharedValue(0);
   const isActive = useSharedValue(false);
   const zIdx = useSharedValue(1);
   const scale = useSharedValue(1);
 
-  // ドラッグ中の現在位置を追跡
-  const currentPositionRef = useRef(visualIndex);
+  // ドラッグ中の視覚的な位置（アニメーション値のみ）
+  const draggedOverIndex = useSharedValue<number | null>(null);
+
+  // ドラッグ開始時の位置
+  const startIndexRef = useRef(visualIndex);
 
   const triggerHaptic = useCallback(() => {
     if (Platform.OS !== "web") {
@@ -215,8 +217,9 @@ function DraggableItem({
   }, []);
 
   const gesture = Gesture.Pan()
-    .activateAfterLongPress(50) // 50msに短縮
+    .activateAfterLongPress(50)
     .onStart(() => {
+      startIndexRef.current = visualIndex;
       isActive.value = true;
       zIdx.value = 100;
       scale.value = withTiming(1.02, { duration: 100 });
@@ -224,32 +227,40 @@ function DraggableItem({
       runOnJS(triggerHaptic)();
     })
     .onUpdate((event) => {
-      // リアルタイムで translateY を更新（デバウンスなし）
+      // ドラッグ中は translateY だけを更新（配列は変更しない）
       translateY.value = event.translationY;
 
-      // 目標位置を計算
+      // 視覚的な位置を計算（UI表示用）
       const offset = Math.round(event.translationY / ITEM_TOTAL);
       const targetIndex = Math.max(
         0,
         Math.min(visualIndex + offset, itemCount - 1)
       );
+      draggedOverIndex.value = targetIndex;
+    })
+    .onEnd((event) => {
+      // ドラッグ終了時に最終位置を計算
+      const offset = Math.round(event.translationY / ITEM_TOTAL);
+      const finalIndex = Math.max(
+        0,
+        Math.min(visualIndex + offset, itemCount - 1)
+      );
 
-      // 位置が変わった場合のみ並び替え
-      if (targetIndex !== currentPositionRef.current) {
-        currentPositionRef.current = targetIndex;
-
-        // 新しい配列を作成
+      // 位置が変わった場合のみ並び替え（ドラッグ終了時に一度だけ）
+      if (finalIndex !== visualIndex) {
         const newItems = [...items];
         const [movedItem] = newItems.splice(visualIndex, 1);
-        newItems.splice(targetIndex, 0, movedItem);
+        newItems.splice(finalIndex, 0, movedItem);
 
-        // 状態を即座に更新（デバウンスなし）
+        console.log(
+          `[DRAG] Moving "${item}" from position ${visualIndex} to ${finalIndex}`,
+          newItems
+        );
+
         runOnJS(onReorder)(newItems);
-        runOnJS(setDraggedOverIndex)(targetIndex);
       }
-    })
-    .onEnd(() => {
-      // ドラッグ終了時のアニメーション
+
+      // アニメーション: 元の位置に戻す
       scale.value = withTiming(1, { duration: 100 });
       translateY.value = withTiming(0, {
         duration: 200,
@@ -258,8 +269,7 @@ function DraggableItem({
       isActive.value = false;
       zIdx.value = 1;
       runOnJS(setIsDragging)(false);
-      runOnJS(setDraggedOverIndex)(null);
-      currentPositionRef.current = visualIndex;
+      draggedOverIndex.value = null;
     })
     .runOnJS(true);
 
@@ -281,13 +291,10 @@ function DraggableItem({
           {
             backgroundColor: isDragging
               ? colors.primary + "15"
-              : draggedOverIndex === visualIndex
-                ? colors.primary + "08"
-                : colors.surface,
-            borderColor:
-              draggedOverIndex === visualIndex ? colors.primary : colors.border,
-            borderWidth: draggedOverIndex === visualIndex ? 2 : 1,
-            borderStyle: draggedOverIndex === visualIndex ? "dashed" : "solid",
+              : colors.surface,
+            borderColor: colors.border,
+            borderWidth: 1,
+            borderStyle: "solid",
           },
           animatedStyle,
         ]}
