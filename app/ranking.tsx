@@ -215,6 +215,7 @@ function DraggableItem({
   const zIdx = useSharedValue(1);
   const scale = useSharedValue(1);
   const otherItemTranslateY = useSharedValue(0);
+  const isHighlighted = useSharedValue(0); // 0 = not highlighted, 1 = highlighted
 
   const triggerHaptic = useCallback(() => {
     if (Platform.OS !== "web") {
@@ -254,11 +255,13 @@ function DraggableItem({
               duration: 150,
               easing: Easing.out(Easing.cubic),
             });
+            isHighlighted.value = withTiming(1, { duration: 150 });
           } else {
             otherItemTranslateY.value = withTiming(0, {
               duration: 150,
               easing: Easing.out(Easing.cubic),
             });
+            isHighlighted.value = withTiming(0, { duration: 150 });
           }
         } else if (draggedPosition < currentIndex) {
           if (draggedPosition <= currentIndex - 0.5) {
@@ -266,12 +269,16 @@ function DraggableItem({
               duration: 150,
               easing: Easing.out(Easing.cubic),
             });
+            isHighlighted.value = withTiming(1, { duration: 150 });
           } else {
             otherItemTranslateY.value = withTiming(0, {
               duration: 150,
               easing: Easing.out(Easing.cubic),
             });
+            isHighlighted.value = withTiming(0, { duration: 150 });
           }
+        } else {
+          isHighlighted.value = withTiming(0, { duration: 150 });
         }
       }
     })
@@ -335,12 +342,23 @@ function DraggableItem({
         { scale: scale.value },
       ],
       zIndex: zIdx.value,
+      backgroundColor: colors.primary + "15",
+      borderColor: colors.border,
+      borderWidth: 1,
+      borderRadius: 12,
     };
   });
 
   const otherItemAnimatedStyle = useAnimatedStyle(() => {
+    const bgColor = isHighlighted.value === 1 ? colors.primary + '18' : colors.surface;
+    const borderColor = isHighlighted.value === 1 ? colors.primary : 'transparent';
+    const borderWidth = isHighlighted.value === 1 ? 2 : 0;
     return {
       transform: [{ translateY: otherItemTranslateY.value }],
+      backgroundColor: bgColor,
+      borderWidth: borderWidth,
+      borderColor: borderColor,
+      borderRadius: 12,
     };
   });
 
@@ -349,15 +367,9 @@ function DraggableItem({
       <Animated.View
         style={[
           styles.draggableItem,
-          {
-            backgroundColor: isDragging
-              ? colors.primary + "15"
-              : colors.surface,
-            borderColor: colors.border,
-            borderWidth: 1,
-            borderStyle: "solid",
-          },
-          isDragging ? animatedStyle : otherItemAnimatedStyle,
+          isDragging
+            ? animatedStyle
+            : otherItemAnimatedStyle,
         ]}
       >
         <View style={styles.dragHandle}>
