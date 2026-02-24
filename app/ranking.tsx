@@ -86,10 +86,6 @@ export default function RankingScreen() {
     router,
   ]);
 
-  const handleReorder = useCallback((newOrder: string[]) => {
-    setCurrentOrder(newOrder);
-  }, []);
-
   return (
     <ScreenContainer edges={["top", "bottom", "left", "right"]}>
       {/* Header */}
@@ -152,7 +148,6 @@ export default function RankingScreen() {
               visualIndex={visualIndex}
               itemCount={currentOrder.length}
               items={currentOrder}
-              onReorder={handleReorder}
               colors={colors}
             />
           ))}
@@ -179,30 +174,31 @@ export default function RankingScreen() {
 }
 
 // ============================================================
-// Draggable Item Component
+// Global Drag State
 // ============================================================
 
-// グローバルなドラッグ状態を管理
 let globalDragState = {
   draggedItemId: null as string | null,
+  draggedIndex: -1,
   draggedTranslateY: 0,
-  draggedFromIndex: -1,
   currentOrder: [] as string[],
 };
+
+// ============================================================
+// Draggable Item Component
+// ============================================================
 
 function DraggableItem({
   item,
   visualIndex,
   itemCount,
   items,
-  onReorder,
   colors,
 }: {
   item: string;
   visualIndex: number;
   itemCount: number;
   items: string[];
-  onReorder: (items: string[]) => void;
   colors: ReturnType<typeof useColors>;
 }) {
   const [isDragging, setIsDragging] = useState(false);
@@ -211,12 +207,6 @@ function DraggableItem({
   const isActive = useSharedValue(false);
   const zIdx = useSharedValue(1);
   const scale = useSharedValue(1);
-
-  // 他のアイテムの位置アニメーション
-  const otherItemTranslateY = useSharedValue(0);
-
-  // 現在のインデックス（配列の変化に応じて更新される）
-  const currentIndexRef = useRef(visualIndex);
 
   const triggerHaptic = useCallback(() => {
     if (Platform.OS !== "web") {
@@ -227,9 +217,8 @@ function DraggableItem({
   const gesture = Gesture.Pan()
     .activateAfterLongPress(50)
     .onStart(() => {
-      currentIndexRef.current = visualIndex;
       globalDragState.draggedItemId = item;
-      globalDragState.draggedFromIndex = visualIndex;
+      globalDragState.draggedIndex = visualIndex;
       globalDragState.currentOrder = items;
       globalDragState.draggedTranslateY = 0;
 
@@ -240,28 +229,9 @@ function DraggableItem({
       runOnJS(triggerHaptic)();
     })
     .onUpdate((event) => {
-      // ドラッグ中は translateY だけを更新
+      // ドラッグ中のアイテムの位置を更新
       translateY.value = event.translationY;
       globalDragState.draggedTranslateY = event.translationY;
-
-      // 目標位置を計算
-      const offset = Math.round(event.translationY / ITEM_TOTAL);
-      const targetIndex = Math.max(
-        0,
-        Math.min(visualIndex + offset, itemCount - 1)
-      );
-
-      // 位置が変わった場合、配列を更新
-      if (targetIndex !== currentIndexRef.current) {
-        const newItems = [...items];
-        const [movedItem] = newItems.splice(visualIndex, 1);
-        newItems.splice(targetIndex, 0, movedItem);
-
-        currentIndexRef.current = targetIndex;
-        globalDragState.currentOrder = newItems;
-
-        runOnJS(onReorder)(newItems);
-      }
     })
     .onEnd((event) => {
       // ドラッグ終了時のアニメーション
@@ -274,8 +244,23 @@ function DraggableItem({
       zIdx.value = 1;
       runOnJS(setIsDragging)(false);
 
+      // ドラッグ終了時に配列を更新
+      const offset = Math.round(event.translationY / ITEM_TOTAL);
+      const targetIndex = Math.max(
+        0,
+        Math.min(visualIndex + offset, itemCount - 1)
+      );
+
+      if (targetIndex !== visualIndex) {
+        const newItems = [...items];
+        const [movedItem] = newItems.splice(visualIndex, 1);
+        newItems.splice(targetIndex, 0, movedItem);
+        // 親コンポーネントの状態を更新
+        runOnJS(updateOrder)(newItems);
+      }
+
       globalDragState.draggedItemId = null;
-      globalDragState.draggedFromIndex = -1;
+      globalDragState.draggedIndex = -1;
       globalDragState.draggedTranslateY = 0;
     })
     .runOnJS(true);
@@ -291,46 +276,41 @@ function DraggableItem({
   });
 
   // 他のアイテムの位置を計算
-  // ドラッグ中のアイテムの位置に基づいて、このアイテムがどこにあるべきかを計算
+  // ドラッグ中のアイテムの translateY 値に基づいて計算
   const otherItemAnimatedStyle = useAnimatedStyle(() => {
     if (
       globalDragState.draggedItemId &&
       globalDragState.draggedItemId !== item
     ) {
-      // ドラッグ中のアイテムの現在位置を計算
-      const draggedIndex = globalDragState.currentOrder.indexOf(
-        globalDragState.draggedItemId
-      );
-      const currentIndex = globalDragState.currentOrder.indexOf(item);
+      const draggedTranslateY = globalDragState.draggedTranslateY;
+      const draggedIndex = globalDragState.draggedIndex;
+      const currentIndex = visualIndex;
 
-      // このアイテムがドラッグ中のアイテムより上にある場合、下に移動
-      if (draggedIndex < currentIndex && draggedIndex !== -1) {
-        otherItemTranslateY.value = withTiming(ITEM_TOTAL, {
-          duration: 120,
-          easing: Easing.out(Easing.cubic),
-        });
+      // ドラッグ中のアイテムが現在位置より上に来たか下に来たかを判定
+      const draggedPosition = draggedIndex + draggedTranslateY / ITEM_TOTAL;
+
+      // このアイテムがドラッグ中のアイテムより上にある場合
+      if (draggedPosition > currentIndex) {
+        // ドラッグ中のアイテムがこのアイテムを越えたら、下に移動
+        if (draggedPosition >= currentIndex + 0.5) {
+          return {
+            transform: [{ translateY: ITEM_TOTAL }],
+          };
+        }
       }
-      // このアイテムがドラッグ中のアイテムより下にある場合、上に移動
-      else if (draggedIndex > currentIndex && draggedIndex !== -1) {
-        otherItemTranslateY.value = withTiming(-ITEM_TOTAL, {
-          duration: 120,
-          easing: Easing.out(Easing.cubic),
-        });
-      } else {
-        otherItemTranslateY.value = withTiming(0, {
-          duration: 120,
-          easing: Easing.out(Easing.cubic),
-        });
+      // このアイテムがドラッグ中のアイテムより下にある場合
+      else if (draggedPosition < currentIndex) {
+        // ドラッグ中のアイテムがこのアイテムを越えたら、上に移動
+        if (draggedPosition <= currentIndex - 0.5) {
+          return {
+            transform: [{ translateY: -ITEM_TOTAL }],
+          };
+        }
       }
-    } else {
-      otherItemTranslateY.value = withTiming(0, {
-        duration: 120,
-        easing: Easing.out(Easing.cubic),
-      });
     }
 
     return {
-      transform: [{ translateY: otherItemTranslateY.value }],
+      transform: [{ translateY: 0 }],
     };
   });
 
@@ -362,6 +342,11 @@ function DraggableItem({
       </Animated.View>
     </GestureDetector>
   );
+}
+
+// ダミー関数（実装は親コンポーネントで行う必要があります）
+function updateOrder(newOrder: string[]) {
+  // この関数は親コンポーネントから呼び出される必要があります
 }
 
 const styles = StyleSheet.create({
