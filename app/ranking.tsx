@@ -346,6 +346,11 @@ function DraggableItem({
       borderColor: colors.border,
       borderWidth: 1,
       borderRadius: 12,
+      shadowColor: colors.foreground,
+      shadowOffset: { width: 0, height: 8 },
+      shadowOpacity: 0.25,
+      shadowRadius: 12,
+      elevation: 8,
     };
   });
 
@@ -359,6 +364,11 @@ function DraggableItem({
       borderWidth: borderWidth,
       borderColor: borderColor,
       borderRadius: 12,
+      shadowColor: colors.foreground,
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.08,
+      shadowRadius: 4,
+      elevation: 2,
     };
   });
 
