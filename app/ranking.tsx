@@ -55,6 +55,18 @@ export default function RankingScreen() {
     setCurrentOrder(newOrder);
   }, []);
 
+  const handleBack = useCallback(() => {
+    if (Platform.OS !== "web") {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+    if (currentCriterionIndex > 0) {
+      setCurrentCriterionIndex((prev) => prev - 1);
+      setCurrentOrder([...candidates]);
+    } else {
+      router.back();
+    }
+  }, [currentCriterionIndex, candidates, router]);
+
   const handleNext = useCallback(() => {
     if (Platform.OS !== "web") {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -95,7 +107,7 @@ export default function RankingScreen() {
       {/* Header */}
       <View style={styles.navHeader}>
         <Pressable
-          onPress={() => router.back()}
+          onPress={handleBack}
           style={({ pressed }) => [
             styles.navBtn,
             pressed && { opacity: 0.5 },

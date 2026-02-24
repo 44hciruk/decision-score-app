@@ -81,7 +81,8 @@ export default function ResultScreen() {
   const secondScore = sortedCandidates[1] ? scores[sortedCandidates[1]] || 0 : 0;
   const scoreDiff = winnerScore - secondScore;
   const confidenceMessage = getConfidenceMessage(scoreDiff);
-  const scoreColor = getScoreColor(winnerScore);
+  // 順位に基づいて色を決める（信号カラー：緑=1位、オレンジ=2位、赤=最下位）
+  const scoreColor = "#22C55E"; // 1位は常に緑
 
   // Haptic on mount
   useEffect(() => {
@@ -114,7 +115,7 @@ export default function ResultScreen() {
     if (Platform.OS !== "web") {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
-    router.back();
+    router.dismissAll();
   }, [router]);
 
   return (
@@ -175,7 +176,15 @@ export default function ResultScreen() {
           </Text>
           {sortedCandidates.map((candidate, index) => {
             const score = scores[candidate] || 0;
-            const color = getScoreColor(score);
+            // 順位に基づいて色を決める（信号カラー：緑=1位、オレンジ=2位、赤=最下位）
+            let color = "#8E8EA0"; // デフォルト（グレー）
+            if (index === 0) {
+              color = "#22C55E"; // 1位は緑
+            } else if (index === 1) {
+              color = "#F59E0B"; // 2位はオレンジ
+            } else if (index === sortedCandidates.length - 1) {
+              color = "#EF4444"; // 最下位は赤
+            }
             return (
               <Animated.View
                 key={candidate}
