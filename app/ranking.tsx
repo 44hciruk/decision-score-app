@@ -51,6 +51,10 @@ export default function RankingScreen() {
   const isLast = currentCriterionIndex === criteria.length - 1;
   const progress = ((currentCriterionIndex + 1) / criteria.length) * 100;
 
+  const handleReorder = useCallback((newOrder: string[]) => {
+    setCurrentOrder(newOrder);
+  }, []);
+
   const handleNext = useCallback(() => {
     if (Platform.OS !== "web") {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -148,6 +152,7 @@ export default function RankingScreen() {
               visualIndex={visualIndex}
               itemCount={currentOrder.length}
               items={currentOrder}
+              onReorder={handleReorder}
               colors={colors}
             />
           ))}
@@ -193,12 +198,14 @@ function DraggableItem({
   visualIndex,
   itemCount,
   items,
+  onReorder,
   colors,
 }: {
   item: string;
   visualIndex: number;
   itemCount: number;
   items: string[];
+  onReorder: (items: string[]) => void;
   colors: ReturnType<typeof useColors>;
 }) {
   const [isDragging, setIsDragging] = useState(false);
@@ -256,7 +263,7 @@ function DraggableItem({
         const [movedItem] = newItems.splice(visualIndex, 1);
         newItems.splice(targetIndex, 0, movedItem);
         // 親コンポーネントの状態を更新
-        runOnJS(updateOrder)(newItems);
+        runOnJS(onReorder)(newItems);
       }
 
       globalDragState.draggedItemId = null;
@@ -342,11 +349,6 @@ function DraggableItem({
       </Animated.View>
     </GestureDetector>
   );
-}
-
-// ダミー関数（実装は親コンポーネントで行う必要があります）
-function updateOrder(newOrder: string[]) {
-  // この関数は親コンポーネントから呼び出される必要があります
 }
 
 const styles = StyleSheet.create({
