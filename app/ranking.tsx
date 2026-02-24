@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useMemo, useRef } from "react";
 import {
   Text,
   View,
@@ -6,7 +6,6 @@ import {
   Platform,
   StyleSheet,
   ScrollView,
-  PanResponder,
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import * as Haptics from "expo-haptics";
@@ -18,6 +17,7 @@ import Animated, {
   runOnJS,
   Easing,
 } from "react-native-reanimated";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
 
 import { ScreenContainer } from "@/components/screen-container";
 import { IconSymbol } from "@/components/ui/icon-symbol";
@@ -26,7 +26,6 @@ import { useColors } from "@/hooks/use-colors";
 const ITEM_HEIGHT = 60;
 const ITEM_GAP = 8;
 const ITEM_TOTAL = ITEM_HEIGHT + ITEM_GAP;
-const LONG_PRESS_DURATION = 50;
 
 export default function RankingScreen() {
   const router = useRouter();
@@ -180,18 +179,14 @@ export default function RankingScreen() {
 }
 
 // ============================================================
-// Global Drag State (useRef で保存、Reactive でない)
+// Global Drag State
 // ============================================================
 
 let globalDragState = {
-  isDragging: false,
   draggedItemId: null as string | null,
   draggedIndex: -1,
-  currentTouchY: 0,
-  startTouchY: 0,
-  startTime: 0,
+  draggedTranslateY: 0,
   currentOrder: [] as string[],
-  itemCount: 0,
 };
 
 // ============================================================
@@ -216,18 +211,12 @@ function DraggableItem({
   const [isDragging, setIsDragging] = useState(false);
 
   const translateY = useSharedValue(0);
-  const scale = useSharedValue(1);
+  const isActive = useSharedValue(false);
   const zIdx = useSharedValue(1);
+  const scale = useSharedValue(1);
 
-  // タッチ座標を useRef で保存（Reactive でない）
-  const touchStateRef = useRef({
-    isTouching: false,
-    startY: 0,
-    currentY: 0,
-    startTime: 0,
-  });
-
-  const animationFrameRef = useRef<number | null>(null);
+  // 他のアイテムの移動アニメーション値
+  const otherItemTranslateY = useSharedValue(0);
 
   const triggerHaptic = useCallback(() => {
     if (Platform.OS !== "web") {
@@ -235,122 +224,56 @@ function DraggableItem({
     }
   }, []);
 
-  // requestAnimationFrame でアニメーション更新
-  const updateAnimation = useCallback(() => {
-    if (!touchStateRef.current.isTouching) {
-      animationFrameRef.current = null;
-      return;
-    }
-
-    const deltaY = touchStateRef.current.currentY - touchStateRef.current.startY;
-    translateY.value = deltaY;
-
-    // グローバル状態を更新（Reactive でない）
-    globalDragState.currentTouchY = touchStateRef.current.currentY;
-
-    animationFrameRef.current = requestAnimationFrame(updateAnimation);
-  }, []);
-
-  const handleTouchStart = useCallback(
-    (e: any) => {
-      const touchY = e.nativeEvent.pageY || e.nativeEvent.touches?.[0]?.pageY || 0;
-
-      touchStateRef.current = {
-        isTouching: true,
-        startY: touchY,
-        currentY: touchY,
-        startTime: Date.now(),
-      };
-
-      globalDragState.isDragging = false;
+  const gesture = Gesture.Pan()
+    .activateAfterLongPress(50)
+    .onStart(() => {
       globalDragState.draggedItemId = item;
       globalDragState.draggedIndex = visualIndex;
       globalDragState.currentOrder = items;
-      globalDragState.itemCount = itemCount;
-    },
-    [item, visualIndex, items, itemCount]
-  );
+      globalDragState.draggedTranslateY = 0;
 
-  const handleTouchMove = useCallback(
-    (e: any) => {
-      if (!touchStateRef.current.isTouching) return;
+      isActive.value = true;
+      zIdx.value = 100;
+      scale.value = withTiming(1.02, { duration: 100 });
+      runOnJS(setIsDragging)(true);
+      runOnJS(triggerHaptic)();
+    })
+    .onUpdate((event) => {
+      // ドラッグ中のアイテムの位置を更新
+      translateY.value = event.translationY;
+      globalDragState.draggedTranslateY = event.translationY;
+    })
+    .onEnd((event) => {
+      // ドラッグ終了時のアニメーション
+      scale.value = withTiming(1, { duration: 100 });
+      translateY.value = withTiming(0, {
+        duration: 200,
+        easing: Easing.out(Easing.cubic),
+      });
+      isActive.value = false;
+      zIdx.value = 1;
+      runOnJS(setIsDragging)(false);
 
-      const touchY = e.nativeEvent.pageY || e.nativeEvent.touches?.[0]?.pageY || 0;
-      const deltaY = touchY - touchStateRef.current.startY;
-      const elapsedTime = Date.now() - touchStateRef.current.startTime;
+      // ドラッグ終了時に配列を更新
+      const offset = Math.round(event.translationY / ITEM_TOTAL);
+      const targetIndex = Math.max(
+        0,
+        Math.min(visualIndex + offset, itemCount - 1)
+      );
 
-      // 長押し検出（50ms以上）
-      if (elapsedTime >= LONG_PRESS_DURATION && !globalDragState.isDragging) {
-        globalDragState.isDragging = true;
-        setIsDragging(true);
-        scale.value = withTiming(1.02, { duration: 100 });
-        zIdx.value = 100;
-        triggerHaptic();
-
-        // requestAnimationFrame 開始
-        if (!animationFrameRef.current) {
-          animationFrameRef.current = requestAnimationFrame(updateAnimation);
-        }
+      if (targetIndex !== visualIndex) {
+        const newItems = [...items];
+        const [movedItem] = newItems.splice(visualIndex, 1);
+        newItems.splice(targetIndex, 0, movedItem);
+        // 親コンポーネントの状態を更新
+        runOnJS(onReorder)(newItems);
       }
 
-      // ドラッグ中なら位置を更新
-      if (globalDragState.isDragging) {
-        touchStateRef.current.currentY = touchY;
-      }
-    },
-    [updateAnimation, triggerHaptic]
-  );
-
-  const handleTouchEnd = useCallback(() => {
-    touchStateRef.current.isTouching = false;
-
-    if (!globalDragState.isDragging) {
       globalDragState.draggedItemId = null;
-      return;
-    }
-
-    // ドラッグ終了時のアニメーション
-    scale.value = withTiming(1, { duration: 100 });
-    translateY.value = withTiming(0, {
-      duration: 200,
-      easing: Easing.out(Easing.cubic),
-    });
-    zIdx.value = 1;
-    setIsDragging(false);
-
-    // 配列を更新
-    const deltaY = touchStateRef.current.currentY - touchStateRef.current.startY;
-    const offset = Math.round(deltaY / ITEM_TOTAL);
-    const targetIndex = Math.max(
-      0,
-      Math.min(visualIndex + offset, itemCount - 1)
-    );
-
-    if (targetIndex !== visualIndex) {
-      const newItems = [...items];
-      const [movedItem] = newItems.splice(visualIndex, 1);
-      newItems.splice(targetIndex, 0, movedItem);
-      onReorder(newItems);
-    }
-
-    globalDragState.isDragging = false;
-    globalDragState.draggedItemId = null;
-
-    // requestAnimationFrame キャンセル
-    if (animationFrameRef.current) {
-      cancelAnimationFrame(animationFrameRef.current);
-      animationFrameRef.current = null;
-    }
-  }, [visualIndex, itemCount, items, onReorder]);
-
-  // クリーンアップ
-  useEffect(() => {
-    return () => {
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
-    };
-  }, []);
+      globalDragState.draggedIndex = -1;
+      globalDragState.draggedTranslateY = 0;
+    })
+    .runOnJS(true);
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -362,70 +285,93 @@ function DraggableItem({
     };
   });
 
-  // 他のアイテムの位置を計算
+  // 他のアイテムの位置を計算してアニメーション
   const otherItemAnimatedStyle = useAnimatedStyle(() => {
     if (
-      globalDragState.isDragging &&
       globalDragState.draggedItemId &&
       globalDragState.draggedItemId !== item
     ) {
-      const draggedDeltaY = globalDragState.currentTouchY - globalDragState.startTouchY;
-      const draggedPosition = globalDragState.draggedIndex + draggedDeltaY / ITEM_TOTAL;
+      const draggedTranslateY = globalDragState.draggedTranslateY;
+      const draggedIndex = globalDragState.draggedIndex;
       const currentIndex = visualIndex;
+
+      // ドラッグ中のアイテムが現在位置より上に来たか下に来たかを判定
+      const draggedPosition = draggedIndex + draggedTranslateY / ITEM_TOTAL;
 
       // このアイテムがドラッグ中のアイテムより上にある場合
       if (draggedPosition > currentIndex) {
         // ドラッグ中のアイテムがこのアイテムを越えたら、下に移動
         if (draggedPosition >= currentIndex + 0.5) {
-          return {
-            transform: [{ translateY: ITEM_TOTAL }],
-          };
+          otherItemTranslateY.value = withTiming(ITEM_TOTAL, {
+            duration: 150,
+            easing: Easing.out(Easing.cubic),
+          });
+        } else {
+          otherItemTranslateY.value = withTiming(0, {
+            duration: 150,
+            easing: Easing.out(Easing.cubic),
+          });
         }
       }
       // このアイテムがドラッグ中のアイテムより下にある場合
       else if (draggedPosition < currentIndex) {
         // ドラッグ中のアイテムがこのアイテムを越えたら、上に移動
         if (draggedPosition <= currentIndex - 0.5) {
-          return {
-            transform: [{ translateY: -ITEM_TOTAL }],
-          };
+          otherItemTranslateY.value = withTiming(-ITEM_TOTAL, {
+            duration: 150,
+            easing: Easing.out(Easing.cubic),
+          });
+        } else {
+          otherItemTranslateY.value = withTiming(0, {
+            duration: 150,
+            easing: Easing.out(Easing.cubic),
+          });
         }
+      } else {
+        otherItemTranslateY.value = withTiming(0, {
+          duration: 150,
+          easing: Easing.out(Easing.cubic),
+        });
       }
+    } else {
+      otherItemTranslateY.value = withTiming(0, {
+        duration: 150,
+        easing: Easing.out(Easing.cubic),
+      });
     }
 
     return {
-      transform: [{ translateY: 0 }],
+      transform: [{ translateY: otherItemTranslateY.value }],
     };
   });
 
   return (
-    <Animated.View
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
-      style={[
-        styles.draggableItem,
-        {
-          backgroundColor: isDragging
-            ? colors.primary + "15"
-            : colors.surface,
-          borderColor: colors.border,
-          borderWidth: 1,
-          borderStyle: "solid",
-        },
-        isDragging ? animatedStyle : otherItemAnimatedStyle,
-      ]}
-    >
-      <View style={styles.dragHandle}>
-        <Text style={[styles.handleIcon, { color: colors.muted }]}>≡</Text>
-      </View>
-      <Text
-        style={[styles.itemName, { color: colors.foreground }]}
-        numberOfLines={1}
+    <GestureDetector gesture={gesture}>
+      <Animated.View
+        style={[
+          styles.draggableItem,
+          {
+            backgroundColor: isDragging
+              ? colors.primary + "15"
+              : colors.surface,
+            borderColor: colors.border,
+            borderWidth: 1,
+            borderStyle: "solid",
+          },
+          isDragging ? animatedStyle : otherItemAnimatedStyle,
+        ]}
       >
-        {item}
-      </Text>
-    </Animated.View>
+        <View style={styles.dragHandle}>
+          <Text style={[styles.handleIcon, { color: colors.muted }]}>≡</Text>
+        </View>
+        <Text
+          style={[styles.itemName, { color: colors.foreground }]}
+          numberOfLines={1}
+        >
+          {item}
+        </Text>
+      </Animated.View>
+    </GestureDetector>
   );
 }
 
