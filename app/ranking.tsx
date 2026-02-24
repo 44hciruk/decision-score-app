@@ -56,9 +56,6 @@ export default function RankingScreen() {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     }
 
-    console.log(`[RANKING] Criterion: "${currentCriterion}"`);
-    console.log(`[RANKING] Current Order:`, currentOrder);
-
     const updatedRankings = {
       ...rankings,
       [currentCriterion]: [...currentOrder],
@@ -66,7 +63,6 @@ export default function RankingScreen() {
     setRankings(updatedRankings);
 
     if (isLast) {
-      console.log(`[RANKING] All rankings:`, updatedRankings);
       router.push({
         pathname: "/result",
         params: {
@@ -216,6 +212,9 @@ function DraggableItem({
   const zIdx = useSharedValue(1);
   const scale = useSharedValue(1);
 
+  // 他のアイテムの位置アニメーション
+  const otherItemTranslateY = useSharedValue(0);
+
   // 現在のインデックス（配列の変化に応じて更新される）
   const currentIndexRef = useRef(visualIndex);
 
@@ -260,11 +259,6 @@ function DraggableItem({
 
         currentIndexRef.current = targetIndex;
         globalDragState.currentOrder = newItems;
-
-        console.log(
-          `[DRAG] Moving "${item}" from position ${visualIndex} to ${targetIndex}`,
-          newItems
-        );
 
         runOnJS(onReorder)(newItems);
       }
@@ -311,20 +305,32 @@ function DraggableItem({
 
       // このアイテムがドラッグ中のアイテムより上にある場合、下に移動
       if (draggedIndex < currentIndex && draggedIndex !== -1) {
-        return {
-          transform: [{ translateY: ITEM_TOTAL }],
-        };
+        otherItemTranslateY.value = withTiming(ITEM_TOTAL, {
+          duration: 120,
+          easing: Easing.out(Easing.cubic),
+        });
       }
       // このアイテムがドラッグ中のアイテムより下にある場合、上に移動
       else if (draggedIndex > currentIndex && draggedIndex !== -1) {
-        return {
-          transform: [{ translateY: -ITEM_TOTAL }],
-        };
+        otherItemTranslateY.value = withTiming(-ITEM_TOTAL, {
+          duration: 120,
+          easing: Easing.out(Easing.cubic),
+        });
+      } else {
+        otherItemTranslateY.value = withTiming(0, {
+          duration: 120,
+          easing: Easing.out(Easing.cubic),
+        });
       }
+    } else {
+      otherItemTranslateY.value = withTiming(0, {
+        duration: 120,
+        easing: Easing.out(Easing.cubic),
+      });
     }
 
     return {
-      transform: [{ translateY: 0 }],
+      transform: [{ translateY: otherItemTranslateY.value }],
     };
   });
 
