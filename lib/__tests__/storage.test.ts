@@ -90,19 +90,19 @@ describe("getConfidenceMessage", () => {
 });
 
 describe("getScoreColor", () => {
-  it("should return gold for 90+", () => {
-    expect(getScoreColor(90)).toBe("#F59E0B");
-    expect(getScoreColor(100)).toBe("#F59E0B");
+  it("should return green for 90+ (1st place)", () => {
+    expect(getScoreColor(90)).toBe("#22C55E");
+    expect(getScoreColor(100)).toBe("#22C55E");
   });
 
-  it("should return green for 75-89", () => {
-    expect(getScoreColor(75)).toBe("#22C55E");
-    expect(getScoreColor(89)).toBe("#22C55E");
+  it("should return orange for 75-89 (2nd place)", () => {
+    expect(getScoreColor(75)).toBe("#F59E0B");
+    expect(getScoreColor(89)).toBe("#F59E0B");
   });
 
-  it("should return indigo for 60-74", () => {
-    expect(getScoreColor(60)).toBe("#6366F1");
-    expect(getScoreColor(74)).toBe("#6366F1");
+  it("should return red for 60-74 (last place)", () => {
+    expect(getScoreColor(60)).toBe("#EF4444");
+    expect(getScoreColor(74)).toBe("#EF4444");
   });
 
   it("should return gray for below 60", () => {

@@ -111,6 +111,9 @@ export default function ResultScreen() {
   }, [params.title, candidates, criteria, rankings, scores, winner, addProject, router]);
 
   const handleRetry = useCallback(() => {
+    if (Platform.OS !== "web") {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
     router.back();
   }, [router]);
 
@@ -256,7 +259,7 @@ export default function ResultScreen() {
             ]}
           >
             <Text style={[styles.secondaryBtnText, { color: colors.foreground }]}>
-              やり直す
+              保存せずに戻る
             </Text>
           </Pressable>
           <Pressable
@@ -267,7 +270,7 @@ export default function ResultScreen() {
               pressed && { transform: [{ scale: 0.97 }], opacity: 0.9 },
             ]}
           >
-            <Text style={styles.primaryBtnText}>保存してホームへ</Text>
+            <Text style={styles.primaryBtnText}>保存して戻る</Text>
           </Pressable>
         </View>
       </View>

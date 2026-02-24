@@ -136,9 +136,9 @@ export function getConfidenceMessage(diff: number): string {
 }
 
 export function getScoreColor(score: number): string {
-  if (score >= 90) return "#F59E0B"; // gold
-  if (score >= 75) return "#22C55E"; // green
-  if (score >= 60) return "#6366F1"; // blue/indigo
+  if (score >= 90) return "#22C55E"; // green (1st place)
+  if (score >= 75) return "#F59E0B"; // orange (2nd place)
+  if (score >= 60) return "#EF4444"; // red (last place)
   return "#8E8EA0"; // gray
 }
 
