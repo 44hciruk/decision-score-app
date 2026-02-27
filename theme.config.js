@@ -1,29 +1,15 @@
 /** @type {const} */
 const themeColors = {
-  // アクセントカラー：鮮やかな紫（iOS的な鮮明さ）
-  primary:       { light: '#6D28D9', dark: '#8B5CF6' },
-  // 背景：純白（水玉パターンはコンポーネント側で実装）
-  background:    { light: '#FFFFFF', dark: '#0D0B14' },
-  // カード・サーフェス：純白（影で浮き上がらせる）
-  surface:       { light: '#FFFFFF', dark: '#1C1928' },
-  // テキスト
-  foreground:    { light: '#111827', dark: '#F9FAFB' },
-  muted:         { light: '#6B7280', dark: '#9CA3AF' },
-  subtle:        { light: '#9CA3AF', dark: '#6B7280' },
-  // ボーダー（非常に薄く）
-  border:        { light: '#F3F0FF', dark: '#2D2845' },
-  // セマンティックカラー
-  success:       { light: '#059669', dark: '#34D399' },
-  warning:       { light: '#D97706', dark: '#FBBF24' },
-  error:         { light: '#DC2626', dark: '#F87171' },
-  // 紫系グラデーション用
-  gradientStart: { light: '#FFFFFF', dark: '#0D0B14' },
-  gradientEnd:   { light: '#F5F3FF', dark: '#1C1928' },
-  // 薄い紫（バッジ・タグ・アイコン背景）
-  primaryLight:  { light: '#EDE9FE', dark: '#2D1F6E' },
-  primaryMuted:  { light: '#DDD6FE', dark: '#3D2D8A' },
-  // タブバー用
-  tint:          { light: '#6D28D9', dark: '#8B5CF6' },
+  // melmo風: 薄グレー背景に白カード、紫アクセント
+  primary:    { light: '#6D28D9', dark: '#7C3AED' },
+  background: { light: '#F2F2F7', dark: '#1C1C1E' }, // iOS SystemGroupedBackground
+  surface:    { light: '#FFFFFF', dark: '#2C2C2E' }, // 白カード
+  foreground: { light: '#1C1C1E', dark: '#F2F2F7' }, // iOS label
+  muted:      { light: '#8E8E93', dark: '#8E8E93' }, // iOS secondaryLabel
+  border:     { light: '#E5E5EA', dark: '#38383A' }, // iOS separator
+  success:    { light: '#34C759', dark: '#30D158' }, // iOS systemGreen
+  warning:    { light: '#FF9500', dark: '#FF9F0A' }, // iOS systemOrange
+  error:      { light: '#FF3B30', dark: '#FF453A' }, // iOS systemRed
 };
 
 module.exports = { themeColors };

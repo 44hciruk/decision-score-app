@@ -36,7 +36,7 @@ export default function SettingsScreen() {
   const limits = state.settings.isPremium ? PREMIUM_LIMITS : FREE_LIMITS;
 
   return (
-    <ScreenContainer>
+    <ScreenContainer containerClassName="bg-background">
       <View style={styles.header}>
         <Text style={[styles.headerTitle, { color: colors.foreground }]}>
           設定
@@ -335,10 +335,10 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
   },
   headerTitle: {
-    fontSize: 32,
-    fontWeight: "900",
+    fontSize: 28,
+    fontWeight: "700",
     letterSpacing: -1,
-    color: "#111827",
+    color: "#1C1C1E",
   },
   headerSubtitle: {
     fontSize: 14,
@@ -407,17 +407,12 @@ const styles = StyleSheet.create({
   upgradeBtn: {
     marginTop: 16,
     paddingVertical: 16,
-    borderRadius: 16,
+    borderRadius: 12,
     alignItems: "center",
     backgroundColor: "#6D28D9",
     flexDirection: "row",
     justifyContent: "center",
     gap: 8,
-    shadowColor: "#6D28D9",
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.35,
-    shadowRadius: 12,
-    elevation: 8,
     minHeight: 56,
   },
   upgradeBtnText: {
@@ -489,7 +484,7 @@ const styles = StyleSheet.create({
   modalIconWrap: {
     width: 80,
     height: 80,
-    borderRadius: 22,
+    borderRadius: 12,
     backgroundColor: "#EDE9FF",
     alignItems: "center",
     justifyContent: "center",
@@ -499,7 +494,7 @@ const styles = StyleSheet.create({
   },
   modalHeading: {
     fontSize: 24,
-    fontWeight: "800",
+    fontWeight: "700",
     marginBottom: 24,
     textAlign: "center",
   },
@@ -523,7 +518,7 @@ const styles = StyleSheet.create({
   },
   pricingCard: {
     flex: 1,
-    borderRadius: 16,
+    borderRadius: 12,
     borderWidth: 1.5,
     padding: 16,
     alignItems: "center",
@@ -551,7 +546,7 @@ const styles = StyleSheet.create({
   },
   pricingPrice: {
     fontSize: 28,
-    fontWeight: "800",
+    fontWeight: "700",
   },
   pricingPeriod: {
     fontSize: 13,
@@ -560,18 +555,13 @@ const styles = StyleSheet.create({
   modalUpgradeBtn: {
     width: "100%",
     paddingVertical: 16,
-    borderRadius: 16,
+    borderRadius: 12,
     alignItems: "center",
     marginBottom: 12,
     backgroundColor: "#7C3AED",
     flexDirection: "row",
     justifyContent: "center",
     gap: 8,
-    shadowColor: "#7C3AED",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
-    shadowRadius: 8,
-    elevation: 6,
     minHeight: 56,
   },
   modalUpgradeBtnText: {

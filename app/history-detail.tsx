@@ -363,7 +363,7 @@ const styles = StyleSheet.create({
   trophyIconWrap: {
     width: 64,
     height: 64,
-    borderRadius: 18,
+    borderRadius: 12,
     backgroundColor: "#DCFCE7",
     alignItems: "center",
     justifyContent: "center",
@@ -373,7 +373,7 @@ const styles = StyleSheet.create({
   },
   winnerName: {
     fontSize: 26,
-    fontWeight: "800",
+    fontWeight: "700",
   },
   scoreCircleContainer: {
     alignItems: "center",
@@ -390,7 +390,7 @@ const styles = StyleSheet.create({
   },
   scoreValue: {
     fontSize: 42,
-    fontWeight: "900",
+    fontWeight: "700",
   },
   scoreUnit: {
     fontSize: 13,
@@ -400,7 +400,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     paddingHorizontal: 20,
     paddingVertical: 10,
-    borderRadius: 20,
+    borderRadius: 12,
     borderWidth: 1,
     marginBottom: 28,
   },
@@ -431,7 +431,7 @@ const styles = StyleSheet.create({
   rankNumber: {
     width: 32,
     height: 32,
-    borderRadius: 16,
+    borderRadius: 12,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -449,7 +449,7 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   rankItemScore: {
-    fontWeight: "800",
+    fontWeight: "700",
   },
   rankItemUnit: {
     fontSize: 13,

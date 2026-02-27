@@ -13,7 +13,7 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import * as Haptics from "expo-haptics";
 import Animated, { FadeInDown, FadeIn } from "react-native-reanimated";
 
-import { GradientScreen } from "@/components/gradient-screen";
+import { ScreenContainer } from "@/components/screen-container";
 import { GlassCard } from "@/components/glass-card";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useProjectContext } from "@/lib/project-context";
@@ -97,7 +97,7 @@ export default function CriteriaScreen() {
 
   return (
     <>
-      <GradientScreen edges={["top", "left", "right"]}>
+      <ScreenContainer edges={["top", "left", "right"]} containerClassName="bg-background">
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           style={styles.flex}
@@ -214,7 +214,7 @@ export default function CriteriaScreen() {
             </TouchableOpacity>
           </Animated.View>
         </KeyboardAvoidingView>
-      </GradientScreen>
+      </ScreenContainer>
 
       <PremiumModal
         visible={showPremiumModal}
@@ -237,6 +237,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: "#E5E5EA",
+    backgroundColor: "#FFFFFF",
   },
   navBackBtn: {
     flexDirection: "row",
@@ -255,7 +258,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 17,
     fontWeight: "700",
-    color: "#111827",
+    color: "#1C1C1E",
     textAlign: "center",
   },
   navSpacer: {
@@ -303,7 +306,7 @@ const styles = StyleSheet.create({
   stepLabel: {
     textAlign: "center",
     fontSize: 13,
-    color: "#9CA3AF",
+    color: "#8E8E93",
     marginBottom: 24,
   },
   scrollContent: {
@@ -313,7 +316,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: "700",
-    color: "#111827",
+    color: "#1C1C1E",
     marginBottom: 8,
     letterSpacing: -0.3,
   },
@@ -322,7 +325,7 @@ const styles = StyleSheet.create({
   },
   limitText: {
     fontSize: 12,
-    color: "#9CA3AF",
+    color: "#8E8E93",
     marginBottom: 6,
   },
   limitBarBg: {
@@ -356,13 +359,13 @@ const styles = StyleSheet.create({
   },
   indexText: {
     fontSize: 15,
-    fontWeight: "800",
+    fontWeight: "700",
     color: "#FFFFFF",
   },
   input: {
     flex: 1,
     fontSize: 16,
-    color: "#111827",
+    color: "#1C1C1E",
     fontWeight: "500",
     paddingVertical: 4,
   },
@@ -411,14 +414,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: 18,
-    borderRadius: 18,
+    borderRadius: 12,
     backgroundColor: "#6D28D9",
     gap: 8,
-    shadowColor: "#6D28D9",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.4,
-    shadowRadius: 12,
-    elevation: 8,
     minHeight: 56,
   },
   nextBtnDisabled: {

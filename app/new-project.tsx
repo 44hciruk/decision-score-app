@@ -14,7 +14,7 @@ import { useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";
 import Animated, { FadeInDown, FadeIn } from "react-native-reanimated";
 
-import { GradientScreen } from "@/components/gradient-screen";
+import { ScreenContainer } from "@/components/screen-container";
 import { GlassCard } from "@/components/glass-card";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { TEMPLATES, type Template } from "@/lib/storage";
@@ -69,7 +69,7 @@ export default function NewProjectScreen() {
   const isValid = title.trim().length > 0;
 
   return (
-    <GradientScreen edges={["top", "left", "right"]}>
+    <ScreenContainer edges={["top", "left", "right"]} containerClassName="bg-background">
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.flex}
@@ -184,7 +184,7 @@ export default function NewProjectScreen() {
           </TouchableOpacity>
         </Animated.View>
       </KeyboardAvoidingView>
-    </GradientScreen>
+    </ScreenContainer>
   );
 }
 
@@ -195,6 +195,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: "#E5E5EA",
+    backgroundColor: "#FFFFFF",
   },
   navBackBtn: {
     flexDirection: "row",
@@ -207,15 +210,14 @@ const styles = StyleSheet.create({
   navBackText: {
     fontSize: 16,
     color: "#6D28D9",
-    fontWeight: "600",
+    fontWeight: "400",
   },
   navTitle: {
     flex: 1,
     fontSize: 17,
-    fontWeight: "700",
-    color: "#111827",
+    fontWeight: "600",
+    color: "#1C1C1E",
     textAlign: "center",
-    letterSpacing: -0.3,
   },
   navSpacer: {
     minWidth: 80,
@@ -244,11 +246,6 @@ const styles = StyleSheet.create({
   stepDotActive: {
     backgroundColor: "#6D28D9",
     borderColor: "#6D28D9",
-    shadowColor: "#6D28D9",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
-    elevation: 4,
   },
   stepNum: {
     fontSize: 12,
@@ -275,11 +272,11 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   sectionTitle: {
-    fontSize: 22,
-    fontWeight: "800",
-    color: "#111827",
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#1C1C1E",
     marginBottom: 12,
-    letterSpacing: -0.5,
+    letterSpacing: -0.3,
   },
   sectionHint: {
     fontSize: 13,
@@ -310,15 +307,10 @@ const styles = StyleSheet.create({
     padding: 16,
     alignItems: "center",
     gap: 10,
-    borderRadius: 18,
+    borderRadius: 12,
     backgroundColor: "#FFFFFF",
-    borderWidth: 1.5,
-    borderColor: "rgba(109, 40, 217, 0.1)",
-    shadowColor: "#1E1B4B",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.08,
-    shadowRadius: 12,
-    elevation: 4,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "#E5E5EA",
     position: "relative",
   },
   templateCardSelected: {
@@ -366,16 +358,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 18,
-    borderRadius: 18,
+    paddingVertical: 16,
+    borderRadius: 12,
     backgroundColor: "#6D28D9",
     gap: 8,
-    shadowColor: "#6D28D9",
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.4,
-    shadowRadius: 14,
-    elevation: 10,
-    minHeight: 58,
+    minHeight: 54,
   },
   nextBtnDisabled: {
     backgroundColor: "#EDE9FF",

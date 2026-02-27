@@ -19,7 +19,7 @@ import Animated, {
 } from "react-native-reanimated";
 import Svg, { Circle } from "react-native-svg";
 
-import { GradientScreen } from "@/components/gradient-screen";
+import { ScreenContainer } from "@/components/screen-container";
 import { GlassCard } from "@/components/glass-card";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useProjectContext } from "@/lib/project-context";
@@ -113,7 +113,7 @@ export default function ResultScreen() {
   };
 
   return (
-    <GradientScreen edges={["top", "bottom", "left", "right"]}>
+    <ScreenContainer edges={["top", "bottom", "left", "right"]}>
       {/* ヘッダー */}
       <Animated.View entering={FadeIn.duration(300)} style={styles.navHeader}>
         <View style={styles.navSpacer} />
@@ -192,7 +192,7 @@ export default function ResultScreen() {
                     <Text
                       style={[
                         styles.rankItemName,
-                        { fontWeight: isWinner ? "700" : "500", color: isWinner ? "#1A1535" : "#374151" },
+                        { fontWeight: isWinner ? "700" : "500", color: isWinner ? "#1A1535" : "#3C3C43" },
                       ]}
                       numberOfLines={1}
                     >
@@ -240,7 +240,7 @@ export default function ResultScreen() {
           </TouchableOpacity>
         </View>
       </Animated.View>
-    </GradientScreen>
+    </ScreenContainer>
   );
 }
 
@@ -340,7 +340,7 @@ const styles = StyleSheet.create({
   navTitle: {
     fontSize: 17,
     fontWeight: "700",
-    color: "#111827",
+    color: "#1C1C1E",
     letterSpacing: -0.3,
   },
   scrollContent: {
@@ -354,7 +354,7 @@ const styles = StyleSheet.create({
   winnerIconWrap: {
     width: 72,
     height: 72,
-    borderRadius: 20,
+    borderRadius: 12,
     backgroundColor: "#DCFCE7",
     alignItems: "center",
     justifyContent: "center",
@@ -368,7 +368,7 @@ const styles = StyleSheet.create({
     borderColor: "#86EFAC",
     paddingHorizontal: 14,
     paddingVertical: 5,
-    borderRadius: 20,
+    borderRadius: 12,
     marginBottom: 10,
   },
   winnerBadgeText: {
@@ -379,8 +379,8 @@ const styles = StyleSheet.create({
   },
   winnerName: {
     fontSize: 34,
-    fontWeight: "900",
-    color: "#111827",
+    fontWeight: "700",
+    color: "#1C1C1E",
     letterSpacing: -0.8,
     textAlign: "center",
   },
@@ -399,14 +399,14 @@ const styles = StyleSheet.create({
   },
   scoreValue: {
     fontSize: 56,
-    fontWeight: "900",
-    color: "#111827",
+    fontWeight: "700",
+    color: "#1C1C1E",
     letterSpacing: -2,
   },
   scoreUnit: {
     fontSize: 14,
     marginTop: -4,
-    color: "#9CA3AF",
+    color: "#8E8E93",
   },
   confidenceContainer: {
     marginBottom: 24,
@@ -429,8 +429,8 @@ const styles = StyleSheet.create({
   },
   rankingTitle: {
     fontSize: 20,
-    fontWeight: "800",
-    color: "#111827",
+    fontWeight: "700",
+    color: "#1C1C1E",
     marginBottom: 14,
     letterSpacing: -0.3,
   },
@@ -458,7 +458,7 @@ const styles = StyleSheet.create({
   },
   rankBadgeText: {
     fontSize: 15,
-    fontWeight: "800",
+    fontWeight: "700",
   },
   rankItemName: {
     fontSize: 16,
@@ -470,11 +470,11 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   rankItemScore: {
-    fontWeight: "800",
+    fontWeight: "700",
   },
   rankItemUnit: {
     fontSize: 13,
-    color: "#9CA3AF",
+    color: "#8E8E93",
   },
   bottomBar: {
     paddingHorizontal: 20,
@@ -488,7 +488,7 @@ const styles = StyleSheet.create({
   secondaryBtn: {
     flex: 1,
     paddingVertical: 18,
-    borderRadius: 18,
+    borderRadius: 12,
     alignItems: "center",
     backgroundColor: "#F5F3FF",
     borderWidth: 1.5,
@@ -504,14 +504,9 @@ const styles = StyleSheet.create({
   primaryBtn: {
     flex: 2,
     paddingVertical: 18,
-    borderRadius: 18,
+    borderRadius: 12,
     alignItems: "center",
     backgroundColor: "#6D28D9",
-    shadowColor: "#6D28D9",
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.4,
-    shadowRadius: 14,
-    elevation: 10,
     flexDirection: "row",
     justifyContent: "center",
     gap: 8,

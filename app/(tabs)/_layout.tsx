@@ -14,13 +14,11 @@ type TabIconProps = {
 function TabIcon({ focused, iconName, label }: TabIconProps) {
   return (
     <View style={tabStyles.iconWrap}>
-      <View style={[tabStyles.pill, focused && tabStyles.pillActive]}>
-        <IconSymbol
-          name={iconName}
-          size={22}
-          color={focused ? "#6D28D9" : "#9CA3AF"}
-        />
-      </View>
+      <IconSymbol
+        name={iconName}
+        size={24}
+        color={focused ? "#6D28D9" : "#8E8E93"}
+      />
       <Text style={[tabStyles.label, focused && tabStyles.labelActive]}>
         {label}
       </Text>
@@ -32,33 +30,23 @@ const tabStyles = StyleSheet.create({
   iconWrap: {
     alignItems: "center",
     gap: 3,
-  },
-  pill: {
-    width: 52,
-    height: 32,
-    borderRadius: 16,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "transparent",
-  },
-  pillActive: {
-    backgroundColor: "#EDE9FE",
+    paddingTop: 4,
   },
   label: {
     fontSize: 10,
     fontWeight: "500",
-    color: "#9CA3AF",
+    color: "#8E8E93",
   },
   labelActive: {
     color: "#6D28D9",
-    fontWeight: "700",
+    fontWeight: "600",
   },
 });
 
 export default function TabLayout() {
   const insets = useSafeAreaInsets();
   const bottomPadding = Platform.OS === "web" ? 12 : Math.max(insets.bottom, 8);
-  const tabBarHeight = 64 + bottomPadding;
+  const tabBarHeight = 56 + bottomPadding;
 
   return (
     <Tabs
@@ -71,13 +59,8 @@ export default function TabLayout() {
           paddingBottom: bottomPadding,
           height: tabBarHeight,
           backgroundColor: "#FFFFFF",
-          borderTopColor: "rgba(109, 40, 217, 0.08)",
-          borderTopWidth: 1,
-          shadowColor: "#1E1B4B",
-          shadowOffset: { width: 0, height: -4 },
-          shadowOpacity: 0.06,
-          shadowRadius: 12,
-          elevation: 8,
+          borderTopColor: "#E5E5EA",
+          borderTopWidth: StyleSheet.hairlineWidth,
         },
       }}
     >

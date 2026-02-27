@@ -20,7 +20,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 
-import { GradientScreen } from "@/components/gradient-screen";
+import { ScreenContainer } from "@/components/screen-container";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 
 const ITEM_HEIGHT = 68;
@@ -90,7 +90,7 @@ export default function RankingScreen() {
   }, [rankings, currentCriterion, currentOrder, isLast, candidates, params, router]);
 
   return (
-    <GradientScreen edges={["top", "left", "right"]}>
+    <ScreenContainer edges={["top", "left", "right"]} containerClassName="bg-background">
       {/* ナビゲーションヘッダー */}
       <Animated.View entering={FadeIn.duration(300)} style={styles.navHeader}>
         <TouchableOpacity
@@ -178,7 +178,7 @@ export default function RankingScreen() {
           )}
         </TouchableOpacity>
       </Animated.View>
-    </GradientScreen>
+    </ScreenContainer>
   );
 }
 
@@ -331,12 +331,7 @@ function DraggableItem({
       backgroundColor: "#FFFFFF",
       borderColor: "#6D28D9",
       borderWidth: 2,
-      borderRadius: 18,
-      shadowColor: "#6D28D9",
-      shadowOffset: { width: 0, height: 8 },
-      shadowOpacity: 0.25,
-      shadowRadius: 16,
-      elevation: 12,
+      borderRadius: 12,
     };
   });
 
@@ -347,12 +342,7 @@ function DraggableItem({
       backgroundColor: highlighted ? "#F5F3FF" : "#FFFFFF",
       borderWidth: highlighted ? 1.5 : 1,
       borderColor: highlighted ? "#6D28D9" : "rgba(109, 40, 217, 0.1)",
-      borderRadius: 18,
-      shadowColor: "#6D28D9",
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.06,
-      shadowRadius: 6,
-      elevation: 2,
+      borderRadius: 12,
     };
   });
 
@@ -397,6 +387,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: "#E5E5EA",
+    backgroundColor: "#FFFFFF",
   },
   navBackBtn: {
     flexDirection: "row",
@@ -415,7 +408,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 17,
     fontWeight: "700",
-    color: "#111827",
+    color: "#1C1C1E",
     textAlign: "center",
   },
   navSpacer: {
@@ -444,7 +437,7 @@ const styles = StyleSheet.create({
   },
   progressLabel: {
     fontSize: 13,
-    color: "#6B7280",
+    color: "#8E8E93",
     flex: 1,
   },
   progressText: {
@@ -464,7 +457,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#EDE9FF",
     paddingHorizontal: 10,
     paddingVertical: 5,
-    borderRadius: 20,
+    borderRadius: 12,
     marginBottom: 8,
     borderWidth: 1,
     borderColor: "#DDD6FE",
@@ -477,14 +470,14 @@ const styles = StyleSheet.create({
   },
   criterionName: {
     fontSize: 26,
-    fontWeight: "800",
-    color: "#111827",
+    fontWeight: "700",
+    color: "#1C1C1E",
     marginBottom: 6,
     letterSpacing: -0.5,
   },
   criterionHint: {
     fontSize: 13,
-    color: "#9CA3AF",
+    color: "#8E8E93",
   },
   listContainer: {
     flex: 1,
@@ -499,7 +492,7 @@ const styles = StyleSheet.create({
   },
   draggableItem: {
     height: ITEM_HEIGHT,
-    borderRadius: 18,
+    borderRadius: 12,
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 14,
@@ -515,13 +508,13 @@ const styles = StyleSheet.create({
   },
   rankText: {
     fontSize: 15,
-    fontWeight: "800",
+    fontWeight: "700",
   },
   itemName: {
     flex: 1,
     fontSize: 16,
     fontWeight: "600",
-    color: "#111827",
+    color: "#1C1C1E",
   },
   dragHandle: {
     width: 20,
@@ -547,14 +540,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: 18,
-    borderRadius: 18,
+    borderRadius: 12,
     backgroundColor: "#6D28D9",
     gap: 8,
-    shadowColor: "#6D28D9",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.4,
-    shadowRadius: 12,
-    elevation: 8,
     minHeight: 56,
   },
   nextBtnText: {
