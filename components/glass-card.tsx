@@ -1,78 +1,46 @@
-import { View, type ViewProps, Platform, StyleSheet } from "react-native";
-import { BlurView } from "expo-blur";
+import { View, type ViewProps, StyleSheet } from "react-native";
 import { cn } from "@/lib/utils";
 
 export interface GlassCardProps extends ViewProps {
   intensity?: number;
-  tint?: "light" | "dark" | "default" | "extraLight" | "prominent" | "regular" | "systemUltraThinMaterial" | "systemThinMaterial" | "systemMaterial" | "systemThickMaterial" | "systemChromeMaterial";
+  tint?: string;
   className?: string;
   style?: ViewProps["style"];
+  variant?: "default" | "accent";
 }
 
 /**
- * Apple-style glass morphism card component.
- * Uses BlurView on iOS/Android, falls back to semi-transparent View on web.
+ * クリーンなカードコンポーネント（白ベース＋紫アクセント）
  */
 export function GlassCard({
   children,
-  intensity = 60,
-  tint = "light",
+  variant = "default",
   className,
   style,
   ...props
 }: GlassCardProps) {
-  if (Platform.OS === "web") {
-    return (
-      <View
-        style={[styles.webCard, style]}
-        {...props}
-      >
-        {children}
-      </View>
-    );
-  }
-
   return (
-    <BlurView
-      intensity={intensity}
-      tint={tint}
-      style={[styles.card, style]}
-      {...(props as any)}
+    <View
+      style={[variant === "accent" ? styles.accentCard : styles.card, style]}
+      {...props}
     >
       {children}
-    </BlurView>
+    </View>
   );
 }
 
 /**
- * Dark glass card for use on gradient backgrounds.
+ * 後方互換性のためのエイリアス
  */
 export function DarkGlassCard({
   children,
-  intensity = 40,
   style,
   ...props
 }: GlassCardProps) {
-  if (Platform.OS === "web") {
-    return (
-      <View
-        style={[styles.darkWebCard, style]}
-        {...props}
-      >
-        {children}
-      </View>
-    );
-  }
-
   return (
-    <BlurView
-      intensity={intensity}
-      tint="dark"
-      style={[styles.card, style]}
-      {...(props as any)}
-    >
+    <View style={[styles.card, style]} {...props}>
       {children}
-    </BlurView>
+    </View>
   );
 }
 
@@ -81,22 +49,24 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     overflow: "hidden",
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.3)",
+    borderColor: "#E5E1FF",
+    backgroundColor: "#FFFFFF",
+    shadowColor: "#7C3AED",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    elevation: 3,
   },
-  webCard: {
+  accentCard: {
     borderRadius: 20,
     overflow: "hidden",
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.3)",
-    backgroundColor: "rgba(255,255,255,0.75)",
-    backdropFilter: "blur(20px)",
-  } as any,
-  darkWebCard: {
-    borderRadius: 20,
-    overflow: "hidden",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.15)",
-    backgroundColor: "rgba(255,255,255,0.12)",
-    backdropFilter: "blur(20px)",
-  } as any,
+    borderColor: "#DDD6FE",
+    backgroundColor: "#EDE9FF",
+    shadowColor: "#7C3AED",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 3,
+  },
 });

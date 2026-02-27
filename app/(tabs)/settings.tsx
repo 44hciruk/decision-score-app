@@ -2,17 +2,17 @@ import { useCallback, useState } from "react";
 import {
   Text,
   View,
-  Pressable,
+  TouchableOpacity,
   Switch,
   ScrollView,
   Platform,
-  Alert,
   StyleSheet,
   Modal,
 } from "react-native";
 import * as Haptics from "expo-haptics";
 
 import { ScreenContainer } from "@/components/screen-container";
+import { GlassCard } from "@/components/glass-card";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useColors } from "@/hooks/use-colors";
 import { useProjectContext } from "@/lib/project-context";
@@ -41,6 +41,9 @@ export default function SettingsScreen() {
         <Text style={[styles.headerTitle, { color: colors.foreground }]}>
           設定
         </Text>
+        <Text style={[styles.headerSubtitle, { color: colors.muted }]}>
+          アプリの設定を管理します
+        </Text>
       </View>
 
       <ScrollView
@@ -48,14 +51,11 @@ export default function SettingsScreen() {
         showsVerticalScrollIndicator={false}
       >
         {/* Premium section */}
-        <View
-          style={[
-            styles.card,
-            { backgroundColor: colors.surface, borderColor: colors.border },
-          ]}
-        >
+        <GlassCard style={styles.card}>
           <View style={styles.cardHeader}>
-            <Text style={styles.premiumIcon}>⭐</Text>
+            <View style={styles.premiumIconWrap}>
+              <IconSymbol name="star.fill" size={22} color="#7C3AED" />
+            </View>
             <View style={styles.cardHeaderText}>
               <Text style={[styles.cardTitle, { color: colors.foreground }]}>
                 プレミアム
@@ -69,26 +69,29 @@ export default function SettingsScreen() {
             <Switch
               value={state.settings.isPremium}
               onValueChange={handleTogglePremium}
-              trackColor={{ false: colors.border, true: colors.primary }}
+              trackColor={{ false: "#E5E1FF", true: "#7C3AED" }}
               thumbColor="#FFFFFF"
             />
           </View>
 
-          <View style={[styles.divider, { backgroundColor: colors.border }]} />
+          <View style={styles.divider} />
 
           {/* Current limits */}
           <View style={styles.limitsContainer}>
             <LimitRow
+              icon="person.2.fill"
               label="比較候補"
               value={`${limits.candidates === Infinity ? "無制限" : limits.candidates + "個"}`}
               colors={colors}
             />
             <LimitRow
+              icon="list.bullet"
               label="評価項目"
               value={`${limits.criteria === Infinity ? "無制限" : limits.criteria + "個"}`}
               colors={colors}
             />
             <LimitRow
+              icon="bookmark.fill"
               label="プロジェクト保存"
               value={`${limits.projects === Infinity ? "無制限" : limits.projects + "個"}`}
               colors={colors}
@@ -96,34 +99,33 @@ export default function SettingsScreen() {
           </View>
 
           {!state.settings.isPremium && (
-            <Pressable
+            <TouchableOpacity
               onPress={() => setShowPremiumModal(true)}
-              style={({ pressed }) => [
-                styles.upgradeBtn,
-                { backgroundColor: colors.primary },
-                pressed && { transform: [{ scale: 0.97 }], opacity: 0.9 },
-              ]}
+              activeOpacity={0.85}
+              style={styles.upgradeBtn}
             >
+              <IconSymbol name="sparkles" size={18} color="#FFFFFF" />
               <Text style={styles.upgradeBtnText}>
                 プレミアムにアップグレード
               </Text>
-            </Pressable>
+            </TouchableOpacity>
           )}
-        </View>
+        </GlassCard>
 
         {/* App info */}
-        <View
-          style={[
-            styles.card,
-            { backgroundColor: colors.surface, borderColor: colors.border },
-          ]}
-        >
-          <Text style={[styles.cardTitle, { color: colors.foreground, marginBottom: 12 }]}>
-            アプリ情報
-          </Text>
+        <GlassCard style={styles.card}>
+          <View style={styles.infoCardHeader}>
+            <View style={styles.infoIconWrap}>
+              <IconSymbol name="info.circle" size={22} color="#7C3AED" />
+            </View>
+            <Text style={[styles.cardTitle, { color: colors.foreground }]}>
+              アプリ情報
+            </Text>
+          </View>
+          <View style={styles.divider} />
           <InfoRow label="バージョン" value="1.0.0" colors={colors} />
           <InfoRow label="開発" value="決断スコア" colors={colors} />
-        </View>
+        </GlassCard>
 
         {/* Note about premium */}
         <Text style={[styles.noteText, { color: colors.muted }]}>
@@ -146,17 +148,22 @@ export default function SettingsScreen() {
 }
 
 function LimitRow({
+  icon,
   label,
   value,
   colors,
 }: {
+  icon: string;
   label: string;
   value: string;
   colors: ReturnType<typeof useColors>;
 }) {
   return (
     <View style={styles.limitRow}>
-      <Text style={[styles.limitLabel, { color: colors.muted }]}>{label}</Text>
+      <View style={styles.limitLabelRow}>
+        <IconSymbol name={icon as any} size={16} color="#7C3AED" />
+        <Text style={[styles.limitLabel, { color: colors.muted }]}>{label}</Text>
+      </View>
       <Text style={[styles.limitValue, { color: colors.foreground }]}>
         {value}
       </Text>
@@ -209,35 +216,33 @@ function PremiumModal({
           <Text style={[styles.modalTitle, { color: colors.foreground }]}>
             プレミアムプラン
           </Text>
-          <Pressable
+          <TouchableOpacity
             onPress={onClose}
-            style={({ pressed }) => [
-              styles.navBtn,
-              pressed && { opacity: 0.5 },
-            ]}
+            style={styles.navBtn}
+            activeOpacity={0.7}
           >
-            <IconSymbol name="xmark" size={24} color={colors.foreground} />
-          </Pressable>
+            <IconSymbol name="xmark" size={22} color={colors.foreground} />
+          </TouchableOpacity>
         </View>
 
         <ScrollView contentContainerStyle={styles.modalContent}>
-          <Text style={styles.modalEmoji}>⭐</Text>
+          <View style={styles.modalIconWrap}>
+            <IconSymbol name="star.fill" size={40} color="#7C3AED" />
+          </View>
           <Text style={[styles.modalHeading, { color: colors.foreground }]}>
             すべての機能を解放
           </Text>
 
           {/* Features */}
           {[
-            { icon: "✓", text: "比較候補：最大10個" },
-            { icon: "✓", text: "評価項目：無制限" },
-            { icon: "✓", text: "プロジェクト保存：無制限" },
-            { icon: "✓", text: "重み付け機能（今後追加予定）" },
-            { icon: "✓", text: "レーダーチャート表示（今後追加予定）" },
+            { icon: "checkmark.circle.fill", text: "比較候補：最大10個" },
+            { icon: "checkmark.circle.fill", text: "評価項目：無制限" },
+            { icon: "checkmark.circle.fill", text: "プロジェクト保存：無制限" },
+            { icon: "checkmark.circle.fill", text: "重み付け機能（今後追加予定）" },
+            { icon: "checkmark.circle.fill", text: "レーダーチャート表示（今後追加予定）" },
           ].map((feature, i) => (
             <View key={i} style={styles.featureRow}>
-              <Text style={[styles.featureCheck, { color: colors.primary }]}>
-                {feature.icon}
-              </Text>
+              <IconSymbol name={feature.icon as any} size={20} color="#7C3AED" />
               <Text
                 style={[styles.featureText, { color: colors.foreground }]}
               >
@@ -253,7 +258,7 @@ function PremiumModal({
                 styles.pricingCard,
                 {
                   backgroundColor: colors.surface,
-                  borderColor: colors.border,
+                  borderColor: "#E5E1FF",
                 },
               ]}
             >
@@ -276,17 +281,12 @@ function PremiumModal({
                 styles.pricingCard,
                 styles.pricingCardHighlight,
                 {
-                  backgroundColor: colors.primary + "10",
-                  borderColor: colors.primary,
+                  backgroundColor: "#EDE9FF",
+                  borderColor: "#7C3AED",
                 },
               ]}
             >
-              <View
-                style={[
-                  styles.bestValueBadge,
-                  { backgroundColor: colors.primary },
-                ]}
-              >
+              <View style={styles.bestValueBadge}>
                 <Text style={styles.bestValueText}>おすすめ</Text>
               </View>
               <Text
@@ -295,7 +295,7 @@ function PremiumModal({
                 買い切り
               </Text>
               <Text
-                style={[styles.pricingPrice, { color: colors.foreground }]}
+                style={[styles.pricingPrice, { color: "#7C3AED" }]}
               >
                 ¥980
               </Text>
@@ -306,24 +306,22 @@ function PremiumModal({
           </View>
 
           {/* Upgrade button (demo) */}
-          <Pressable
+          <TouchableOpacity
             onPress={onUpgrade}
-            style={({ pressed }) => [
-              styles.modalUpgradeBtn,
-              { backgroundColor: colors.primary },
-              pressed && { transform: [{ scale: 0.97 }], opacity: 0.9 },
-            ]}
+            activeOpacity={0.85}
+            style={styles.modalUpgradeBtn}
           >
+            <IconSymbol name="sparkles" size={18} color="#FFFFFF" />
             <Text style={styles.modalUpgradeBtnText}>
               プレミアムを有効にする（デモ）
             </Text>
-          </Pressable>
+          </TouchableOpacity>
 
-          <Pressable onPress={onClose}>
+          <TouchableOpacity onPress={onClose} activeOpacity={0.7}>
             <Text style={[styles.laterText, { color: colors.muted }]}>
               後で
             </Text>
-          </Pressable>
+          </TouchableOpacity>
         </ScrollView>
       </View>
     </Modal>
@@ -341,23 +339,32 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     letterSpacing: -0.5,
   },
+  headerSubtitle: {
+    fontSize: 14,
+    marginTop: 4,
+  },
   scrollContent: {
     paddingHorizontal: 20,
     paddingBottom: 40,
   },
   card: {
-    borderRadius: 16,
     padding: 16,
     marginBottom: 16,
-    borderWidth: 1,
   },
   cardHeader: {
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
   },
-  premiumIcon: {
-    fontSize: 28,
+  premiumIconWrap: {
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    backgroundColor: "#EDE9FF",
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "#DDD6FE",
   },
   cardHeaderText: {
     flex: 1,
@@ -373,45 +380,78 @@ const styles = StyleSheet.create({
   divider: {
     height: 1,
     marginVertical: 14,
+    backgroundColor: "#E5E1FF",
   },
   limitsContainer: {
-    gap: 8,
+    gap: 12,
   },
   limitRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
   },
+  limitLabelRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
   limitLabel: {
     fontSize: 14,
   },
   limitValue: {
     fontSize: 14,
-    fontWeight: "600",
+    fontWeight: "700",
+    color: "#7C3AED",
   },
   upgradeBtn: {
     marginTop: 16,
     paddingVertical: 14,
-    borderRadius: 12,
+    borderRadius: 14,
     alignItems: "center",
+    backgroundColor: "#7C3AED",
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 8,
+    shadowColor: "#7C3AED",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 6,
+    minHeight: 52,
   },
   upgradeBtnText: {
     color: "#FFFFFF",
     fontSize: 15,
     fontWeight: "700",
   },
+  infoCardHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    marginBottom: 0,
+  },
+  infoIconWrap: {
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    backgroundColor: "#EDE9FF",
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "#DDD6FE",
+  },
   infoRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: 4,
+    paddingVertical: 6,
   },
   infoLabel: {
     fontSize: 14,
   },
   infoValue: {
     fontSize: 14,
-    fontWeight: "500",
+    fontWeight: "600",
   },
   noteText: {
     fontSize: 12,
@@ -431,42 +471,47 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   navBtn: {
-    width: 40,
-    height: 40,
+    width: 44,
+    height: 44,
     justifyContent: "center",
     alignItems: "center",
   },
   modalTitle: {
     fontSize: 17,
-    fontWeight: "600",
+    fontWeight: "700",
   },
   modalContent: {
     paddingHorizontal: 24,
     paddingBottom: 40,
     alignItems: "center",
   },
-  modalEmoji: {
-    fontSize: 56,
-    marginBottom: 12,
+  modalIconWrap: {
+    width: 80,
+    height: 80,
+    borderRadius: 22,
+    backgroundColor: "#EDE9FF",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 16,
+    borderWidth: 1.5,
+    borderColor: "#DDD6FE",
   },
   modalHeading: {
     fontSize: 24,
     fontWeight: "800",
     marginBottom: 24,
+    textAlign: "center",
   },
   featureRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 10,
+    gap: 12,
     width: "100%",
-    paddingVertical: 6,
-  },
-  featureCheck: {
-    fontSize: 18,
-    fontWeight: "700",
+    paddingVertical: 8,
   },
   featureText: {
     fontSize: 16,
+    fontWeight: "500",
   },
   pricingContainer: {
     flexDirection: "row",
@@ -477,8 +522,8 @@ const styles = StyleSheet.create({
   },
   pricingCard: {
     flex: 1,
-    borderRadius: 14,
-    borderWidth: 1,
+    borderRadius: 16,
+    borderWidth: 1.5,
     padding: 16,
     alignItems: "center",
   },
@@ -492,6 +537,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 3,
     borderRadius: 10,
+    backgroundColor: "#7C3AED",
   },
   bestValueText: {
     color: "#FFFFFF",
@@ -513,9 +559,19 @@ const styles = StyleSheet.create({
   modalUpgradeBtn: {
     width: "100%",
     paddingVertical: 16,
-    borderRadius: 14,
+    borderRadius: 16,
     alignItems: "center",
     marginBottom: 12,
+    backgroundColor: "#7C3AED",
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 8,
+    shadowColor: "#7C3AED",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 6,
+    minHeight: 56,
   },
   modalUpgradeBtnText: {
     color: "#FFFFFF",
@@ -525,5 +581,6 @@ const styles = StyleSheet.create({
   laterText: {
     fontSize: 15,
     paddingVertical: 8,
+    fontWeight: "600",
   },
 });

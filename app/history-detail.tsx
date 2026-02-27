@@ -2,7 +2,7 @@ import { useMemo, useCallback } from "react";
 import {
   Text,
   View,
-  Pressable,
+  TouchableOpacity,
   ScrollView,
   Platform,
   Alert,
@@ -61,16 +61,13 @@ export default function HistoryDetailScreen() {
           <Text style={[styles.errorText, { color: colors.muted }]}>
             プロジェクトが見つかりません
           </Text>
-          <Pressable
+          <TouchableOpacity
             onPress={() => router.back()}
-            style={({ pressed }) => [
-              styles.backBtn,
-              { backgroundColor: colors.primary },
-              pressed && { opacity: 0.8 },
-            ]}
+            style={[styles.backBtn, { backgroundColor: colors.primary }]}
+            activeOpacity={0.8}
           >
             <Text style={styles.backBtnText}>戻る</Text>
-          </Pressable>
+          </TouchableOpacity>
         </View>
       </ScreenContainer>
     );
@@ -102,30 +99,26 @@ export default function HistoryDetailScreen() {
     <ScreenContainer edges={["top", "bottom", "left", "right"]}>
       {/* Header */}
       <View style={styles.navHeader}>
-        <Pressable
+        <TouchableOpacity
           onPress={() => router.back()}
-          style={({ pressed }) => [
-            styles.navBtn,
-            pressed && { opacity: 0.5 },
-          ]}
+          style={styles.navBtn}
+          activeOpacity={0.7}
         >
-          <IconSymbol name="arrow.left" size={24} color={colors.foreground} />
-        </Pressable>
+          <IconSymbol name="chevron.left" size={20} color="#7C3AED" />
+        </TouchableOpacity>
         <Text
           style={[styles.navTitle, { color: colors.foreground }]}
           numberOfLines={1}
         >
           {project.title}
         </Text>
-        <Pressable
+        <TouchableOpacity
           onPress={handleDelete}
-          style={({ pressed }) => [
-            styles.navBtn,
-            pressed && { opacity: 0.5 },
-          ]}
+          style={styles.navBtn}
+          activeOpacity={0.7}
         >
           <IconSymbol name="trash.fill" size={22} color={colors.error} />
-        </Pressable>
+        </TouchableOpacity>
       </View>
 
       <ScrollView
@@ -139,7 +132,9 @@ export default function HistoryDetailScreen() {
 
         {/* Winner */}
         <View style={styles.winnerSection}>
-          <Text style={styles.trophyEmoji}>🏆</Text>
+          <View style={styles.trophyIconWrap}>
+            <IconSymbol name="trophy.fill" size={32} color="#22C55E" />
+          </View>
           <Text style={[styles.winnerName, { color: colors.foreground }]}>
             {project.winner}
           </Text>
@@ -221,7 +216,9 @@ export default function HistoryDetailScreen() {
               >
                 <View style={styles.rankItemLeft}>
                   {index === 0 ? (
-                    <Text style={styles.crownEmoji}>👑</Text>
+                    <View style={[styles.rankNumber, { backgroundColor: "#DCFCE7", borderWidth: 1.5, borderColor: "#86EFAC" }]}>
+                      <IconSymbol name="trophy.fill" size={16} color="#22C55E" />
+                    </View>
                   ) : (
                     <View
                       style={[
@@ -363,9 +360,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 8,
   },
-  trophyEmoji: {
-    fontSize: 40,
-    marginBottom: 4,
+  trophyIconWrap: {
+    width: 64,
+    height: 64,
+    borderRadius: 18,
+    backgroundColor: "#DCFCE7",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 10,
+    borderWidth: 1.5,
+    borderColor: "#86EFAC",
   },
   winnerName: {
     fontSize: 26,
@@ -423,11 +427,7 @@ const styles = StyleSheet.create({
     flex: 1,
     gap: 10,
   },
-  crownEmoji: {
-    fontSize: 24,
-    width: 32,
-    textAlign: "center",
-  },
+
   rankNumber: {
     width: 32,
     height: 32,

@@ -32,6 +32,23 @@ const MAPPING = {
   "lock.fill": "lock",
   "chart.bar.fill": "bar-chart",
   "clock.fill": "access-time",
+  "scale.3d": "balance",
+  "lightbulb.fill": "lightbulb",
+  "person.2.fill": "group",
+  "trophy.fill": "emoji-events",
+  "doc.text.fill": "description",
+  "pencil": "edit",
+  "info.circle": "info",
+  "arrow.up.arrow.down": "swap-vert",
+  "checkmark": "check",
+  "minus": "remove",
+  "square.and.arrow.up": "share",
+  "bookmark.fill": "bookmark",
+  "heart.fill": "favorite",
+  "magnifyingglass": "search",
+  "slider.horizontal.3": "tune",
+  "circle.fill": "circle",
+  "sparkles": "auto-awesome",
 } as IconMapping;
 
 /**

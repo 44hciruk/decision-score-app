@@ -2,10 +2,10 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Text,
   View,
-  Pressable,
   ScrollView,
   Platform,
   StyleSheet,
+  TouchableOpacity,
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import * as Haptics from "expo-haptics";
@@ -20,9 +20,8 @@ import Animated, {
 import Svg, { Circle } from "react-native-svg";
 
 import { GradientScreen } from "@/components/gradient-screen";
-import { DarkGlassCard } from "@/components/glass-card";
+import { GlassCard } from "@/components/glass-card";
 import { IconSymbol } from "@/components/ui/icon-symbol";
-import { useColors } from "@/hooks/use-colors";
 import { useProjectContext } from "@/lib/project-context";
 import {
   calculateScores,
@@ -35,7 +34,6 @@ const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 export default function ResultScreen() {
   const router = useRouter();
-  const colors = useColors();
   const { addProject } = useProjectContext();
   const params = useLocalSearchParams<{
     title: string;
@@ -108,38 +106,40 @@ export default function ResultScreen() {
 
   // 順位に基づいて色を決める（信号カラー）
   const getRankColor = (index: number, total: number) => {
-    if (index === 0) return "#34D399"; // 1位: 緑
-    if (index === 1) return "#FBBF24"; // 2位: オレンジ
-    if (index === total - 1) return "#F87171"; // 最下位: 赤
-    return "rgba(255,255,255,0.5)"; // その他: 白半透明
+    if (index === 0) return "#22C55E"; // 1位: 緑
+    if (index === 1) return "#F59E0B"; // 2位: オレンジ
+    if (index === total - 1) return "#EF4444"; // 最下位: 赤
+    return "#7C3AED"; // その他: 紫
   };
 
   return (
     <GradientScreen edges={["top", "bottom", "left", "right"]}>
-      {/* Header */}
+      {/* ヘッダー */}
       <Animated.View entering={FadeIn.duration(300)} style={styles.navHeader}>
-        <View style={styles.navBtn} />
+        <View style={styles.navSpacer} />
         <Text style={styles.navTitle}>結果発表</Text>
-        <View style={styles.navBtn} />
+        <View style={styles.navSpacer} />
       </Animated.View>
 
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* Winner section */}
+        {/* 1位発表 */}
         <Animated.View
           entering={FadeInDown.delay(200).duration(500)}
           style={styles.winnerSection}
         >
-          <Text style={styles.trophyEmoji}>🏆</Text>
+          <View style={styles.winnerIconWrap}>
+            <IconSymbol name="trophy.fill" size={36} color="#22C55E" />
+          </View>
           <View style={styles.winnerBadge}>
             <Text style={styles.winnerBadgeText}>決断スコア 1位</Text>
           </View>
           <Text style={styles.winnerName}>{winner}</Text>
         </Animated.View>
 
-        {/* Circular score */}
+        {/* 円形スコア */}
         <Animated.View
           entering={FadeInDown.delay(400).duration(500)}
           style={styles.scoreCircleContainer}
@@ -147,16 +147,19 @@ export default function ResultScreen() {
           <CircularScore score={winnerScore} />
         </Animated.View>
 
-        {/* Confidence message */}
+        {/* 信頼度メッセージ */}
         <Animated.View entering={FadeInDown.delay(800).duration(400)} style={styles.confidenceContainer}>
-          <DarkGlassCard style={styles.confidenceBadge}>
-            <Text style={styles.confidenceText}>
-              {scoreDiff}点差 — {confidenceMessage}
-            </Text>
-          </DarkGlassCard>
+          <GlassCard style={styles.confidenceBadge}>
+            <View style={styles.confidenceInner}>
+              <IconSymbol name="lightbulb.fill" size={16} color="#7C3AED" />
+              <Text style={styles.confidenceText}>
+                {scoreDiff}点差 — {confidenceMessage}
+              </Text>
+            </View>
+          </GlassCard>
         </Animated.View>
 
-        {/* Rankings */}
+        {/* ランキング */}
         <Animated.View entering={FadeInDown.delay(1000).duration(400)}>
           <Text style={styles.rankingTitle}>ランキング</Text>
           {sortedCandidates.map((candidate, index) => {
@@ -168,17 +171,19 @@ export default function ResultScreen() {
                 key={candidate}
                 entering={FadeInDown.delay(1100 + index * 100).duration(300)}
               >
-                <DarkGlassCard
+                <GlassCard
                   style={[
                     styles.rankItem,
-                    isWinner && styles.rankItemWinner,
+                    isWinner && { borderColor: "#22C55E", borderWidth: 2 },
                   ]}
                 >
                   <View style={styles.rankItemLeft}>
                     {isWinner ? (
-                      <Text style={styles.crownEmoji}>👑</Text>
+                      <View style={[styles.rankBadge, { backgroundColor: "#DCFCE7", borderColor: "#22C55E" }]}>
+                        <IconSymbol name="trophy.fill" size={16} color="#22C55E" />
+                      </View>
                     ) : (
-                      <View style={[styles.rankBadge, { backgroundColor: rankColor + "25", borderColor: rankColor + "50" }]}>
+                      <View style={[styles.rankBadge, { backgroundColor: rankColor + "20", borderColor: rankColor + "50" }]}>
                         <Text style={[styles.rankBadgeText, { color: rankColor }]}>
                           {index + 1}
                         </Text>
@@ -187,7 +192,7 @@ export default function ResultScreen() {
                     <Text
                       style={[
                         styles.rankItemName,
-                        { fontWeight: isWinner ? "700" : "500" },
+                        { fontWeight: isWinner ? "700" : "500", color: isWinner ? "#1A1535" : "#374151" },
                       ]}
                       numberOfLines={1}
                     >
@@ -200,7 +205,7 @@ export default function ResultScreen() {
                         styles.rankItemScore,
                         {
                           color: rankColor,
-                          fontSize: isWinner ? 24 : 20,
+                          fontSize: isWinner ? 26 : 22,
                         },
                       ]}
                     >
@@ -208,34 +213,31 @@ export default function ResultScreen() {
                     </Text>
                     <Text style={styles.rankItemUnit}>点</Text>
                   </View>
-                </DarkGlassCard>
+                </GlassCard>
               </Animated.View>
             );
           })}
         </Animated.View>
       </ScrollView>
 
-      {/* Bottom buttons */}
+      {/* ボトムボタン */}
       <Animated.View entering={FadeInDown.delay(1400).duration(400)} style={styles.bottomBar}>
         <View style={styles.buttonRow}>
-          <Pressable
+          <TouchableOpacity
             onPress={handleRetry}
-            style={({ pressed }) => [
-              styles.secondaryBtn,
-              pressed && { opacity: 0.7 },
-            ]}
+            activeOpacity={0.7}
+            style={styles.secondaryBtn}
           >
             <Text style={styles.secondaryBtnText}>保存せずに戻る</Text>
-          </Pressable>
-          <Pressable
+          </TouchableOpacity>
+          <TouchableOpacity
             onPress={handleSave}
-            style={({ pressed }) => [
-              styles.primaryBtn,
-              pressed && { transform: [{ scale: 0.97 }], opacity: 0.9 },
-            ]}
+            activeOpacity={0.85}
+            style={styles.primaryBtn}
           >
+            <IconSymbol name="checkmark" size={18} color="#FFFFFF" />
             <Text style={styles.primaryBtnText}>保存して戻る</Text>
-          </Pressable>
+          </TouchableOpacity>
         </View>
       </Animated.View>
     </GradientScreen>
@@ -270,21 +272,21 @@ function CircularScore({ score }: { score: number }) {
   return (
     <View style={styles.circularContainer}>
       <Svg width={size} height={size}>
-        {/* Background circle */}
+        {/* 背景サークル */}
         <Circle
           cx={size / 2}
           cy={size / 2}
           r={radius}
-          stroke="rgba(255,255,255,0.15)"
+          stroke="#EDE9FF"
           strokeWidth={strokeWidth}
           fill="none"
         />
-        {/* Progress circle */}
+        {/* プログレスサークル */}
         <AnimatedCircle
           cx={size / 2}
           cy={size / 2}
           r={radius}
-          stroke="#34D399"
+          stroke="#22C55E"
           strokeWidth={strokeWidth}
           fill="none"
           strokeLinecap="round"
@@ -332,16 +334,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
-  navBtn: {
+  navSpacer: {
     width: 40,
-    height: 40,
-    justifyContent: "center",
-    alignItems: "center",
   },
   navTitle: {
     fontSize: 17,
-    fontWeight: "600",
-    color: "#FFFFFF",
+    fontWeight: "700",
+    color: "#1A1535",
   },
   scrollContent: {
     paddingHorizontal: 20,
@@ -351,14 +350,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 8,
   },
-  trophyEmoji: {
-    fontSize: 56,
-    marginBottom: 8,
+  winnerIconWrap: {
+    width: 72,
+    height: 72,
+    borderRadius: 20,
+    backgroundColor: "#DCFCE7",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 12,
+    borderWidth: 1.5,
+    borderColor: "#86EFAC",
   },
   winnerBadge: {
-    backgroundColor: "rgba(52,211,153,0.2)",
+    backgroundColor: "#DCFCE7",
     borderWidth: 1,
-    borderColor: "rgba(52,211,153,0.4)",
+    borderColor: "#86EFAC",
     paddingHorizontal: 14,
     paddingVertical: 5,
     borderRadius: 20,
@@ -367,14 +373,15 @@ const styles = StyleSheet.create({
   winnerBadgeText: {
     fontSize: 12,
     fontWeight: "700",
-    color: "#34D399",
+    color: "#16A34A",
     letterSpacing: 0.5,
   },
   winnerName: {
     fontSize: 32,
     fontWeight: "900",
-    color: "#FFFFFF",
+    color: "#1A1535",
     letterSpacing: -0.5,
+    textAlign: "center",
   },
   scoreCircleContainer: {
     alignItems: "center",
@@ -392,31 +399,36 @@ const styles = StyleSheet.create({
   scoreValue: {
     fontSize: 52,
     fontWeight: "900",
-    color: "#FFFFFF",
+    color: "#1A1535",
   },
   scoreUnit: {
     fontSize: 14,
     marginTop: -4,
-    color: "rgba(255,255,255,0.6)",
+    color: "#9CA3AF",
   },
   confidenceContainer: {
     marginBottom: 24,
   },
   confidenceBadge: {
     alignSelf: "center",
+  },
+  confidenceInner: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
     paddingHorizontal: 20,
     paddingVertical: 12,
   },
   confidenceText: {
     fontSize: 15,
     fontWeight: "600",
-    color: "#FFFFFF",
+    color: "#1A1535",
     textAlign: "center",
   },
   rankingTitle: {
     fontSize: 20,
     fontWeight: "700",
-    color: "#FFFFFF",
+    color: "#1A1535",
     marginBottom: 12,
   },
   rankItem: {
@@ -427,28 +439,19 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     marginBottom: 8,
   },
-  rankItemWinner: {
-    borderColor: "rgba(52,211,153,0.5)",
-    borderWidth: 1.5,
-  },
   rankItemLeft: {
     flexDirection: "row",
     alignItems: "center",
     flex: 1,
     gap: 12,
   },
-  crownEmoji: {
-    fontSize: 26,
-    width: 36,
-    textAlign: "center",
-  },
   rankBadge: {
     width: 36,
     height: 36,
-    borderRadius: 18,
+    borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
-    borderWidth: 1,
+    borderWidth: 1.5,
   },
   rankBadgeText: {
     fontSize: 15,
@@ -457,7 +460,6 @@ const styles = StyleSheet.create({
   rankItemName: {
     fontSize: 16,
     flex: 1,
-    color: "#FFFFFF",
   },
   rankItemRight: {
     flexDirection: "row",
@@ -469,12 +471,12 @@ const styles = StyleSheet.create({
   },
   rankItemUnit: {
     fontSize: 13,
-    color: "rgba(255,255,255,0.6)",
+    color: "#9CA3AF",
   },
   bottomBar: {
     paddingHorizontal: 20,
     paddingVertical: 12,
-    paddingBottom: 24,
+    paddingBottom: 32,
   },
   buttonRow: {
     flexDirection: "row",
@@ -485,30 +487,36 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     borderRadius: 16,
     alignItems: "center",
-    backgroundColor: "rgba(255,255,255,0.15)",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.25)",
+    backgroundColor: "#F5F3FF",
+    borderWidth: 1.5,
+    borderColor: "#DDD6FE",
+    minHeight: 56,
+    justifyContent: "center",
   },
   secondaryBtnText: {
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: "600",
-    color: "rgba(255,255,255,0.9)",
+    color: "#7C3AED",
   },
   primaryBtn: {
     flex: 2,
     paddingVertical: 16,
     borderRadius: 16,
     alignItems: "center",
-    backgroundColor: "#FFFFFF",
-    shadowColor: "#000",
+    backgroundColor: "#7C3AED",
+    shadowColor: "#7C3AED",
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.3,
     shadowRadius: 12,
     elevation: 8,
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 8,
+    minHeight: 56,
   },
   primaryBtnText: {
     fontSize: 16,
     fontWeight: "700",
-    color: "#6366F1",
+    color: "#FFFFFF",
   },
 });

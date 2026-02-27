@@ -2,10 +2,10 @@ import { useState, useCallback } from "react";
 import {
   Text,
   View,
-  Pressable,
   Platform,
   StyleSheet,
   ScrollView,
+  TouchableOpacity,
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import * as Haptics from "expo-haptics";
@@ -22,15 +22,13 @@ import { Gesture, GestureDetector } from "react-native-gesture-handler";
 
 import { GradientScreen } from "@/components/gradient-screen";
 import { IconSymbol } from "@/components/ui/icon-symbol";
-import { useColors } from "@/hooks/use-colors";
 
-const ITEM_HEIGHT = 64;
+const ITEM_HEIGHT = 68;
 const ITEM_GAP = 10;
 const ITEM_TOTAL = ITEM_HEIGHT + ITEM_GAP;
 
 export default function RankingScreen() {
   const router = useRouter();
-  const colors = useColors();
   const params = useLocalSearchParams<{
     title: string;
     candidates: string;
@@ -93,27 +91,29 @@ export default function RankingScreen() {
 
   return (
     <GradientScreen edges={["top", "left", "right"]}>
-      {/* Header */}
+      {/* ナビゲーションヘッダー */}
       <Animated.View entering={FadeIn.duration(300)} style={styles.navHeader}>
-        <Pressable
+        <TouchableOpacity
           onPress={handleBack}
-          style={({ pressed }) => [styles.navBtn, pressed && { opacity: 0.5 }]}
+          style={styles.navBackBtn}
+          activeOpacity={0.7}
         >
-          <IconSymbol name="chevron.left" size={24} color="#FFFFFF" />
-        </Pressable>
+          <IconSymbol name="chevron.left" size={20} color="#7C3AED" />
+          <Text style={styles.navBackText}>戻る</Text>
+        </TouchableOpacity>
         <Text style={styles.navTitle}>順位をつける</Text>
-        <View style={styles.navBtn} />
+        <View style={styles.navSpacer} />
       </Animated.View>
 
-      {/* Progress bar */}
+      {/* プログレスバー */}
       <Animated.View entering={FadeInDown.delay(50).duration(300)} style={styles.progressContainer}>
         <View style={styles.progressBarBg}>
           <Animated.View
-            style={[styles.progressBarFill, { width: `${progress}%` }]}
+            style={[styles.progressBarFill, { width: (progress + "%") as any }]}
           />
         </View>
         <View style={styles.progressLabelRow}>
-          <Text style={styles.progressLabel}>
+          <Text style={styles.progressLabel} numberOfLines={1}>
             {criteria[currentCriterionIndex]}
           </Text>
           <Text style={styles.progressText}>
@@ -122,13 +122,14 @@ export default function RankingScreen() {
         </View>
       </Animated.View>
 
-      {/* Current criterion */}
+      {/* 現在の評価基準 */}
       <Animated.View
         key={currentCriterionIndex}
         entering={FadeIn.duration(300)}
         style={styles.criterionContainer}
       >
         <View style={styles.criterionBadge}>
+          <IconSymbol name="star.fill" size={12} color="#7C3AED" />
           <Text style={styles.criterionBadgeText}>評価基準</Text>
         </View>
         <Text style={styles.criterionName}>{currentCriterion}</Text>
@@ -137,7 +138,7 @@ export default function RankingScreen() {
         </Text>
       </Animated.View>
 
-      {/* Sortable list */}
+      {/* ソータブルリスト */}
       <View style={styles.listContainer}>
         <ScrollView
           scrollEnabled={false}
@@ -152,26 +153,30 @@ export default function RankingScreen() {
               itemCount={currentOrder.length}
               items={currentOrder}
               onReorder={handleReorder}
-              colors={colors}
             />
           ))}
         </ScrollView>
       </View>
 
-      {/* Bottom button */}
+      {/* ボトムボタン */}
       <Animated.View entering={FadeInDown.delay(300).duration(400)} style={styles.bottomBar}>
-        <Pressable
+        <TouchableOpacity
           onPress={handleNext}
-          style={({ pressed }) => [
-            styles.nextBtn,
-            pressed && { transform: [{ scale: 0.97 }], opacity: 0.9 },
-          ]}
+          activeOpacity={0.85}
+          style={styles.nextBtn}
         >
-          <Text style={styles.nextBtnText}>
-            {isLast ? "結果を見る 🏆" : "次の評価項目へ"}
-          </Text>
-          {!isLast && <IconSymbol name="arrow.right" size={20} color="#6366F1" />}
-        </Pressable>
+          {isLast ? (
+            <>
+              <IconSymbol name="chart.bar.fill" size={20} color="#FFFFFF" />
+              <Text style={styles.nextBtnText}>結果を見る</Text>
+            </>
+          ) : (
+            <>
+              <Text style={styles.nextBtnText}>次の評価項目へ</Text>
+              <IconSymbol name="arrow.right" size={20} color="#FFFFFF" />
+            </>
+          )}
+        </TouchableOpacity>
       </Animated.View>
     </GradientScreen>
   );
@@ -192,7 +197,8 @@ let globalDragState = {
 // Draggable Item Component
 // ============================================================
 
-const RANK_COLORS = ["#34D399", "#FBBF24", "#F472B6", "#60A5FA", "#A78BFA", "#FB923C"];
+// 1位:緑、2位:オレンジ、それ以外:紫グラデーション
+const RANK_COLORS = ["#22C55E", "#F59E0B", "#7C3AED", "#6366F1", "#8B5CF6", "#A78BFA"];
 
 function DraggableItem({
   item,
@@ -200,14 +206,12 @@ function DraggableItem({
   itemCount,
   items,
   onReorder,
-  colors,
 }: {
   item: string;
   visualIndex: number;
   itemCount: number;
   items: string[];
   onReorder: (items: string[]) => void;
-  colors: ReturnType<typeof useColors>;
 }) {
   const [isDragging, setIsDragging] = useState(false);
 
@@ -324,13 +328,13 @@ function DraggableItem({
         { scale: scale.value },
       ],
       zIndex: zIdx.value,
-      backgroundColor: "rgba(255,255,255,0.25)",
-      borderColor: "rgba(255,255,255,0.6)",
-      borderWidth: 1.5,
+      backgroundColor: "#FFFFFF",
+      borderColor: "#7C3AED",
+      borderWidth: 2,
       borderRadius: 16,
-      shadowColor: "#000",
-      shadowOffset: { width: 0, height: 12 },
-      shadowOpacity: 0.3,
+      shadowColor: "#7C3AED",
+      shadowOffset: { width: 0, height: 8 },
+      shadowOpacity: 0.25,
       shadowRadius: 16,
       elevation: 12,
     };
@@ -340,19 +344,19 @@ function DraggableItem({
     const highlighted = isHighlighted.value > 0.5;
     return {
       transform: [{ translateY: otherItemTranslateY.value }],
-      backgroundColor: highlighted ? "rgba(255,255,255,0.22)" : "rgba(255,255,255,0.12)",
+      backgroundColor: highlighted ? "#F5F3FF" : "#FFFFFF",
       borderWidth: highlighted ? 1.5 : 1,
-      borderColor: highlighted ? "rgba(255,255,255,0.6)" : "rgba(255,255,255,0.2)",
+      borderColor: highlighted ? "#7C3AED" : "#E5E1FF",
       borderRadius: 16,
-      shadowColor: "#000",
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.15,
-      shadowRadius: 8,
-      elevation: 3,
+      shadowColor: "#7C3AED",
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.06,
+      shadowRadius: 6,
+      elevation: 2,
     };
   });
 
-  const rankColor = RANK_COLORS[visualIndex % RANK_COLORS.length];
+  const rankColor = RANK_COLORS[Math.min(visualIndex, RANK_COLORS.length - 1)];
 
   return (
     <GestureDetector gesture={gesture}>
@@ -362,8 +366,8 @@ function DraggableItem({
           isDragging ? animatedStyle : otherItemAnimatedStyle,
         ]}
       >
-        {/* Rank badge */}
-        <View style={[styles.rankBadge, { backgroundColor: rankColor + "30", borderColor: rankColor + "60" }]}>
+        {/* 順位バッジ */}
+        <View style={[styles.rankBadge, { backgroundColor: rankColor + "20", borderColor: rankColor + "50" }]}>
           <Text style={[styles.rankText, { color: rankColor }]}>
             {visualIndex + 1}
           </Text>
@@ -373,7 +377,7 @@ function DraggableItem({
           {item}
         </Text>
 
-        {/* Drag handle */}
+        {/* ドラッグハンドル */}
         <View style={styles.dragHandle}>
           <View style={styles.handleDot} />
           <View style={styles.handleDot} />
@@ -391,20 +395,31 @@ const styles = StyleSheet.create({
   navHeader: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
-  navBtn: {
-    width: 40,
-    height: 40,
-    justifyContent: "center",
+  navBackBtn: {
+    flexDirection: "row",
     alignItems: "center",
+    gap: 4,
+    paddingVertical: 8,
+    paddingRight: 12,
+    minWidth: 80,
+  },
+  navBackText: {
+    fontSize: 16,
+    color: "#7C3AED",
+    fontWeight: "500",
   },
   navTitle: {
+    flex: 1,
     fontSize: 17,
-    fontWeight: "600",
-    color: "#FFFFFF",
+    fontWeight: "700",
+    color: "#1A1535",
+    textAlign: "center",
+  },
+  navSpacer: {
+    minWidth: 80,
   },
   progressContainer: {
     paddingHorizontal: 20,
@@ -414,13 +429,13 @@ const styles = StyleSheet.create({
     height: 6,
     borderRadius: 3,
     overflow: "hidden",
-    backgroundColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "#EDE9FF",
     marginBottom: 8,
   },
   progressBarFill: {
     height: "100%",
     borderRadius: 3,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#7C3AED",
   },
   progressLabelRow: {
     flexDirection: "row",
@@ -429,44 +444,47 @@ const styles = StyleSheet.create({
   },
   progressLabel: {
     fontSize: 13,
-    color: "rgba(255,255,255,0.7)",
+    color: "#6B7280",
     flex: 1,
   },
   progressText: {
     fontSize: 13,
-    color: "rgba(255,255,255,0.7)",
-    fontWeight: "600",
+    color: "#7C3AED",
+    fontWeight: "700",
   },
   criterionContainer: {
     paddingHorizontal: 20,
     marginBottom: 20,
   },
   criterionBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
     alignSelf: "flex-start",
-    backgroundColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "#EDE9FF",
     paddingHorizontal: 10,
-    paddingVertical: 4,
+    paddingVertical: 5,
     borderRadius: 20,
     marginBottom: 8,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.3)",
+    borderColor: "#DDD6FE",
   },
   criterionBadgeText: {
     fontSize: 11,
-    fontWeight: "600",
-    color: "rgba(255,255,255,0.9)",
+    fontWeight: "700",
+    color: "#7C3AED",
     letterSpacing: 0.5,
   },
   criterionName: {
     fontSize: 26,
     fontWeight: "800",
-    color: "#FFFFFF",
+    color: "#1A1535",
     marginBottom: 6,
     letterSpacing: -0.5,
   },
   criterionHint: {
     fontSize: 13,
-    color: "rgba(255,255,255,0.6)",
+    color: "#9CA3AF",
   },
   listContainer: {
     flex: 1,
@@ -488,12 +506,12 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   rankBadge: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
+    width: 36,
+    height: 36,
+    borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
-    borderWidth: 1,
+    borderWidth: 1.5,
   },
   rankText: {
     fontSize: 15,
@@ -503,7 +521,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     fontWeight: "600",
-    color: "#FFFFFF",
+    color: "#1A1535",
   },
   dragHandle: {
     width: 20,
@@ -517,12 +535,12 @@ const styles = StyleSheet.create({
     width: 4,
     height: 4,
     borderRadius: 2,
-    backgroundColor: "rgba(255,255,255,0.4)",
+    backgroundColor: "#C4B5FD",
   },
   bottomBar: {
     paddingHorizontal: 20,
     paddingVertical: 12,
-    paddingBottom: 24,
+    paddingBottom: 32,
   },
   nextBtn: {
     flexDirection: "row",
@@ -530,17 +548,18 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingVertical: 16,
     borderRadius: 16,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#7C3AED",
     gap: 8,
-    shadowColor: "#000",
+    shadowColor: "#7C3AED",
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.3,
     shadowRadius: 12,
     elevation: 8,
+    minHeight: 56,
   },
   nextBtnText: {
     fontSize: 16,
     fontWeight: "700",
-    color: "#6366F1",
+    color: "#FFFFFF",
   },
 });

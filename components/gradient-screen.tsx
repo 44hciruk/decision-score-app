@@ -9,12 +9,12 @@ interface GradientScreenProps {
 }
 
 /**
- * Full-screen gradient background container.
- * Provides a beautiful Apple-style gradient background for all screens.
+ * 白ベース＋薄い紫グラデーション背景スクリーン
+ * 清潔感があり、紫アクセントが映えるデザイン
  */
 export function GradientScreen({
   children,
-  colors = ["#6366F1", "#8B5CF6", "#A78BFA"],
+  colors = ["#F8F7FF", "#EDE9FF", "#F3F0FF"],
   edges = ["top", "left", "right"],
 }: GradientScreenProps) {
   return (
@@ -22,10 +22,10 @@ export function GradientScreen({
       <LinearGradient
         colors={colors}
         start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
+        end={{ x: 0.5, y: 1 }}
         style={StyleSheet.absoluteFillObject}
       />
-      {/* Decorative blobs */}
+      {/* 装飾的な薄い紫の円 */}
       <View style={[styles.blob, styles.blob1]} />
       <View style={[styles.blob, styles.blob2]} />
       <SafeAreaView edges={edges} style={styles.safeArea}>
@@ -38,7 +38,7 @@ export function GradientScreen({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#6366F1",
+    backgroundColor: "#F8F7FF",
   },
   safeArea: {
     flex: 1,
@@ -46,20 +46,21 @@ const styles = StyleSheet.create({
   blob: {
     position: "absolute",
     borderRadius: 999,
-    opacity: 0.15,
+    opacity: 0.35,
   },
   blob1: {
-    width: 300,
-    height: 300,
-    backgroundColor: "#A78BFA",
-    top: -80,
+    width: 280,
+    height: 280,
+    backgroundColor: "#DDD6FE",
+    top: -100,
     right: -80,
   },
   blob2: {
-    width: 250,
-    height: 250,
-    backgroundColor: "#60A5FA",
-    bottom: 100,
-    left: -60,
+    width: 220,
+    height: 220,
+    backgroundColor: "#C4B5FD",
+    bottom: 120,
+    left: -70,
+    opacity: 0.2,
   },
 });

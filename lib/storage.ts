@@ -51,31 +51,31 @@ export const TEMPLATES: Template[] = [
   {
     id: "restaurant",
     name: "飲食店",
-    icon: "🍽️",
+    icon: "scale.3d",
     criteria: ["価格", "味", "雰囲気", "アクセス", "接客"],
   },
   {
     id: "job",
     name: "就職先",
-    icon: "💼",
+    icon: "chart.bar.fill",
     criteria: ["給与", "やりがい", "勤務地", "福利厚生", "成長性"],
   },
   {
     id: "housing",
     name: "住居",
-    icon: "🏠",
+    icon: "doc.text.fill",
     criteria: ["家賃", "広さ", "駅からの距離", "築年数", "周辺環境"],
   },
   {
     id: "travel",
     name: "旅行先",
-    icon: "✈️",
+    icon: "star.fill",
     criteria: ["費用", "観光スポット", "食事", "アクセス", "安全性"],
   },
   {
     id: "product",
     name: "商品比較",
-    icon: "🛍️",
+    icon: "bookmark.fill",
     criteria: ["価格", "品質", "デザイン", "レビュー", "ブランド"],
   },
 ];

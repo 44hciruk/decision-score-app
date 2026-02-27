@@ -56,3 +56,18 @@
 - [x] 方法２：状態更新のデバウンス処理
 - [x] 方法３：Animated.Value による同期的アニメーション
 - [x] テスト検証（全２４テスト通過）
+
+## デザイン刷新（白ベース＋紫アクセント）
+- [x] theme.config.jsを白ベース＋紫アクセントに更新
+- [x] gradient-screen.tsxを白ベース＋紫グラデーションに更新
+- [x] glass-card.tsxをクリーンな白カードに更新
+- [x] ホーム画面（index.tsx）を白ベース＋紫アクセントに書き直し
+- [x] 新規プロジェクト画面（new-project.tsx）を書き直し
+- [x] 候補入力画面（candidates.tsx）を書き直し
+- [x] 評価基準画面（criteria.tsx）を書き直し
+- [x] ランキング画面（ranking.tsx）を書き直し
+- [x] 結果画面（result.tsx）を書き直し
+- [x] 設定画面（settings.tsx）を書き直し
+- [x] 履歴詳細画面（history-detail.tsx）の絵文字をアイコンに置き換え
+- [x] storage.tsのTEMPLATESのiconをSF Symbolsアイコン名に変更
+- [x] new-project.tsxのテンプレートアイコン表示をアイコン名ベースに更新
