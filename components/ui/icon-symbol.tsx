@@ -34,6 +34,7 @@ const MAPPING = {
   "clock.fill": "access-time",
   "scale.3d": "balance",
   "lightbulb.fill": "lightbulb",
+  "person.fill": "person",
   "person.2.fill": "group",
   "trophy.fill": "emoji-events",
   "doc.text.fill": "description",
