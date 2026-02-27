@@ -18,6 +18,7 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
+// import { LinearGradient } from "expo-linear-gradient";
 
 import { ScreenContainer } from "@/components/screen-container";
 import { IconSymbol } from "@/components/ui/icon-symbol";
@@ -105,39 +106,53 @@ export default function HomeScreen() {
   const keyExtractor = useCallback((item: Project) => item.id, []);
 
   return (
-    <ScreenContainer>
-      <View style={styles.header}>
-        <Text style={[styles.headerTitle, { color: colors.foreground }]}>
-          決断スコア
-        </Text>
-        <Text style={[styles.headerSubtitle, { color: colors.muted }]}>
-          迷ったら、スコアで決めよう
-        </Text>
-      </View>
-
-      {state.projects.length === 0 ? (
-        <EmptyState colors={colors} />
-      ) : (
-        <FlatList
-          data={state.projects}
-          renderItem={renderItem}
-          keyExtractor={keyExtractor}
-          contentContainerStyle={styles.listContent}
-          showsVerticalScrollIndicator={false}
-        />
-      )}
-
-      {/* FAB */}
-      <Pressable
-        onPress={handleNewProject}
-        style={({ pressed }) => [
-          styles.fab,
+    <ScreenContainer containerClassName="bg-background">
+      <View
+        style={[
+          styles.gradientHeader,
           { backgroundColor: colors.primary },
-          pressed && { transform: [{ scale: 0.95 }], opacity: 0.9 },
         ]}
       >
-        <IconSymbol name="plus" size={28} color="#FFFFFF" />
-      </Pressable>
+        <View style={styles.header}>
+          <Text style={[styles.headerTitle, { color: "#FFFFFF" }]}>
+            決断スコア
+          </Text>
+          <Text style={[styles.headerSubtitle, { color: "rgba(255,255,255,0.8)" }]}>
+            迷ったら、スコアで決めよう
+          </Text>
+        </View>
+      </View>
+
+      <View style={styles.contentContainer}>
+        {state.projects.length === 0 ? (
+          <EmptyState colors={colors} />
+        ) : (
+          <FlatList
+            data={state.projects}
+            renderItem={renderItem}
+            keyExtractor={keyExtractor}
+            contentContainerStyle={styles.listContent}
+            showsVerticalScrollIndicator={false}
+          />
+        )}
+      </View>
+
+      {/* FAB */}
+      <Animated.View
+        entering={FadeInDown.delay(200).duration(400)}
+        style={styles.fabContainer}
+      >
+        <Pressable
+          onPress={handleNewProject}
+          style={({ pressed }) => [
+            styles.fab,
+            { backgroundColor: colors.primary },
+            pressed && { transform: [{ scale: 0.92 }], opacity: 0.85 },
+          ]}
+        >
+          <IconSymbol name="plus" size={28} color="#FFFFFF" />
+        </Pressable>
+      </Animated.View>
     </ScreenContainer>
   );
 }
@@ -254,29 +269,48 @@ function EmptyState({ colors }: { colors: ReturnType<typeof useColors> }) {
 // ============================================================
 
 const styles = StyleSheet.create({
+  gradientHeader: {
+    paddingBottom: 24,
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
+    shadowColor: "#6366F1",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 8,
+  },
   header: {
     paddingHorizontal: 20,
-    paddingTop: 8,
-    paddingBottom: 16,
+    paddingTop: 12,
+    paddingBottom: 8,
   },
   headerTitle: {
-    fontSize: 32,
+    fontSize: 36,
     fontWeight: "800",
     letterSpacing: -0.5,
   },
   headerSubtitle: {
     fontSize: 15,
     marginTop: 4,
+    fontWeight: "500",
+  },
+  contentContainer: {
+    flex: 1,
   },
   listContent: {
     paddingHorizontal: 20,
     paddingBottom: 100,
   },
   card: {
-    borderRadius: 16,
+    borderRadius: 20,
     padding: 16,
     marginBottom: 12,
-    borderWidth: 1,
+    borderWidth: 1.5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 4,
   },
   cardHeader: {
     flexDirection: "row",
@@ -331,20 +365,22 @@ const styles = StyleSheet.create({
   cardMeta: {
     fontSize: 13,
   },
-  fab: {
+  fabContainer: {
     position: "absolute",
     bottom: 24,
     right: 20,
+  },
+  fab: {
     width: 60,
     height: 60,
     borderRadius: 30,
     justifyContent: "center",
     alignItems: "center",
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
-    shadowRadius: 8,
-    elevation: 8,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 12,
   },
   emptyContainer: {
     flex: 1,
