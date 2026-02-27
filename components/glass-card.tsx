@@ -1,16 +1,16 @@
 import { View, type ViewProps, StyleSheet } from "react-native";
-import { cn } from "@/lib/utils";
 
 export interface GlassCardProps extends ViewProps {
   intensity?: number;
   tint?: string;
   className?: string;
   style?: ViewProps["style"];
-  variant?: "default" | "accent";
+  variant?: "default" | "accent" | "elevated";
 }
 
 /**
- * クリーンなカードコンポーネント（白ベース＋紫アクセント）
+ * プロフェッショナルなカードコンポーネント
+ * 純白背景＋強めの影で企業アプリらしい立体感を演出
  */
 export function GlassCard({
   children,
@@ -19,11 +19,15 @@ export function GlassCard({
   style,
   ...props
 }: GlassCardProps) {
+  const cardStyle =
+    variant === "accent"
+      ? styles.accentCard
+      : variant === "elevated"
+      ? styles.elevatedCard
+      : styles.card;
+
   return (
-    <View
-      style={[variant === "accent" ? styles.accentCard : styles.card, style]}
-      {...props}
-    >
+    <View style={[cardStyle, style]} {...props}>
       {children}
     </View>
   );
@@ -45,28 +49,39 @@ export function DarkGlassCard({
 }
 
 const styles = StyleSheet.create({
+  // 標準カード：白地＋しっかりした影
   card: {
     borderRadius: 20,
-    overflow: "hidden",
-    borderWidth: 1,
-    borderColor: "#E5E1FF",
     backgroundColor: "#FFFFFF",
-    shadowColor: "#7C3AED",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
-    elevation: 3,
+    borderWidth: 1,
+    borderColor: "rgba(109, 40, 217, 0.08)",
+    shadowColor: "#1E1B4B",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.10,
+    shadowRadius: 16,
+    elevation: 6,
   },
+  // アクセントカード：薄紫背景
   accentCard: {
     borderRadius: 20,
-    overflow: "hidden",
+    backgroundColor: "#EDE9FE",
     borderWidth: 1,
-    borderColor: "#DDD6FE",
-    backgroundColor: "#EDE9FF",
-    shadowColor: "#7C3AED",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 3,
+    borderColor: "rgba(109, 40, 217, 0.15)",
+    shadowColor: "#6D28D9",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 16,
+    elevation: 6,
+  },
+  // 強調カード：より深い影
+  elevatedCard: {
+    borderRadius: 24,
+    backgroundColor: "#FFFFFF",
+    borderWidth: 0,
+    shadowColor: "#1E1B4B",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.14,
+    shadowRadius: 24,
+    elevation: 10,
   },
 });

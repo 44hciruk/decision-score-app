@@ -98,7 +98,7 @@ export default function RankingScreen() {
           style={styles.navBackBtn}
           activeOpacity={0.7}
         >
-          <IconSymbol name="chevron.left" size={20} color="#7C3AED" />
+          <IconSymbol name="chevron.left" size={20} color="#6D28D9" />
           <Text style={styles.navBackText}>戻る</Text>
         </TouchableOpacity>
         <Text style={styles.navTitle}>順位をつける</Text>
@@ -129,7 +129,7 @@ export default function RankingScreen() {
         style={styles.criterionContainer}
       >
         <View style={styles.criterionBadge}>
-          <IconSymbol name="star.fill" size={12} color="#7C3AED" />
+          <IconSymbol name="star.fill" size={12} color="#6D28D9" />
           <Text style={styles.criterionBadgeText}>評価基準</Text>
         </View>
         <Text style={styles.criterionName}>{currentCriterion}</Text>
@@ -198,7 +198,7 @@ let globalDragState = {
 // ============================================================
 
 // 1位:緑、2位:オレンジ、それ以外:紫グラデーション
-const RANK_COLORS = ["#22C55E", "#F59E0B", "#7C3AED", "#6366F1", "#8B5CF6", "#A78BFA"];
+const RANK_COLORS = ["#22C55E", "#F59E0B", "#6D28D9", "#6366F1", "#8B5CF6", "#A78BFA"];
 
 function DraggableItem({
   item,
@@ -329,10 +329,10 @@ function DraggableItem({
       ],
       zIndex: zIdx.value,
       backgroundColor: "#FFFFFF",
-      borderColor: "#7C3AED",
+      borderColor: "#6D28D9",
       borderWidth: 2,
-      borderRadius: 16,
-      shadowColor: "#7C3AED",
+      borderRadius: 18,
+      shadowColor: "#6D28D9",
       shadowOffset: { width: 0, height: 8 },
       shadowOpacity: 0.25,
       shadowRadius: 16,
@@ -346,9 +346,9 @@ function DraggableItem({
       transform: [{ translateY: otherItemTranslateY.value }],
       backgroundColor: highlighted ? "#F5F3FF" : "#FFFFFF",
       borderWidth: highlighted ? 1.5 : 1,
-      borderColor: highlighted ? "#7C3AED" : "#E5E1FF",
-      borderRadius: 16,
-      shadowColor: "#7C3AED",
+      borderColor: highlighted ? "#6D28D9" : "rgba(109, 40, 217, 0.1)",
+      borderRadius: 18,
+      shadowColor: "#6D28D9",
       shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.06,
       shadowRadius: 6,
@@ -408,14 +408,14 @@ const styles = StyleSheet.create({
   },
   navBackText: {
     fontSize: 16,
-    color: "#7C3AED",
+    color: "#6D28D9",
     fontWeight: "500",
   },
   navTitle: {
     flex: 1,
     fontSize: 17,
     fontWeight: "700",
-    color: "#1A1535",
+    color: "#111827",
     textAlign: "center",
   },
   navSpacer: {
@@ -435,7 +435,7 @@ const styles = StyleSheet.create({
   progressBarFill: {
     height: "100%",
     borderRadius: 3,
-    backgroundColor: "#7C3AED",
+    backgroundColor: "#6D28D9",
   },
   progressLabelRow: {
     flexDirection: "row",
@@ -449,7 +449,7 @@ const styles = StyleSheet.create({
   },
   progressText: {
     fontSize: 13,
-    color: "#7C3AED",
+    color: "#6D28D9",
     fontWeight: "700",
   },
   criterionContainer: {
@@ -472,13 +472,13 @@ const styles = StyleSheet.create({
   criterionBadgeText: {
     fontSize: 11,
     fontWeight: "700",
-    color: "#7C3AED",
+    color: "#6D28D9",
     letterSpacing: 0.5,
   },
   criterionName: {
     fontSize: 26,
     fontWeight: "800",
-    color: "#1A1535",
+    color: "#111827",
     marginBottom: 6,
     letterSpacing: -0.5,
   },
@@ -499,7 +499,7 @@ const styles = StyleSheet.create({
   },
   draggableItem: {
     height: ITEM_HEIGHT,
-    borderRadius: 16,
+    borderRadius: 18,
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 14,
@@ -521,7 +521,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     fontWeight: "600",
-    color: "#1A1535",
+    color: "#111827",
   },
   dragHandle: {
     width: 20,
@@ -546,13 +546,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 16,
-    borderRadius: 16,
-    backgroundColor: "#7C3AED",
+    paddingVertical: 18,
+    borderRadius: 18,
+    backgroundColor: "#6D28D9",
     gap: 8,
-    shadowColor: "#7C3AED",
+    shadowColor: "#6D28D9",
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.4,
     shadowRadius: 12,
     elevation: 8,
     minHeight: 56,

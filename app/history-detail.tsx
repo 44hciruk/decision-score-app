@@ -104,7 +104,7 @@ export default function HistoryDetailScreen() {
           style={styles.navBtn}
           activeOpacity={0.7}
         >
-          <IconSymbol name="chevron.left" size={20} color="#7C3AED" />
+          <IconSymbol name="chevron.left" size={20} color="#6D28D9" />
         </TouchableOpacity>
         <Text
           style={[styles.navTitle, { color: colors.foreground }]}

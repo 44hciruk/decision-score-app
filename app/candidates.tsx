@@ -19,7 +19,7 @@ import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useProjectContext } from "@/lib/project-context";
 import { PremiumModal } from "@/components/premium-modal";
 
-const BADGE_COLORS = ["#7C3AED", "#0EA5E9", "#10B981", "#F59E0B", "#EF4444", "#EC4899"];
+const BADGE_COLORS = ["#6D28D9", "#0EA5E9", "#10B981", "#F59E0B", "#EF4444", "#EC4899"];
 
 export default function CandidatesScreen() {
   const router = useRouter();
@@ -97,7 +97,7 @@ export default function CandidatesScreen() {
               style={styles.navBackBtn}
               activeOpacity={0.7}
             >
-              <IconSymbol name="chevron.left" size={20} color="#7C3AED" />
+              <IconSymbol name="chevron.left" size={20} color="#6D28D9" />
               <Text style={styles.navBackText}>戻る</Text>
             </TouchableOpacity>
             <Text style={styles.navTitle}>候補を入力</Text>
@@ -185,7 +185,7 @@ export default function CandidatesScreen() {
                 style={styles.addBtn}
               >
                 <View style={styles.addBtnIcon}>
-                  <IconSymbol name="plus" size={18} color="#7C3AED" />
+                  <IconSymbol name="plus" size={18} color="#6D28D9" />
                 </View>
                 <Text style={styles.addBtnText}>候補を追加</Text>
               </TouchableOpacity>
@@ -240,14 +240,14 @@ const styles = StyleSheet.create({
   },
   navBackText: {
     fontSize: 16,
-    color: "#7C3AED",
+    color: "#6D28D9",
     fontWeight: "500",
   },
   navTitle: {
     flex: 1,
     fontSize: 17,
     fontWeight: "700",
-    color: "#1A1535",
+    color: "#111827",
     textAlign: "center",
   },
   navSpacer: {
@@ -268,15 +268,15 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: "#E5E1FF",
+    backgroundColor: "rgba(109, 40, 217, 0.1)",
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 1,
     borderColor: "#DDD6FE",
   },
   stepDotActive: {
-    backgroundColor: "#7C3AED",
-    borderColor: "#7C3AED",
+    backgroundColor: "#6D28D9",
+    borderColor: "#6D28D9",
   },
   stepNum: {
     fontSize: 12,
@@ -291,11 +291,11 @@ const styles = StyleSheet.create({
   stepLine: {
     width: 40,
     height: 2,
-    backgroundColor: "#E5E1FF",
+    backgroundColor: "rgba(109, 40, 217, 0.1)",
     marginHorizontal: 4,
   },
   stepLineActive: {
-    backgroundColor: "#7C3AED",
+    backgroundColor: "#6D28D9",
   },
   stepLabel: {
     textAlign: "center",
@@ -310,7 +310,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: "700",
-    color: "#1A1535",
+    color: "#111827",
     marginBottom: 8,
     letterSpacing: -0.3,
   },
@@ -331,7 +331,7 @@ const styles = StyleSheet.create({
   limitBarFill: {
     height: "100%",
     borderRadius: 2,
-    backgroundColor: "#7C3AED",
+    backgroundColor: "#6D28D9",
   },
   inputCard: {
     marginBottom: 10,
@@ -359,7 +359,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 16,
-    color: "#1A1535",
+    color: "#111827",
     fontWeight: "500",
     paddingVertical: 4,
   },
@@ -376,7 +376,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 10,
-    paddingVertical: 16,
+    paddingVertical: 18,
     marginTop: 4,
     borderRadius: 14,
     borderWidth: 1.5,
@@ -396,7 +396,7 @@ const styles = StyleSheet.create({
   addBtnText: {
     fontSize: 15,
     fontWeight: "600",
-    color: "#7C3AED",
+    color: "#6D28D9",
   },
   bottomBar: {
     paddingHorizontal: 20,
@@ -407,13 +407,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 16,
-    borderRadius: 16,
-    backgroundColor: "#7C3AED",
+    paddingVertical: 18,
+    borderRadius: 18,
+    backgroundColor: "#6D28D9",
     gap: 8,
-    shadowColor: "#7C3AED",
+    shadowColor: "#6D28D9",
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.4,
     shadowRadius: 12,
     elevation: 8,
     minHeight: 56,
