@@ -11,6 +11,7 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import * as Haptics from "expo-haptics";
 import Animated, {
   FadeIn,
+  FadeInDown,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
@@ -19,12 +20,12 @@ import Animated, {
 } from "react-native-reanimated";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 
-import { ScreenContainer } from "@/components/screen-container";
+import { GradientScreen } from "@/components/gradient-screen";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useColors } from "@/hooks/use-colors";
 
-const ITEM_HEIGHT = 60;
-const ITEM_GAP = 8;
+const ITEM_HEIGHT = 64;
+const ITEM_GAP = 10;
 const ITEM_TOTAL = ITEM_HEIGHT + ITEM_GAP;
 
 export default function RankingScreen() {
@@ -36,12 +37,8 @@ export default function RankingScreen() {
     criteria: string;
   }>();
 
-  const candidates: string[] = params.candidates
-    ? JSON.parse(params.candidates)
-    : [];
-  const criteria: string[] = params.criteria
-    ? JSON.parse(params.criteria)
-    : [];
+  const candidates: string[] = params.candidates ? JSON.parse(params.candidates) : [];
+  const criteria: string[] = params.criteria ? JSON.parse(params.criteria) : [];
 
   const [currentCriterionIndex, setCurrentCriterionIndex] = useState(0);
   const [rankings, setRankings] = useState<Record<string, string[]>>({});
@@ -92,49 +89,38 @@ export default function RankingScreen() {
       setCurrentCriterionIndex((prev) => prev + 1);
       setCurrentOrder([...candidates]);
     }
-  }, [
-    rankings,
-    currentCriterion,
-    currentOrder,
-    isLast,
-    candidates,
-    params,
-    router,
-  ]);
+  }, [rankings, currentCriterion, currentOrder, isLast, candidates, params, router]);
 
   return (
-    <ScreenContainer edges={["top", "bottom", "left", "right"]}>
+    <GradientScreen edges={["top", "left", "right"]}>
       {/* Header */}
-      <View style={styles.navHeader}>
+      <Animated.View entering={FadeIn.duration(300)} style={styles.navHeader}>
         <Pressable
           onPress={handleBack}
-          style={({ pressed }) => [
-            styles.navBtn,
-            pressed && { opacity: 0.5 },
-          ]}
+          style={({ pressed }) => [styles.navBtn, pressed && { opacity: 0.5 }]}
         >
-          <IconSymbol name="chevron.left" size={24} color={colors.foreground} />
+          <IconSymbol name="chevron.left" size={24} color="#FFFFFF" />
         </Pressable>
-        <Text style={[styles.navTitle, { color: colors.foreground }]}>
-          順位をつける
-        </Text>
+        <Text style={styles.navTitle}>順位をつける</Text>
         <View style={styles.navBtn} />
-      </View>
+      </Animated.View>
 
       {/* Progress bar */}
-      <View style={styles.progressContainer}>
-        <View style={[styles.progressBarBg, { backgroundColor: colors.border }]}>
+      <Animated.View entering={FadeInDown.delay(50).duration(300)} style={styles.progressContainer}>
+        <View style={styles.progressBarBg}>
           <Animated.View
-            style={[
-              styles.progressBarFill,
-              { backgroundColor: colors.primary, width: `${progress}%` },
-            ]}
+            style={[styles.progressBarFill, { width: `${progress}%` }]}
           />
         </View>
-        <Text style={[styles.progressText, { color: colors.muted }]}>
-          {currentCriterionIndex + 1} / {criteria.length}
-        </Text>
-      </View>
+        <View style={styles.progressLabelRow}>
+          <Text style={styles.progressLabel}>
+            {criteria[currentCriterionIndex]}
+          </Text>
+          <Text style={styles.progressText}>
+            {currentCriterionIndex + 1} / {criteria.length}
+          </Text>
+        </View>
+      </Animated.View>
 
       {/* Current criterion */}
       <Animated.View
@@ -142,11 +128,12 @@ export default function RankingScreen() {
         entering={FadeIn.duration(300)}
         style={styles.criterionContainer}
       >
-        <Text style={[styles.criterionName, { color: colors.primary }]}>
-          {currentCriterion}
-        </Text>
-        <Text style={[styles.criterionHint, { color: colors.muted }]}>
-          上から順に「1位→最下位」です。ドラッグして並び替えてください。
+        <View style={styles.criterionBadge}>
+          <Text style={styles.criterionBadgeText}>評価基準</Text>
+        </View>
+        <Text style={styles.criterionName}>{currentCriterion}</Text>
+        <Text style={styles.criterionHint}>
+          長押しでドラッグ。上が1位です。
         </Text>
       </Animated.View>
 
@@ -172,21 +159,21 @@ export default function RankingScreen() {
       </View>
 
       {/* Bottom button */}
-      <View style={[styles.bottomBar, { borderTopColor: colors.border }]}>
+      <Animated.View entering={FadeInDown.delay(300).duration(400)} style={styles.bottomBar}>
         <Pressable
           onPress={handleNext}
           style={({ pressed }) => [
             styles.nextBtn,
-            { backgroundColor: colors.primary },
             pressed && { transform: [{ scale: 0.97 }], opacity: 0.9 },
           ]}
         >
           <Text style={styles.nextBtnText}>
-            {isLast ? "結果を見る" : "次へ"}
+            {isLast ? "結果を見る 🏆" : "次の評価項目へ"}
           </Text>
+          {!isLast && <IconSymbol name="arrow.right" size={20} color="#6366F1" />}
         </Pressable>
-      </View>
-    </ScreenContainer>
+      </Animated.View>
+    </GradientScreen>
   );
 }
 
@@ -204,6 +191,8 @@ let globalDragState = {
 // ============================================================
 // Draggable Item Component
 // ============================================================
+
+const RANK_COLORS = ["#34D399", "#FBBF24", "#F472B6", "#60A5FA", "#A78BFA", "#FB923C"];
 
 function DraggableItem({
   item,
@@ -227,7 +216,7 @@ function DraggableItem({
   const zIdx = useSharedValue(1);
   const scale = useSharedValue(1);
   const otherItemTranslateY = useSharedValue(0);
-  const isHighlighted = useSharedValue(0); // 0 = not highlighted, 1 = highlighted
+  const isHighlighted = useSharedValue(0);
 
   const triggerHaptic = useCallback(() => {
     if (Platform.OS !== "web") {
@@ -246,7 +235,7 @@ function DraggableItem({
 
       isActive.value = true;
       zIdx.value = 100;
-      scale.value = withTiming(1.02, { duration: 100 });
+      scale.value = withTiming(1.03, { duration: 100 });
       runOnJS(setIsDragging)(true);
       runOnJS(triggerHaptic)();
     })
@@ -254,7 +243,6 @@ function DraggableItem({
       translateY.value = event.translationY;
       globalDragState.draggedTranslateY = event.translationY;
 
-      // 他のアイテムの位置を計算
       if (globalDragState.draggedItemId && globalDragState.draggedItemId !== item) {
         const draggedTranslateY = globalDragState.draggedTranslateY;
         const draggedIndex = globalDragState.draggedIndex;
@@ -296,23 +284,14 @@ function DraggableItem({
     })
     .onEnd((event) => {
       scale.value = withTiming(1, { duration: 100 });
-      translateY.value = withTiming(0, {
-        duration: 200,
-        easing: Easing.out(Easing.cubic),
-      });
+      translateY.value = withTiming(0, { duration: 200, easing: Easing.out(Easing.cubic) });
       isActive.value = false;
       zIdx.value = 1;
-      otherItemTranslateY.value = withTiming(0, {
-        duration: 150,
-        easing: Easing.out(Easing.cubic),
-      });
+      otherItemTranslateY.value = withTiming(0, { duration: 150, easing: Easing.out(Easing.cubic) });
       runOnJS(setIsDragging)(false);
 
       const offset = Math.round(event.translationY / ITEM_TOTAL);
-      const targetIndex = Math.max(
-        0,
-        Math.min(visualIndex + offset, itemCount - 1)
-      );
+      const targetIndex = Math.max(0, Math.min(visualIndex + offset, itemCount - 1));
 
       if (targetIndex !== visualIndex) {
         const newItems = [...items];
@@ -326,24 +305,15 @@ function DraggableItem({
       globalDragState.draggedTranslateY = 0;
     })
     .onFinalize(() => {
-      // タッチキャンセルやジェスチャー失敗時の処理
-      if (isActive.value) {
-        scale.value = withTiming(1, { duration: 100 });
-        translateY.value = withTiming(0, {
-          duration: 200,
-          easing: Easing.out(Easing.cubic),
-        });
-        isActive.value = false;
-        zIdx.value = 1;
-        otherItemTranslateY.value = withTiming(0, {
-          duration: 150,
-          easing: Easing.out(Easing.cubic),
-        });
-        runOnJS(setIsDragging)(false);
-        globalDragState.draggedItemId = null;
-        globalDragState.draggedIndex = -1;
-        globalDragState.draggedTranslateY = 0;
-      }
+      scale.value = withTiming(1, { duration: 100 });
+      translateY.value = withTiming(0, { duration: 200, easing: Easing.out(Easing.cubic) });
+      isActive.value = false;
+      zIdx.value = 1;
+      otherItemTranslateY.value = withTiming(0, { duration: 150, easing: Easing.out(Easing.cubic) });
+      runOnJS(setIsDragging)(false);
+      globalDragState.draggedItemId = null;
+      globalDragState.draggedIndex = -1;
+      globalDragState.draggedTranslateY = 0;
     })
     .runOnJS(true);
 
@@ -354,55 +324,64 @@ function DraggableItem({
         { scale: scale.value },
       ],
       zIndex: zIdx.value,
-      backgroundColor: colors.primary + "15",
-      borderColor: colors.border,
-      borderWidth: 1,
-      borderRadius: 12,
-      shadowColor: colors.foreground,
-      shadowOffset: { width: 0, height: 8 },
-      shadowOpacity: 0.25,
-      shadowRadius: 12,
-      elevation: 8,
+      backgroundColor: "rgba(255,255,255,0.25)",
+      borderColor: "rgba(255,255,255,0.6)",
+      borderWidth: 1.5,
+      borderRadius: 16,
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 12 },
+      shadowOpacity: 0.3,
+      shadowRadius: 16,
+      elevation: 12,
     };
   });
 
   const otherItemAnimatedStyle = useAnimatedStyle(() => {
-    const bgColor = isHighlighted.value === 1 ? colors.primary + '18' : colors.surface;
-    const borderColor = isHighlighted.value === 1 ? colors.primary : 'transparent';
-    const borderWidth = isHighlighted.value === 1 ? 2 : 0;
+    const highlighted = isHighlighted.value > 0.5;
     return {
       transform: [{ translateY: otherItemTranslateY.value }],
-      backgroundColor: bgColor,
-      borderWidth: borderWidth,
-      borderColor: borderColor,
-      borderRadius: 12,
-      shadowColor: colors.foreground,
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.08,
-      shadowRadius: 4,
-      elevation: 2,
+      backgroundColor: highlighted ? "rgba(255,255,255,0.22)" : "rgba(255,255,255,0.12)",
+      borderWidth: highlighted ? 1.5 : 1,
+      borderColor: highlighted ? "rgba(255,255,255,0.6)" : "rgba(255,255,255,0.2)",
+      borderRadius: 16,
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.15,
+      shadowRadius: 8,
+      elevation: 3,
     };
   });
+
+  const rankColor = RANK_COLORS[visualIndex % RANK_COLORS.length];
 
   return (
     <GestureDetector gesture={gesture}>
       <Animated.View
         style={[
           styles.draggableItem,
-          isDragging
-            ? animatedStyle
-            : otherItemAnimatedStyle,
+          isDragging ? animatedStyle : otherItemAnimatedStyle,
         ]}
       >
-        <View style={styles.dragHandle}>
-          <Text style={[styles.handleIcon, { color: colors.muted }]}>≡</Text>
+        {/* Rank badge */}
+        <View style={[styles.rankBadge, { backgroundColor: rankColor + "30", borderColor: rankColor + "60" }]}>
+          <Text style={[styles.rankText, { color: rankColor }]}>
+            {visualIndex + 1}
+          </Text>
         </View>
-        <Text
-          style={[styles.itemName, { color: colors.foreground }]}
-          numberOfLines={1}
-        >
+
+        <Text style={styles.itemName} numberOfLines={1}>
           {item}
         </Text>
+
+        {/* Drag handle */}
+        <View style={styles.dragHandle}>
+          <View style={styles.handleDot} />
+          <View style={styles.handleDot} />
+          <View style={styles.handleDot} />
+          <View style={styles.handleDot} />
+          <View style={styles.handleDot} />
+          <View style={styles.handleDot} />
+        </View>
       </Animated.View>
     </GestureDetector>
   );
@@ -425,41 +404,74 @@ const styles = StyleSheet.create({
   navTitle: {
     fontSize: 17,
     fontWeight: "600",
+    color: "#FFFFFF",
   },
   progressContainer: {
     paddingHorizontal: 20,
-    marginBottom: 20,
+    marginBottom: 16,
   },
   progressBarBg: {
-    height: 4,
-    borderRadius: 2,
+    height: 6,
+    borderRadius: 3,
     overflow: "hidden",
+    backgroundColor: "rgba(255,255,255,0.2)",
     marginBottom: 8,
   },
   progressBarFill: {
     height: "100%",
-    borderRadius: 2,
+    borderRadius: 3,
+    backgroundColor: "#FFFFFF",
+  },
+  progressLabelRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  progressLabel: {
+    fontSize: 13,
+    color: "rgba(255,255,255,0.7)",
+    flex: 1,
   },
   progressText: {
-    fontSize: 12,
-    textAlign: "right",
+    fontSize: 13,
+    color: "rgba(255,255,255,0.7)",
+    fontWeight: "600",
   },
   criterionContainer: {
     paddingHorizontal: 20,
     marginBottom: 20,
   },
+  criterionBadge: {
+    alignSelf: "flex-start",
+    backgroundColor: "rgba(255,255,255,0.2)",
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 20,
+    marginBottom: 8,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.3)",
+  },
+  criterionBadgeText: {
+    fontSize: 11,
+    fontWeight: "600",
+    color: "rgba(255,255,255,0.9)",
+    letterSpacing: 0.5,
+  },
   criterionName: {
-    fontSize: 24,
-    fontWeight: "700",
+    fontSize: 26,
+    fontWeight: "800",
+    color: "#FFFFFF",
     marginBottom: 6,
+    letterSpacing: -0.5,
   },
   criterionHint: {
     fontSize: 13,
+    color: "rgba(255,255,255,0.6)",
   },
   listContainer: {
     flex: 1,
     paddingHorizontal: 20,
-    paddingVertical: 8,
+    paddingVertical: 4,
   },
   sortableListWrapper: {
     flex: 1,
@@ -469,43 +481,66 @@ const styles = StyleSheet.create({
   },
   draggableItem: {
     height: ITEM_HEIGHT,
-    borderRadius: 12,
-    borderWidth: 1,
+    borderRadius: 16,
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 12,
+    paddingHorizontal: 14,
     gap: 12,
   },
-  dragHandle: {
-    width: 24,
-    alignItems: "center",
+  rankBadge: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
     justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 1,
   },
-  handleIcon: {
-    fontSize: 20,
-    fontWeight: "700",
+  rankText: {
+    fontSize: 15,
+    fontWeight: "800",
   },
   itemName: {
     flex: 1,
     fontSize: 16,
-    fontWeight: "500",
+    fontWeight: "600",
+    color: "#FFFFFF",
+  },
+  dragHandle: {
+    width: 20,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 3,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  handleDot: {
+    width: 4,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: "rgba(255,255,255,0.4)",
   },
   bottomBar: {
     paddingHorizontal: 20,
     paddingVertical: 12,
-    borderTopWidth: 0.5,
+    paddingBottom: 24,
   },
   nextBtn: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 14,
-    borderRadius: 12,
+    paddingVertical: 16,
+    borderRadius: 16,
+    backgroundColor: "#FFFFFF",
     gap: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 12,
+    elevation: 8,
   },
   nextBtnText: {
     fontSize: 16,
-    fontWeight: "600",
-    color: "#FFFFFF",
+    fontWeight: "700",
+    color: "#6366F1",
   },
 });

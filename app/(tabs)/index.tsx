@@ -1,4 +1,4 @@
-import { useCallback, useRef } from "react";
+import { useCallback } from "react";
 import {
   Text,
   View,
@@ -14,13 +14,10 @@ import * as Haptics from "expo-haptics";
 import Animated, {
   FadeInDown,
   FadeIn,
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
 } from "react-native-reanimated";
-// import { LinearGradient } from "expo-linear-gradient";
 
-import { ScreenContainer } from "@/components/screen-container";
+import { GradientScreen } from "@/components/gradient-screen";
+import { GlassCard, DarkGlassCard } from "@/components/glass-card";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useColors } from "@/hooks/use-colors";
 import { useProjectContext } from "@/lib/project-context";
@@ -39,12 +36,12 @@ export default function HomeScreen() {
 
   const handleNewProject = useCallback(() => {
     if (Platform.OS !== "web") {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     }
     if (!canAddProject()) {
       Alert.alert(
         "保存上限に達しました",
-        "無料版ではプロジェクトを3個まで保存できます。プレミアム版にアップグレードすると無制限に保存できます。",
+        "無料版ではプロジェクトを3個まで保存できます。",
         [{ text: "OK" }]
       );
       return;
@@ -97,35 +94,25 @@ export default function HomeScreen() {
         index={index}
         onPress={() => handleProjectTap(item)}
         onDelete={() => handleDelete(item)}
-        colors={colors}
       />
     ),
-    [handleProjectTap, handleDelete, colors]
+    [handleProjectTap, handleDelete]
   );
 
   const keyExtractor = useCallback((item: Project) => item.id, []);
 
   return (
-    <ScreenContainer containerClassName="bg-background">
-      <View
-        style={[
-          styles.gradientHeader,
-          { backgroundColor: colors.primary },
-        ]}
-      >
-        <View style={styles.header}>
-          <Text style={[styles.headerTitle, { color: "#FFFFFF" }]}>
-            決断スコア
-          </Text>
-          <Text style={[styles.headerSubtitle, { color: "rgba(255,255,255,0.8)" }]}>
-            迷ったら、スコアで決めよう
-          </Text>
-        </View>
-      </View>
+    <GradientScreen>
+      {/* Header */}
+      <Animated.View entering={FadeIn.duration(500)} style={styles.header}>
+        <Text style={styles.headerTitle}>決断スコア</Text>
+        <Text style={styles.headerSubtitle}>迷ったら、スコアで決めよう</Text>
+      </Animated.View>
 
+      {/* Content */}
       <View style={styles.contentContainer}>
         {state.projects.length === 0 ? (
-          <EmptyState colors={colors} />
+          <EmptyState />
         ) : (
           <FlatList
             data={state.projects}
@@ -139,21 +126,20 @@ export default function HomeScreen() {
 
       {/* FAB */}
       <Animated.View
-        entering={FadeInDown.delay(200).duration(400)}
+        entering={FadeInDown.delay(300).duration(500)}
         style={styles.fabContainer}
       >
         <Pressable
           onPress={handleNewProject}
           style={({ pressed }) => [
             styles.fab,
-            { backgroundColor: colors.primary },
             pressed && { transform: [{ scale: 0.92 }], opacity: 0.85 },
           ]}
         >
           <IconSymbol name="plus" size={28} color="#FFFFFF" />
         </Pressable>
       </Animated.View>
-    </ScreenContainer>
+    </GradientScreen>
   );
 }
 
@@ -166,18 +152,21 @@ function ProjectCard({
   index,
   onPress,
   onDelete,
-  colors,
 }: {
   project: Project;
   index: number;
   onPress: () => void;
   onDelete: () => void;
-  colors: ReturnType<typeof useColors>;
 }) {
-  const scoreColor = getScoreColor(project.scores[project.winner] || 0);
+  const sortedCandidates = Object.entries(project.scores).sort(
+    ([, a], [, b]) => b - a
+  );
   const winnerScore = project.scores[project.winner] || 0;
   const date = new Date(project.createdAt);
   const dateStr = `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, "0")}/${String(date.getDate()).padStart(2, "0")}`;
+
+  // Rank-based color
+  const rankColor = "#34D399"; // 1st = green
 
   return (
     <Animated.View entering={FadeInDown.delay(index * 80).duration(400)}>
@@ -185,62 +174,58 @@ function ProjectCard({
         onPress={onPress}
         onLongPress={onDelete}
         style={({ pressed }) => [
-          styles.card,
-          {
-            backgroundColor: colors.surface,
-            borderColor: colors.border,
-          },
-          pressed && { opacity: 0.7 },
+          pressed && { opacity: 0.8, transform: [{ scale: 0.98 }] },
         ]}
       >
-        <View style={styles.cardHeader}>
-          <Text
-            style={[styles.cardTitle, { color: colors.foreground }]}
-            numberOfLines={1}
-          >
-            {project.title}
-          </Text>
-          <Pressable
-            onPress={onDelete}
-            style={({ pressed }) => [
-              styles.deleteBtn,
-              pressed && { opacity: 0.5 },
-            ]}
-          >
-            <IconSymbol name="trash.fill" size={18} color={colors.muted} />
-          </Pressable>
-        </View>
-
-        <View style={styles.cardBody}>
-          <View style={styles.winnerRow}>
-            <Text style={[styles.winnerLabel, { color: scoreColor }]}>
-              👑 {project.winner}
+        <DarkGlassCard style={styles.card}>
+          {/* Card Header */}
+          <View style={styles.cardHeader}>
+            <Text style={styles.cardTitle} numberOfLines={1}>
+              {project.title}
             </Text>
-            <Text style={[styles.winnerScore, { color: scoreColor }]}>
+            <Pressable
+              onPress={onDelete}
+              style={({ pressed }) => [
+                styles.deleteBtn,
+                pressed && { opacity: 0.5 },
+              ]}
+            >
+              <IconSymbol name="trash.fill" size={16} color="rgba(255,255,255,0.5)" />
+            </Pressable>
+          </View>
+
+          {/* Winner */}
+          <View style={styles.winnerRow}>
+            <View style={styles.winnerBadge}>
+              <Text style={styles.winnerBadgeText}>👑 1位</Text>
+            </View>
+            <Text style={styles.winnerName}>{project.winner}</Text>
+            <Text style={[styles.winnerScore, { color: rankColor }]}>
               {winnerScore}点
             </Text>
           </View>
-          <View style={styles.progressBarBg}>
+
+          {/* Progress bar */}
+          <View style={styles.progressBg}>
             <View
               style={[
-                styles.progressBarFill,
+                styles.progressFill,
                 {
-                  backgroundColor: scoreColor,
+                  backgroundColor: rankColor,
                   width: `${winnerScore}%`,
                 },
               ]}
             />
           </View>
-        </View>
 
-        <View style={styles.cardFooter}>
-          <Text style={[styles.cardDate, { color: colors.muted }]}>
-            {dateStr}
-          </Text>
-          <Text style={[styles.cardMeta, { color: colors.muted }]}>
-            {project.candidates.length}候補 · {project.criteria.length}項目
-          </Text>
-        </View>
+          {/* Footer */}
+          <View style={styles.cardFooter}>
+            <Text style={styles.cardDate}>{dateStr}</Text>
+            <Text style={styles.cardMeta}>
+              {project.candidates.length}候補 · {project.criteria.length}項目
+            </Text>
+          </View>
+        </DarkGlassCard>
       </Pressable>
     </Animated.View>
   );
@@ -250,16 +235,16 @@ function ProjectCard({
 // Empty State
 // ============================================================
 
-function EmptyState({ colors }: { colors: ReturnType<typeof useColors> }) {
+function EmptyState() {
   return (
     <Animated.View entering={FadeIn.duration(600)} style={styles.emptyContainer}>
-      <Text style={styles.emptyIcon}>⚖️</Text>
-      <Text style={[styles.emptyTitle, { color: colors.foreground }]}>
-        まだプロジェクトがありません
-      </Text>
-      <Text style={[styles.emptySubtitle, { color: colors.muted }]}>
-        右下の「＋」ボタンから{"\n"}最初のプロジェクトを作成しましょう
-      </Text>
+      <DarkGlassCard style={styles.emptyCard}>
+        <Text style={styles.emptyIcon}>⚖️</Text>
+        <Text style={styles.emptyTitle}>まだプロジェクトがありません</Text>
+        <Text style={styles.emptySubtitle}>
+          右下の「＋」ボタンから{"\n"}最初のプロジェクトを作成しましょう
+        </Text>
+      </DarkGlassCard>
     </Animated.View>
   );
 }
@@ -269,28 +254,20 @@ function EmptyState({ colors }: { colors: ReturnType<typeof useColors> }) {
 // ============================================================
 
 const styles = StyleSheet.create({
-  gradientHeader: {
-    paddingBottom: 24,
-    borderBottomLeftRadius: 24,
-    borderBottomRightRadius: 24,
-    shadowColor: "#6366F1",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 12,
-    elevation: 8,
-  },
   header: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 24,
     paddingTop: 12,
-    paddingBottom: 8,
+    paddingBottom: 20,
   },
   headerTitle: {
-    fontSize: 36,
+    fontSize: 38,
     fontWeight: "800",
+    color: "#FFFFFF",
     letterSpacing: -0.5,
   },
   headerSubtitle: {
-    fontSize: 15,
+    fontSize: 16,
+    color: "rgba(255,255,255,0.75)",
     marginTop: 4,
     fontWeight: "500",
   },
@@ -298,19 +275,17 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   listContent: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     paddingBottom: 100,
   },
   card: {
-    borderRadius: 20,
     padding: 16,
     marginBottom: 12,
-    borderWidth: 1.5,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.08,
-    shadowRadius: 12,
-    elevation: 4,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.2,
+    shadowRadius: 16,
+    elevation: 8,
   },
   cardHeader: {
     flexDirection: "row",
@@ -319,51 +294,64 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   cardTitle: {
-    fontSize: 17,
+    fontSize: 18,
     fontWeight: "700",
+    color: "#FFFFFF",
     flex: 1,
     marginRight: 8,
   },
   deleteBtn: {
     padding: 4,
   },
-  cardBody: {
-    marginBottom: 12,
-  },
   winnerRow: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 8,
+    marginBottom: 10,
+    gap: 8,
   },
-  winnerLabel: {
-    fontSize: 16,
+  winnerBadge: {
+    backgroundColor: "rgba(255,255,255,0.15)",
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+  },
+  winnerBadgeText: {
+    fontSize: 12,
+    color: "rgba(255,255,255,0.9)",
     fontWeight: "600",
   },
+  winnerName: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#FFFFFF",
+    flex: 1,
+  },
   winnerScore: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: "800",
   },
-  progressBarBg: {
-    height: 6,
+  progressBg: {
+    height: 5,
     borderRadius: 3,
-    backgroundColor: "rgba(128,128,128,0.15)",
+    backgroundColor: "rgba(255,255,255,0.15)",
     overflow: "hidden",
+    marginBottom: 12,
   },
-  progressBarFill: {
+  progressFill: {
     height: "100%",
     borderRadius: 3,
   },
   cardFooter: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
   },
   cardDate: {
     fontSize: 13,
+    color: "rgba(255,255,255,0.55)",
   },
   cardMeta: {
     fontSize: 13,
+    color: "rgba(255,255,255,0.55)",
   },
   fabContainer: {
     position: "absolute",
@@ -371,22 +359,30 @@ const styles = StyleSheet.create({
     right: 20,
   },
   fab: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 62,
+    height: 62,
+    borderRadius: 31,
+    backgroundColor: "rgba(255,255,255,0.25)",
     justifyContent: "center",
     alignItems: "center",
+    borderWidth: 1.5,
+    borderColor: "rgba(255,255,255,0.4)",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.3,
-    shadowRadius: 12,
+    shadowRadius: 16,
     elevation: 12,
   },
   emptyContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    paddingHorizontal: 40,
+    paddingHorizontal: 24,
+  },
+  emptyCard: {
+    padding: 32,
+    alignItems: "center",
+    width: "100%",
   },
   emptyIcon: {
     fontSize: 64,
@@ -395,11 +391,13 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontSize: 20,
     fontWeight: "700",
+    color: "#FFFFFF",
     textAlign: "center",
     marginBottom: 8,
   },
   emptySubtitle: {
     fontSize: 15,
+    color: "rgba(255,255,255,0.7)",
     textAlign: "center",
     lineHeight: 22,
   },
