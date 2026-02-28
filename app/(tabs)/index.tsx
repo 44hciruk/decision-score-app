@@ -9,7 +9,7 @@ import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { IconSymbol } from "@/components/ui/icon-symbol";
-import { loadProjects, deleteProject, type Project } from "@/lib/storage";
+import { loadProjects, type Project } from "@/lib/storage";
 import * as Haptics from "expo-haptics";
 import { Platform } from "react-native";
 
@@ -30,17 +30,6 @@ export default function HomeScreen() {
     const interval = setInterval(loadData, 500);
     return () => clearInterval(interval);
   }, [loadData]);
-
-  const handleDelete = useCallback(
-    async (id: string) => {
-      if (Platform.OS !== "web") {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-      }
-      await deleteProject(id);
-      loadData();
-    },
-    [loadData]
-  );
 
   const handleNewProject = useCallback(() => {
     if (Platform.OS !== "web") {
@@ -79,158 +68,166 @@ export default function HomeScreen() {
       <ScrollView
         style={styles.scroll}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={[
-          styles.scrollContent,
-          { paddingTop: insets.top + 16, paddingBottom: insets.bottom + 100 },
-        ]}
+        contentContainerStyle={{ paddingBottom: insets.bottom + 100 }}
       >
-        {/* ── ヘッダー行 ── */}
-        <View style={styles.header}>
-          <View style={styles.logoRow}>
-            <View style={styles.logoIcon}>
-              <IconSymbol name="sparkles" size={16} color="#5B4EFF" />
+        {/* ── 上部セクション（温かみカラー） ── */}
+        <View style={[styles.topSection, { paddingTop: insets.top + 16 }]}>
+          {/* ヘッダー行 */}
+          <View style={styles.header}>
+            <View style={styles.logoRow}>
+              <View style={styles.logoIcon}>
+                <IconSymbol name="sparkles" size={16} color="#5B4EFF" />
+              </View>
+              <Text style={styles.logoText}>決断スコア</Text>
             </View>
-            <Text style={styles.logoText}>決断スコア</Text>
+            <View style={styles.headerActions}>
+              <TouchableOpacity style={styles.headerIconBtn} activeOpacity={0.75}>
+                <IconSymbol name="clock.fill" size={17} color="#3C3C43" />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.headerIconBtn} activeOpacity={0.75}>
+                <IconSymbol name="person.fill" size={17} color="#3C3C43" />
+              </TouchableOpacity>
+            </View>
           </View>
-          <View style={styles.headerActions}>
-            <TouchableOpacity
-              style={styles.headerIconBtn}
-              activeOpacity={0.75}
-            >
-              <IconSymbol name="clock.fill" size={17} color="#3C3C43" />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.headerIconBtn}
-              activeOpacity={0.75}
-            >
-              <IconSymbol name="person.fill" size={17} color="#3C3C43" />
-            </TouchableOpacity>
-          </View>
-        </View>
 
-        {/* ── CTAボタン ── */}
-        <View style={styles.ctaSection}>
+          {/* メインカード（プロジェクト一覧 or 空状態） */}
+          <View style={styles.mainCard}>
+            {/* 空状態 */}
+            {projects.length === 0 && (
+              <View style={styles.emptyWrap}>
+                <View style={styles.emptyIconCircle}>
+                  <IconSymbol
+                    name="checkmark.circle.fill"
+                    size={36}
+                    color="#5B4EFF"
+                  />
+                </View>
+                <Text style={styles.emptyTitle}>現在の決断はありません</Text>
+                <Text style={styles.emptyText}>
+                  下のボタンから最初の決断を{"\n"}作成してみましょう
+                </Text>
+              </View>
+            )}
+
+            {/* 進行中リスト */}
+            {inProgress.length > 0 && (
+              <View style={styles.cardSection}>
+                <Text style={styles.cardSectionLabel}>進行中の決断</Text>
+                {inProgress.map((item, index) => (
+                  <TouchableOpacity
+                    key={item.id}
+                    style={[
+                      styles.cardRow,
+                      index < inProgress.length - 1 && styles.cardRowBorder,
+                    ]}
+                    onPress={() => handleOpenProject(item)}
+                    activeOpacity={0.75}
+                  >
+                    <View style={styles.cardRowIcon}>
+                      <IconSymbol name="doc.text.fill" size={16} color="#5B4EFF" />
+                    </View>
+                    <View style={styles.cardRowBody}>
+                      <Text style={styles.cardRowTitle} numberOfLines={1}>
+                        {item.title}
+                      </Text>
+                      <Text style={styles.cardRowMeta}>
+                        {item.candidates?.length ?? 0}つの選択肢
+                      </Text>
+                    </View>
+                    <IconSymbol name="chevron.right" size={14} color="#C7C7CC" />
+                  </TouchableOpacity>
+                ))}
+              </View>
+            )}
+
+            {/* 完了済みリスト */}
+            {completed.length > 0 && (
+              <View
+                style={[
+                  styles.cardSection,
+                  inProgress.length > 0 && styles.cardSectionBorderTop,
+                ]}
+              >
+                <Text style={styles.cardSectionLabel}>完了した決断</Text>
+                {completed.map((item, index) => (
+                  <TouchableOpacity
+                    key={item.id}
+                    style={[
+                      styles.cardRow,
+                      index < completed.length - 1 && styles.cardRowBorder,
+                    ]}
+                    onPress={() => handleOpenProject(item)}
+                    activeOpacity={0.75}
+                  >
+                    <View style={[styles.cardRowIcon, styles.cardRowIconDone]}>
+                      <IconSymbol
+                        name="checkmark.circle.fill"
+                        size={16}
+                        color="#34C759"
+                      />
+                    </View>
+                    <View style={styles.cardRowBody}>
+                      <Text style={styles.cardRowTitle} numberOfLines={1}>
+                        {item.title}
+                      </Text>
+                      <Text style={styles.cardRowMeta}>
+                        {formatDate(item.createdAt)}　完了
+                      </Text>
+                    </View>
+                    <IconSymbol name="chevron.right" size={14} color="#C7C7CC" />
+                  </TouchableOpacity>
+                ))}
+              </View>
+            )}
+          </View>
+
+          {/* CTAボタン */}
           <TouchableOpacity
             style={styles.ctaBtn}
             onPress={handleNewProject}
             activeOpacity={0.88}
           >
             <IconSymbol name="plus" size={20} color="#FFFFFF" />
-            <Text style={styles.ctaBtnText}>新しい決断を始める</Text>
+            <Text style={styles.ctaBtnText}>＋ 決断を始める</Text>
           </TouchableOpacity>
         </View>
 
-        {/* ── リストエリア ── */}
-        <View style={styles.sheet}>
-          {/* 空状態 */}
-          {projects.length === 0 && (
-            <View style={styles.emptyWrap}>
-              <View style={styles.emptyIconCircle}>
-                <IconSymbol
-                  name="checkmark.circle.fill"
-                  size={36}
-                  color="#5B4EFF"
-                />
+        {/* ── 下部セクション（情報カード群） ── */}
+        <View style={styles.bottomSection}>
+          {/* お知らせ */}
+          <View style={styles.infoCard}>
+            <TouchableOpacity style={styles.infoRow} activeOpacity={0.75}>
+              <View style={[styles.infoIcon, { backgroundColor: "#FFF3CD" }]}>
+                <IconSymbol name="bell.fill" size={16} color="#FF9500" />
               </View>
-              <Text style={styles.emptyTitle}>現在の決断はありません</Text>
-              <Text style={styles.emptyText}>
-                上のボタンから最初の決断を{"\n"}作成してみましょう
-              </Text>
-            </View>
-          )}
+              <Text style={styles.infoTitle}>お知らせ</Text>
+              <IconSymbol name="chevron.right" size={14} color="#C7C7CC" />
+            </TouchableOpacity>
+          </View>
 
-          {/* 進行中リスト */}
-          {inProgress.length > 0 && (
-            <View style={styles.listSection}>
-              <Text style={styles.listSectionLabel}>進行中の決断</Text>
-              {inProgress.map((item, index) => (
-                <TouchableOpacity
-                  key={item.id}
-                  style={[
-                    styles.listRow,
-                    index < inProgress.length - 1 && styles.listRowBorder,
-                  ]}
-                  onPress={() => handleOpenProject(item)}
-                  activeOpacity={0.75}
-                >
-                  <View style={styles.listRowIcon}>
-                    <IconSymbol name="doc.text.fill" size={16} color="#5B4EFF" />
-                  </View>
-                  <View style={styles.listRowBody}>
-                    <Text style={styles.listRowTitle} numberOfLines={1}>
-                      {item.title}
-                    </Text>
-                    <Text style={styles.listRowMeta}>
-                      {item.candidates?.length ?? 0}つの選択肢
-                    </Text>
-                  </View>
-                  <IconSymbol name="chevron.right" size={14} color="#C7C7CC" />
-                </TouchableOpacity>
-              ))}
-            </View>
-          )}
-
-          {/* 完了済みリスト */}
-          {completed.length > 0 && (
-            <View style={styles.listSection}>
-              <Text style={styles.listSectionLabel}>完了した決断</Text>
-              {completed.map((item, index) => (
-                <TouchableOpacity
-                  key={item.id}
-                  style={[
-                    styles.listRow,
-                    index < completed.length - 1 && styles.listRowBorder,
-                  ]}
-                  onPress={() => handleOpenProject(item)}
-                  activeOpacity={0.75}
-                >
-                  <View style={[styles.listRowIcon, styles.listRowIconDone]}>
-                    <IconSymbol
-                      name="checkmark.circle.fill"
-                      size={16}
-                      color="#34C759"
-                    />
-                  </View>
-                  <View style={styles.listRowBody}>
-                    <Text style={styles.listRowTitle} numberOfLines={1}>
-                      {item.title}
-                    </Text>
-                    <Text style={styles.listRowMeta}>
-                      {formatDate(item.createdAt)}　完了
-                    </Text>
-                  </View>
-                  <IconSymbol name="chevron.right" size={14} color="#C7C7CC" />
-                </TouchableOpacity>
-              ))}
-            </View>
-          )}
-
-          {/* お知らせ行 */}
-          <View style={styles.listSection}>
-            <TouchableOpacity
-              style={[styles.listRow, styles.listRowBorder]}
-              activeOpacity={0.75}
-            >
-              <View style={styles.listRowIcon}>
+          {/* 使い方ガイド */}
+          <View style={styles.infoCard}>
+            <TouchableOpacity style={styles.infoRow} activeOpacity={0.75}>
+              <View style={[styles.infoIcon, { backgroundColor: "#EDEDFF" }]}>
                 <IconSymbol name="info.circle" size={16} color="#5B4EFF" />
               </View>
-              <View style={styles.listRowBody}>
-                <Text style={styles.listRowTitle}>使い方ガイド</Text>
-                <Text style={styles.listRowMeta}>
-                  決断スコアの使い方を確認する
-                </Text>
+              <View style={styles.infoBody}>
+                <Text style={styles.infoTitle}>使い方ガイド</Text>
+                <Text style={styles.infoMeta}>決断スコアの使い方を確認する</Text>
               </View>
               <IconSymbol name="chevron.right" size={14} color="#C7C7CC" />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.listRow} activeOpacity={0.75}>
-              <View style={styles.listRowIcon}>
+          </View>
+
+          {/* プレミアムプラン */}
+          <View style={styles.infoCard}>
+            <TouchableOpacity style={styles.infoRow} activeOpacity={0.75}>
+              <View style={[styles.infoIcon, { backgroundColor: "#FFF8E7" }]}>
                 <IconSymbol name="star.fill" size={16} color="#FF9500" />
               </View>
-              <View style={styles.listRowBody}>
-                <Text style={styles.listRowTitle}>プレミアムプラン</Text>
-                <Text style={styles.listRowMeta}>
-                  無制限で決断を作成できます
-                </Text>
+              <View style={styles.infoBody}>
+                <Text style={styles.infoTitle}>プレミアムプラン</Text>
+                <Text style={styles.infoMeta}>無制限で決断を作成できます</Text>
               </View>
               <IconSymbol name="chevron.right" size={14} color="#C7C7CC" />
             </TouchableOpacity>
@@ -249,8 +246,11 @@ const styles = StyleSheet.create({
   scroll: {
     flex: 1,
   },
-  scrollContent: {
-    paddingHorizontal: 0,
+
+  // ── 上部セクション ──
+  topSection: {
+    backgroundColor: "#FFF8F0",
+    paddingBottom: 24,
   },
 
   // ── ヘッダー ──
@@ -288,49 +288,28 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 19,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "rgba(255,255,255,0.85)",
     alignItems: "center",
     justifyContent: "center",
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: "#E5E5EA",
   },
 
-  // ── CTAボタン ──
-  ctaSection: {
-    paddingHorizontal: 16,
-    marginBottom: 24,
-  },
-  ctaBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-    backgroundColor: "#5B4EFF",
-    borderRadius: 28,
-    paddingVertical: 16,
-  },
-  ctaBtnText: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#FFFFFF",
-    letterSpacing: -0.2,
-  },
-
-  // ── リストエリア ──
-  sheet: {
-    backgroundColor: "#F2F2F7",
-    paddingBottom: 20,
-  },
-  listSection: {
+  // ── メインカード ──
+  mainCard: {
     backgroundColor: "#FFFFFF",
-    borderRadius: 12,
+    borderRadius: 16,
     marginHorizontal: 16,
-    marginBottom: 16,
     overflow: "hidden",
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: "#E5E5EA",
   },
-  listSectionLabel: {
+  cardSection: {},
+  cardSectionBorderTop: {
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: "#E5E5EA",
+  },
+  cardSectionLabel: {
     fontSize: 12,
     fontWeight: "600",
     color: "#8E8E93",
@@ -340,18 +319,18 @@ const styles = StyleSheet.create({
     paddingTop: 12,
     paddingBottom: 6,
   },
-  listRow: {
+  cardRow: {
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 14,
     gap: 12,
   },
-  listRowBorder: {
+  cardRowBorder: {
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: "#E5E5EA",
   },
-  listRowIcon: {
+  cardRowIcon: {
     width: 34,
     height: 34,
     borderRadius: 8,
@@ -360,20 +339,20 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     flexShrink: 0,
   },
-  listRowIconDone: {
+  cardRowIconDone: {
     backgroundColor: "#F0FDF4",
   },
-  listRowBody: {
+  cardRowBody: {
     flex: 1,
     gap: 2,
   },
-  listRowTitle: {
+  cardRowTitle: {
     fontSize: 15,
     fontWeight: "500",
     color: "#1C1C1E",
     letterSpacing: -0.2,
   },
-  listRowMeta: {
+  cardRowMeta: {
     fontSize: 12,
     color: "#8E8E93",
   },
@@ -381,19 +360,17 @@ const styles = StyleSheet.create({
   // ── 空状態 ──
   emptyWrap: {
     alignItems: "center",
-    paddingVertical: 48,
+    paddingVertical: 40,
     paddingHorizontal: 32,
   },
   emptyIconCircle: {
     width: 72,
     height: 72,
     borderRadius: 36,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#F2F2F7",
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 16,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "#E5E5EA",
   },
   emptyTitle: {
     fontSize: 17,
@@ -406,5 +383,70 @@ const styles = StyleSheet.create({
     color: "#8E8E93",
     textAlign: "center",
     lineHeight: 22,
+  },
+
+  // ── CTAボタン ──
+  ctaBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    backgroundColor: "#5B4EFF",
+    borderRadius: 28,
+    paddingVertical: 16,
+    marginHorizontal: 16,
+    marginTop: 16,
+  },
+  ctaBtnText: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#FFFFFF",
+    letterSpacing: -0.2,
+  },
+
+  // ── 下部セクション ──
+  bottomSection: {
+    backgroundColor: "#F2F2F7",
+    paddingTop: 24,
+    paddingHorizontal: 16,
+    paddingBottom: 12,
+    gap: 12,
+  },
+  infoCard: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 12,
+    overflow: "hidden",
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "#E5E5EA",
+  },
+  infoRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    gap: 12,
+    minHeight: 56,
+  },
+  infoIcon: {
+    width: 34,
+    height: 34,
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+  },
+  infoBody: {
+    flex: 1,
+    gap: 2,
+  },
+  infoTitle: {
+    flex: 1,
+    fontSize: 15,
+    fontWeight: "500",
+    color: "#1C1C1E",
+  },
+  infoMeta: {
+    fontSize: 12,
+    color: "#8E8E93",
   },
 });

@@ -7,7 +7,6 @@ import {
   ScrollView,
   Platform,
   StyleSheet,
-  KeyboardAvoidingView,
   TouchableOpacity,
 } from "react-native";
 import { useRouter } from "expo-router";
@@ -69,10 +68,7 @@ export default function NewProjectScreen() {
 
   return (
     <ScreenContainer edges={["top", "left", "right"]} containerClassName="bg-background">
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.flex}
-      >
+      <View style={styles.flex}>
         {/* ナビゲーションヘッダー */}
         <Animated.View entering={FadeIn.duration(300)} style={styles.navHeader}>
           <TouchableOpacity
@@ -105,6 +101,7 @@ export default function NewProjectScreen() {
                 value={title}
                 onChangeText={setTitle}
                 returnKeyType="done"
+                autoFocus={false}
               />
             </GlassCard>
           </Animated.View>
@@ -164,7 +161,7 @@ export default function NewProjectScreen() {
             <IconSymbol name="arrow.right" size={20} color={isValid ? "#FFFFFF" : "#8E8E93"} />
           </TouchableOpacity>
         </Animated.View>
-      </KeyboardAvoidingView>
+      </View>
     </ScreenContainer>
   );
 }
