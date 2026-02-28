@@ -438,7 +438,7 @@ const styles = StyleSheet.create({
   },
   listCardInner: {
     borderRadius: 12,
-    paddingVertical: 16,
+    paddingVertical: 12,
     paddingHorizontal: 16,
     backgroundColor: "#FFFFFF",
     overflow: "hidden",
@@ -452,7 +452,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     alignItems: "center",
     justifyContent: "center",
-    marginRight: 16,
+    marginRight: 20,
     marginTop: 2,
   },
   listCardBody: {
@@ -467,6 +467,6 @@ const styles = StyleSheet.create({
   listCardSubtitle: {
     fontSize: 12,
     color: "#8E8E93",
-    marginTop: 5,
+    marginTop: 2,
   },
 });
