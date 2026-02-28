@@ -77,10 +77,10 @@ export default function HomeScreen() {
       <ScrollView
         style={styles.scroll}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingTop: 16, paddingBottom: insets.bottom + 100, flexGrow: 1 }}
+        contentContainerStyle={{ paddingTop: 0, paddingBottom: insets.bottom + 100, flexGrow: 1 }}
       >
         {/* ── ヘッダー ── */}
-        <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
+        <View style={[styles.header, { paddingTop: insets.top + 4 }]}>
           <View style={styles.logoRow}>
             <View style={styles.logoIcon}>
               <IconSymbol name="sparkles" size={18} color="#5B4EFF" />
@@ -202,7 +202,6 @@ export default function HomeScreen() {
           onPress={handleNewProject}
           activeOpacity={0.88}
         >
-          <IconSymbol name="plus" size={20} color="#FFFFFF" />
           <Text style={styles.ctaBtnText}>＋ 決断を始める</Text>
         </TouchableOpacity>
 
@@ -268,7 +267,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 16,
-    paddingTop: 8,
+    paddingTop: 4,
+    paddingBottom: 4,
     marginBottom: 0,
   },
   logoRow: {
@@ -305,9 +305,9 @@ const styles = StyleSheet.create({
 
   // ── メインカード（グラスモーフィズム） ──
   mainCardOuter: {
-    marginHorizontal: 24,
+    marginHorizontal: 32,
     marginTop: 32,
-    borderRadius: 20,
+    borderRadius: 28,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.18,
@@ -316,8 +316,8 @@ const styles = StyleSheet.create({
   },
   mainCard: {
     backgroundColor: "rgba(255,255,255,0.45)",
-    borderRadius: 20,
-    borderWidth: 2.5,
+    borderRadius: 28,
+    borderWidth: 3.5,
     borderColor: "rgba(255,255,255,1.0)",
     overflow: "hidden",
   },
@@ -400,14 +400,11 @@ const styles = StyleSheet.create({
 
   // ── CTAボタン ──
   ctaBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
+    alignSelf: "center",
     backgroundColor: "#5B4EFF",
     borderRadius: 28,
-    paddingVertical: 16,
-    marginHorizontal: 40,
+    paddingVertical: 14,
+    paddingHorizontal: 48,
     marginTop: 20,
   },
   ctaBtnText: {
@@ -419,8 +416,8 @@ const styles = StyleSheet.create({
   // ── 下部セクション ──
   bottomSection: {
     backgroundColor: "#F2F2F7",
-    marginTop: 28,
-    paddingTop: 24,
+    marginTop: 40,
+    paddingTop: 20,
     paddingBottom: 48,
     flexGrow: 1,
   },
@@ -448,12 +445,12 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   listCardTitle: {
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: "500",
     color: "#1C1C1E",
   },
   listCardSubtitle: {
-    fontSize: 12,
+    fontSize: 11,
     color: "#8E8E93",
   },
 });
