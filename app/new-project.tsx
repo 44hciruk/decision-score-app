@@ -114,7 +114,7 @@ export default function NewProjectScreen() {
             <GlassCard style={styles.inputCard}>
               <TextInput
                 style={styles.input}
-                placeholder="例：今日のランチ、転職先候補..."
+                placeholder="タップして入力（例：今日のランチ、転職先候補...）"
                 placeholderTextColor="#C4B5FD"
                 value={title}
                 onChangeText={setTitle}
@@ -283,12 +283,14 @@ const styles = StyleSheet.create({
     marginBottom: 28,
   },
   input: {
-    paddingHorizontal: 18,
-    paddingVertical: 18,
-    fontSize: 17,
-    color: "#111827",
-    fontWeight: "500",
-    minHeight: 56,
+    borderWidth: 1.5,
+    borderColor: "#C9A0FF",
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    fontSize: 15,
+    color: "#1C1C1E",
+    backgroundColor: "#FFFFFF",
   },
   templateGrid: {
     flexDirection: "row",
