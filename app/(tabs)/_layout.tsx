@@ -17,7 +17,7 @@ function TabIcon({ focused, iconName, label }: TabIconProps) {
       <IconSymbol
         name={iconName}
         size={24}
-        color={focused ? "#6D28D9" : "#8E8E93"}
+        color={focused ? "#5B4EFF" : "#8E8E93"}
       />
       <Text style={[tabStyles.label, focused && tabStyles.labelActive]}>
         {label}
@@ -38,7 +38,7 @@ const tabStyles = StyleSheet.create({
     color: "#8E8E93",
   },
   labelActive: {
-    color: "#6D28D9",
+    color: "#5B4EFF",
     fontWeight: "600",
   },
 });

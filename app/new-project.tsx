@@ -84,8 +84,10 @@ export default function NewProjectScreen() {
             <Text style={styles.navBackText}>戻る</Text>
           </TouchableOpacity>
           <Text style={styles.navTitle}>新しい決断</Text>
-          <Text style={styles.stepText}>1/3</Text>
+          <View style={styles.navSpacer} />
         </Animated.View>
+
+        <Text style={styles.stepLabel}>ステップ 1 / 3</Text>
 
         <ScrollView
           contentContainerStyle={styles.scrollContent}
@@ -103,7 +105,6 @@ export default function NewProjectScreen() {
                 value={title}
                 onChangeText={setTitle}
                 returnKeyType="done"
-                autoFocus
               />
             </GlassCard>
           </Animated.View>
@@ -199,12 +200,15 @@ const styles = StyleSheet.create({
     color: "#1C1C1E",
     textAlign: "center",
   },
-  stepText: {
+  navSpacer: {
+    minWidth: 80,
+  },
+  stepLabel: {
+    textAlign: "center",
     fontSize: 13,
     color: "#8E8E93",
-    fontWeight: "500",
-    minWidth: 60,
-    textAlign: "right",
+    marginTop: 16,
+    marginBottom: 8,
   },
   scrollContent: {
     paddingHorizontal: 16,

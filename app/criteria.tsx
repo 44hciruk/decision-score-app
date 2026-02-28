@@ -112,8 +112,10 @@ export default function CriteriaScreen() {
               <Text style={styles.navBackText}>戻る</Text>
             </TouchableOpacity>
             <Text style={styles.navTitle}>評価項目</Text>
-            <Text style={styles.stepText}>3/3</Text>
+            <View style={styles.navSpacer} />
           </Animated.View>
+
+          <Text style={styles.stepLabel}>ステップ 3 / 3</Text>
 
           <ScrollView
             contentContainerStyle={styles.scrollContent}
@@ -243,12 +245,15 @@ const styles = StyleSheet.create({
     color: "#1C1C1E",
     textAlign: "center",
   },
-  stepText: {
+  navSpacer: {
+    minWidth: 80,
+  },
+  stepLabel: {
+    textAlign: "center",
     fontSize: 13,
     color: "#8E8E93",
-    fontWeight: "500",
-    minWidth: 60,
-    textAlign: "right",
+    marginTop: 16,
+    marginBottom: 8,
   },
   scrollContent: {
     paddingHorizontal: 16,

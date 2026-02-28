@@ -50,6 +50,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         "color-success": SchemeColors[colorScheme].success,
         "color-warning": SchemeColors[colorScheme].warning,
         "color-error": SchemeColors[colorScheme].error,
+        "color-accent": (SchemeColors[colorScheme] as Record<string, string>)["accent"] ?? "#EDEDFF",
       }),
     [colorScheme],
   );
@@ -65,7 +66,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <ThemeContext.Provider value={value}>
-      <View style={[{ flex: 1 }, themeVariables]}>{children}</View>
+      <View style={[{ flex: 1, backgroundColor: SchemeColors[colorScheme].background }, themeVariables]}>{children}</View>
     </ThemeContext.Provider>
   );
 }
