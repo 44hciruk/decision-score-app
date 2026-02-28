@@ -70,7 +70,7 @@ export default function HomeScreen() {
       <LinearGradient
         colors={["#FFD6F0", "#EDD5FF", "#D4B8FF"]}
         start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }}
+        end={{ x: 1, y: 1 }}
         style={StyleSheet.absoluteFill}
       />
 
