@@ -114,7 +114,7 @@ export default function NewProjectScreen() {
             <GlassCard style={styles.inputCard}>
               <TextInput
                 style={styles.input}
-                placeholder="例：ランチのお店、新しい服"
+                placeholder="比較したいものを入力（例：ランチのお店、新しい服）"
                 placeholderTextColor="#C4B5FD"
                 value={title}
                 onChangeText={setTitle}
