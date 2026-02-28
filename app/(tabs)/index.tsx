@@ -8,6 +8,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Ionicons } from "@expo/vector-icons";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { loadProjects, type Project } from "@/lib/storage";
 import * as Haptics from "expo-haptics";
@@ -205,7 +206,9 @@ export default function HomeScreen() {
           {/* お知らせ */}
           <TouchableOpacity style={styles.listCardShadow} activeOpacity={0.7}>
             <View style={styles.listCardInner}>
-              <IconSymbol name="bell.fill" size={20} color="#8E8E93" />
+              <View style={styles.listIconCircle}>
+                <Ionicons name="notifications-outline" size={20} color="#1C1C1E" />
+              </View>
               <View style={styles.listCardBody}>
                 <Text style={styles.listCardTitle}>お知らせ</Text>
               </View>
@@ -216,7 +219,9 @@ export default function HomeScreen() {
           {/* 使い方ガイド */}
           <TouchableOpacity style={styles.listCardShadow} activeOpacity={0.7}>
             <View style={styles.listCardInner}>
-              <IconSymbol name="info.circle" size={20} color="#5B4EFF" />
+              <View style={styles.listIconCircle}>
+                <Ionicons name="information-circle-outline" size={20} color="#1C1C1E" />
+              </View>
               <View style={styles.listCardBody}>
                 <Text style={styles.listCardTitle}>使い方ガイド</Text>
                 <Text style={styles.listCardSubtitle}>
@@ -230,7 +235,9 @@ export default function HomeScreen() {
           {/* プレミアムプラン */}
           <TouchableOpacity style={styles.listCardShadow} activeOpacity={0.7}>
             <View style={styles.listCardInner}>
-              <IconSymbol name="star.fill" size={20} color="#FF9500" />
+              <View style={styles.listIconCircle}>
+                <Ionicons name="star-outline" size={20} color="#1C1C1E" />
+              </View>
               <View style={styles.listCardBody}>
                 <Text style={styles.listCardTitle}>プレミアムプラン</Text>
                 <Text style={styles.listCardSubtitle}>
@@ -428,12 +435,22 @@ const styles = StyleSheet.create({
   },
   listCardInner: {
     borderRadius: 12,
-    paddingVertical: 14,
+    paddingVertical: 16,
     paddingHorizontal: 16,
     backgroundColor: "#FFFFFF",
     overflow: "hidden",
     flexDirection: "row",
+    alignItems: "flex-start",
+  },
+  listIconCircle: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: "#F2F2F7",
     alignItems: "center",
+    justifyContent: "center",
+    marginRight: 16,
+    marginTop: 2,
   },
   listCardBody: {
     flex: 1,
