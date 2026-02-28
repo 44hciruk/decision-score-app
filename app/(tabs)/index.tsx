@@ -311,7 +311,7 @@ const styles = StyleSheet.create({
   mainCard: {
     backgroundColor: "rgba(255,255,255,0.45)",
     borderRadius: 36,
-    borderWidth: 2,
+    borderWidth: 3,
     borderColor: "#FFFFFF",
     overflow: "hidden",
   },
