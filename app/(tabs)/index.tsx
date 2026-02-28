@@ -456,12 +456,12 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   listCardTitle: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: "600",
     color: "#1C1C1E",
   },
   listCardSubtitle: {
-    fontSize: 11,
+    fontSize: 12,
     color: "#8E8E93",
   },
 });
