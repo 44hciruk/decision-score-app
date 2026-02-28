@@ -463,5 +463,6 @@ const styles = StyleSheet.create({
   listCardSubtitle: {
     fontSize: 12,
     color: "#8E8E93",
+    marginTop: 5,
   },
 });
