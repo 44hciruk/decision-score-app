@@ -316,7 +316,7 @@ const styles = StyleSheet.create({
     elevation: 10,
   },
   mainCard: {
-    backgroundColor: "rgba(255,255,255,0.45)",
+    backgroundColor: "rgba(255,255,255,0.72)",
     borderRadius: 36,
     borderWidth: 3,
     borderColor: "#FFFFFF",
@@ -342,7 +342,7 @@ const styles = StyleSheet.create({
   },
   mainCardSubtitle: {
     fontSize: 13,
-    color: "#8E8E93",
+    color: "#4A4A4A",
     marginTop: 8,
     textAlign: "center",
     lineHeight: 20,
@@ -428,10 +428,10 @@ const styles = StyleSheet.create({
     marginHorizontal: 24,
     marginBottom: 12,
     shadowColor: "#000000",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.12,
-    shadowRadius: 6,
-    elevation: 5,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.18,
+    shadowRadius: 2,
+    elevation: 3,
   },
   listCardInner: {
     borderRadius: 12,
@@ -446,7 +446,6 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: "#F2F2F7",
     alignItems: "center",
     justifyContent: "center",
     marginRight: 16,
@@ -458,7 +457,7 @@ const styles = StyleSheet.create({
   },
   listCardTitle: {
     fontSize: 14,
-    fontWeight: "500",
+    fontWeight: "600",
     color: "#1C1C1E",
   },
   listCardSubtitle: {
