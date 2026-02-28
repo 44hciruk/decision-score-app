@@ -109,7 +109,7 @@ export default function ResultScreen() {
     if (index === 0) return "#22C55E"; // 1位: 緑
     if (index === 1) return "#F59E0B"; // 2位: オレンジ
     if (index === total - 1) return "#EF4444"; // 最下位: 赤
-    return "#7C3AED"; // その他: 紫
+    return "#5B4EFF"; // その他: 青紫
   };
 
   return (
@@ -151,7 +151,7 @@ export default function ResultScreen() {
         <Animated.View entering={FadeInDown.delay(800).duration(400)} style={styles.confidenceContainer}>
           <GlassCard style={styles.confidenceBadge}>
             <View style={styles.confidenceInner}>
-              <IconSymbol name="lightbulb.fill" size={16} color="#7C3AED" />
+              <IconSymbol name="lightbulb.fill" size={16} color="#5B4EFF" />
               <Text style={styles.confidenceText}>
                 {scoreDiff}点差 — {confidenceMessage}
               </Text>
@@ -192,7 +192,7 @@ export default function ResultScreen() {
                     <Text
                       style={[
                         styles.rankItemName,
-                        { fontWeight: isWinner ? "700" : "500", color: isWinner ? "#1A1535" : "#3C3C43" },
+                        { fontWeight: isWinner ? "700" : "500", color: isWinner ? "#1C1C1E" : "#3C3C43" },
                       ]}
                       numberOfLines={1}
                     >
@@ -277,7 +277,7 @@ function CircularScore({ score }: { score: number }) {
           cx={size / 2}
           cy={size / 2}
           r={radius}
-          stroke="#EDE9FF"
+          stroke="#EDEDFF"
           strokeWidth={strokeWidth}
           fill="none"
         />
@@ -333,6 +333,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 16,
     paddingVertical: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: "#E5E5EA",
+    backgroundColor: "#FFFFFF",
   },
   navSpacer: {
     width: 40,
@@ -344,8 +347,9 @@ const styles = StyleSheet.create({
     letterSpacing: -0.3,
   },
   scrollContent: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     paddingBottom: 20,
+    paddingTop: 16,
   },
   winnerSection: {
     alignItems: "center",
@@ -359,12 +363,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 12,
-    borderWidth: 1.5,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: "#86EFAC",
   },
   winnerBadge: {
     backgroundColor: "#DCFCE7",
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: "#86EFAC",
     paddingHorizontal: 14,
     paddingVertical: 5,
@@ -424,7 +428,7 @@ const styles = StyleSheet.create({
   confidenceText: {
     fontSize: 15,
     fontWeight: "600",
-    color: "#1A1535",
+    color: "#1C1C1E",
     textAlign: "center",
   },
   rankingTitle: {
@@ -477,9 +481,12 @@ const styles = StyleSheet.create({
     color: "#8E8E93",
   },
   bottomBar: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     paddingVertical: 12,
     paddingBottom: 32,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: "#E5E5EA",
+    backgroundColor: "#FFFFFF",
   },
   buttonRow: {
     flexDirection: "row",
@@ -488,25 +495,25 @@ const styles = StyleSheet.create({
   secondaryBtn: {
     flex: 1,
     paddingVertical: 18,
-    borderRadius: 12,
+    borderRadius: 28,
     alignItems: "center",
-    backgroundColor: "#F5F3FF",
-    borderWidth: 1.5,
-    borderColor: "#DDD6FE",
+    backgroundColor: "#EDEDFF",
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "#E5E5EA",
     minHeight: 58,
     justifyContent: "center",
   },
   secondaryBtnText: {
     fontSize: 14,
     fontWeight: "700",
-    color: "#6D28D9",
+    color: "#5B4EFF",
   },
   primaryBtn: {
     flex: 2,
     paddingVertical: 18,
-    borderRadius: 12,
+    borderRadius: 28,
     alignItems: "center",
-    backgroundColor: "#6D28D9",
+    backgroundColor: "#5B4EFF",
     flexDirection: "row",
     justifyContent: "center",
     gap: 8,

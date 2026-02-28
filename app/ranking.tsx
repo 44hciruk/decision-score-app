@@ -98,7 +98,7 @@ export default function RankingScreen() {
           style={styles.navBackBtn}
           activeOpacity={0.7}
         >
-          <IconSymbol name="chevron.left" size={20} color="#6D28D9" />
+          <IconSymbol name="chevron.left" size={20} color="#5B4EFF" />
           <Text style={styles.navBackText}>戻る</Text>
         </TouchableOpacity>
         <Text style={styles.navTitle}>順位をつける</Text>
@@ -129,7 +129,7 @@ export default function RankingScreen() {
         style={styles.criterionContainer}
       >
         <View style={styles.criterionBadge}>
-          <IconSymbol name="star.fill" size={12} color="#6D28D9" />
+          <IconSymbol name="star.fill" size={12} color="#5B4EFF" />
           <Text style={styles.criterionBadgeText}>評価基準</Text>
         </View>
         <Text style={styles.criterionName}>{currentCriterion}</Text>
@@ -197,8 +197,8 @@ let globalDragState = {
 // Draggable Item Component
 // ============================================================
 
-// 1位:緑、2位:オレンジ、それ以外:紫グラデーション
-const RANK_COLORS = ["#22C55E", "#F59E0B", "#6D28D9", "#6366F1", "#8B5CF6", "#A78BFA"];
+// 1位:緑、2位:オレンジ、それ以外:青紫
+const RANK_COLORS = ["#22C55E", "#F59E0B", "#5B4EFF", "#6366F1", "#8B5CF6", "#A78BFA"];
 
 function DraggableItem({
   item,
@@ -329,7 +329,7 @@ function DraggableItem({
       ],
       zIndex: zIdx.value,
       backgroundColor: "#FFFFFF",
-      borderColor: "#6D28D9",
+      borderColor: "#5B4EFF",
       borderWidth: 2,
       borderRadius: 12,
     };
@@ -339,9 +339,9 @@ function DraggableItem({
     const highlighted = isHighlighted.value > 0.5;
     return {
       transform: [{ translateY: otherItemTranslateY.value }],
-      backgroundColor: highlighted ? "#F5F3FF" : "#FFFFFF",
-      borderWidth: highlighted ? 1.5 : 1,
-      borderColor: highlighted ? "#6D28D9" : "rgba(109, 40, 217, 0.1)",
+      backgroundColor: highlighted ? "#EDEDFF" : "#FFFFFF",
+      borderWidth: highlighted ? 1.5 : StyleSheet.hairlineWidth,
+      borderColor: highlighted ? "#5B4EFF" : "#E5E5EA",
       borderRadius: 12,
     };
   });
@@ -401,7 +401,7 @@ const styles = StyleSheet.create({
   },
   navBackText: {
     fontSize: 16,
-    color: "#6D28D9",
+    color: "#5B4EFF",
     fontWeight: "500",
   },
   navTitle: {
@@ -415,20 +415,21 @@ const styles = StyleSheet.create({
     minWidth: 80,
   },
   progressContainer: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
+    paddingTop: 16,
     marginBottom: 16,
   },
   progressBarBg: {
     height: 6,
     borderRadius: 3,
     overflow: "hidden",
-    backgroundColor: "#EDE9FF",
+    backgroundColor: "#EDEDFF",
     marginBottom: 8,
   },
   progressBarFill: {
     height: "100%",
     borderRadius: 3,
-    backgroundColor: "#6D28D9",
+    backgroundColor: "#5B4EFF",
   },
   progressLabelRow: {
     flexDirection: "row",
@@ -442,11 +443,11 @@ const styles = StyleSheet.create({
   },
   progressText: {
     fontSize: 13,
-    color: "#6D28D9",
+    color: "#5B4EFF",
     fontWeight: "700",
   },
   criterionContainer: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     marginBottom: 20,
   },
   criterionBadge: {
@@ -454,18 +455,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 4,
     alignSelf: "flex-start",
-    backgroundColor: "#EDE9FF",
+    backgroundColor: "#EDEDFF",
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 12,
     marginBottom: 8,
-    borderWidth: 1,
-    borderColor: "#DDD6FE",
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "#E5E5EA",
   },
   criterionBadgeText: {
     fontSize: 11,
     fontWeight: "700",
-    color: "#6D28D9",
+    color: "#5B4EFF",
     letterSpacing: 0.5,
   },
   criterionName: {
@@ -481,7 +482,7 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     flex: 1,
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     paddingVertical: 4,
   },
   sortableListWrapper: {
@@ -528,10 +529,10 @@ const styles = StyleSheet.create({
     width: 4,
     height: 4,
     borderRadius: 2,
-    backgroundColor: "#C4B5FD",
+    backgroundColor: "#C7C7CC",
   },
   bottomBar: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     paddingVertical: 12,
     paddingBottom: 32,
   },
@@ -540,8 +541,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: 18,
-    borderRadius: 12,
-    backgroundColor: "#6D28D9",
+    borderRadius: 28,
+    backgroundColor: "#5B4EFF",
     gap: 8,
     minHeight: 56,
   },

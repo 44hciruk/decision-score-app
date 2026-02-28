@@ -19,7 +19,6 @@ import { GlassCard } from "@/components/glass-card";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { TEMPLATES, type Template } from "@/lib/storage";
 
-// テンプレートアイコンマッピング（iconフィールドはSF Symbolsアイコン名）
 type TemplateIconName = "scale.3d" | "doc.text.fill" | "star.fill" | "lightbulb.fill" | "person.2.fill" | "chart.bar.fill" | "bookmark.fill";
 const VALID_ICONS: TemplateIconName[] = ["scale.3d", "doc.text.fill", "star.fill", "lightbulb.fill", "person.2.fill", "chart.bar.fill", "bookmark.fill"];
 function getTemplateIcon(icon: string): TemplateIconName {
@@ -81,31 +80,12 @@ export default function NewProjectScreen() {
             style={styles.navBackBtn}
             activeOpacity={0.7}
           >
-            <IconSymbol name="chevron.left" size={20} color="#7C3AED" />
+            <IconSymbol name="chevron.left" size={20} color="#5B4EFF" />
             <Text style={styles.navBackText}>戻る</Text>
           </TouchableOpacity>
           <Text style={styles.navTitle}>新しい決断</Text>
-          <View style={styles.navSpacer} />
+          <Text style={styles.stepText}>1/3</Text>
         </Animated.View>
-
-        {/* ステップインジケーター */}
-        <Animated.View entering={FadeInDown.duration(300)} style={styles.stepRow}>
-          {[1, 2, 3].map((step) => (
-            <View key={step} style={styles.stepItem}>
-              <View style={[styles.stepDot, step === 1 && styles.stepDotActive]}>
-                {step === 1 ? (
-                  <IconSymbol name="checkmark" size={12} color="#FFFFFF" />
-                ) : (
-                  <Text style={styles.stepNum}>{step}</Text>
-                )}
-              </View>
-              {step < 3 && <View style={[styles.stepLine, step === 1 && styles.stepLineActive]} />}
-            </View>
-          ))}
-        </Animated.View>
-        <Animated.Text entering={FadeInDown.delay(50).duration(300)} style={styles.stepLabel}>
-          ステップ 1 / 3 — テーマを決める
-        </Animated.Text>
 
         <ScrollView
           contentContainerStyle={styles.scrollContent}
@@ -119,7 +99,7 @@ export default function NewProjectScreen() {
               <TextInput
                 style={styles.input}
                 placeholder="例：今日のランチ、転職先候補..."
-                placeholderTextColor="#C4B5FD"
+                placeholderTextColor="#8E8E93"
                 value={title}
                 onChangeText={setTitle}
                 returnKeyType="done"
@@ -155,7 +135,7 @@ export default function NewProjectScreen() {
                           </View>
                         )}
                         <View style={[styles.templateIconWrap, isSelected && styles.templateIconWrapSelected]}>
-                          <IconSymbol name={iconName} size={24} color={isSelected ? "#FFFFFF" : "#7C3AED"} />
+                          <IconSymbol name={iconName} size={24} color={isSelected ? "#FFFFFF" : "#5B4EFF"} />
                         </View>
                         <Text style={[styles.templateName, isSelected && styles.templateNameSelected]}>
                           {template.name}
@@ -180,7 +160,7 @@ export default function NewProjectScreen() {
             <Text style={[styles.nextBtnText, !isValid && styles.nextBtnTextDisabled]}>
               次へ — 候補を入力
             </Text>
-            <IconSymbol name="arrow.right" size={20} color={isValid ? "#FFFFFF" : "#C4B5FD"} />
+            <IconSymbol name="arrow.right" size={20} color={isValid ? "#FFFFFF" : "#8E8E93"} />
           </TouchableOpacity>
         </Animated.View>
       </KeyboardAvoidingView>
@@ -209,7 +189,7 @@ const styles = StyleSheet.create({
   },
   navBackText: {
     fontSize: 16,
-    color: "#6D28D9",
+    color: "#5B4EFF",
     fontWeight: "400",
   },
   navTitle: {
@@ -219,56 +199,16 @@ const styles = StyleSheet.create({
     color: "#1C1C1E",
     textAlign: "center",
   },
-  navSpacer: {
-    minWidth: 80,
-  },
-  stepRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 20,
-    marginBottom: 8,
-  },
-  stepItem: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  stepDot: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: "#EDE9FE",
-    justifyContent: "center",
-    alignItems: "center",
-    borderWidth: 1.5,
-    borderColor: "#DDD6FE",
-  },
-  stepDotActive: {
-    backgroundColor: "#6D28D9",
-    borderColor: "#6D28D9",
-  },
-  stepNum: {
-    fontSize: 12,
-    fontWeight: "700",
-    color: "#9CA3AF",
-  },
-  stepLine: {
-    width: 40,
-    height: 2,
-    backgroundColor: "#E5E1FF",
-    marginHorizontal: 4,
-  },
-  stepLineActive: {
-    backgroundColor: "#7C3AED",
-  },
-  stepLabel: {
-    textAlign: "center",
+  stepText: {
     fontSize: 13,
-    color: "#9CA3AF",
-    marginBottom: 24,
+    color: "#8E8E93",
+    fontWeight: "500",
+    minWidth: 60,
+    textAlign: "right",
   },
   scrollContent: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
+    paddingTop: 24,
     paddingBottom: 20,
   },
   sectionTitle: {
@@ -280,7 +220,7 @@ const styles = StyleSheet.create({
   },
   sectionHint: {
     fontSize: 13,
-    color: "#9CA3AF",
+    color: "#8E8E93",
     marginBottom: 12,
     marginTop: -8,
   },
@@ -291,7 +231,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     paddingVertical: 18,
     fontSize: 17,
-    color: "#111827",
+    color: "#1C1C1E",
     fontWeight: "500",
     minHeight: 56,
   },
@@ -314,9 +254,9 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   templateCardSelected: {
-    borderColor: "#6D28D9",
+    borderColor: "#5B4EFF",
     borderWidth: 2,
-    backgroundColor: "#F5F3FF",
+    backgroundColor: "#EDEDFF",
   },
   checkBadge: {
     position: "absolute",
@@ -325,7 +265,7 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     borderRadius: 10,
-    backgroundColor: "#7C3AED",
+    backgroundColor: "#5B4EFF",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -333,24 +273,24 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 14,
-    backgroundColor: "#EDE9FF",
+    backgroundColor: "#EDEDFF",
     alignItems: "center",
     justifyContent: "center",
   },
   templateIconWrapSelected: {
-    backgroundColor: "#7C3AED",
+    backgroundColor: "#5B4EFF",
   },
   templateName: {
     fontSize: 13,
     fontWeight: "600",
-    color: "#1A1535",
+    color: "#1C1C1E",
     textAlign: "center",
   },
   templateNameSelected: {
-    color: "#7C3AED",
+    color: "#5B4EFF",
   },
   bottomBar: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     paddingVertical: 12,
     paddingBottom: 32,
   },
@@ -359,15 +299,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: 16,
-    borderRadius: 12,
-    backgroundColor: "#6D28D9",
+    borderRadius: 28,
+    backgroundColor: "#5B4EFF",
     gap: 8,
     minHeight: 54,
   },
   nextBtnDisabled: {
-    backgroundColor: "#EDE9FF",
-    shadowOpacity: 0,
-    elevation: 0,
+    backgroundColor: "#EDEDFF",
   },
   nextBtnText: {
     fontSize: 16,
@@ -375,6 +313,6 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
   nextBtnTextDisabled: {
-    color: "#C4B5FD",
+    color: "#8E8E93",
   },
 });

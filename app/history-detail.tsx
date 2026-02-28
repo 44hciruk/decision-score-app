@@ -15,13 +15,11 @@ import Svg, { Circle } from "react-native-svg";
 
 import { ScreenContainer } from "@/components/screen-container";
 import { IconSymbol } from "@/components/ui/icon-symbol";
-import { useColors } from "@/hooks/use-colors";
 import { useProjectContext } from "@/lib/project-context";
 import { getConfidenceMessage, getScoreColor } from "@/lib/storage";
 
 export default function HistoryDetailScreen() {
   const router = useRouter();
-  const colors = useColors();
   const { projectId } = useLocalSearchParams<{ projectId: string }>();
   const { state, removeProject } = useProjectContext();
 
@@ -58,12 +56,12 @@ export default function HistoryDetailScreen() {
     return (
       <ScreenContainer edges={["top", "bottom", "left", "right"]}>
         <View style={styles.center}>
-          <Text style={[styles.errorText, { color: colors.muted }]}>
+          <Text style={styles.errorText}>
             プロジェクトが見つかりません
           </Text>
           <TouchableOpacity
             onPress={() => router.back()}
-            style={[styles.backBtn, { backgroundColor: colors.primary }]}
+            style={styles.backBtn}
             activeOpacity={0.8}
           >
             <Text style={styles.backBtnText}>戻る</Text>
@@ -88,7 +86,6 @@ export default function HistoryDetailScreen() {
   const date = new Date(project.createdAt);
   const dateStr = `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
 
-  // Static circular score (no animation for history)
   const size = 180;
   const strokeWidth = 10;
   const radius = (size - strokeWidth) / 2;
@@ -104,12 +101,9 @@ export default function HistoryDetailScreen() {
           style={styles.navBtn}
           activeOpacity={0.7}
         >
-          <IconSymbol name="chevron.left" size={20} color="#6D28D9" />
+          <IconSymbol name="chevron.left" size={20} color="#5B4EFF" />
         </TouchableOpacity>
-        <Text
-          style={[styles.navTitle, { color: colors.foreground }]}
-          numberOfLines={1}
-        >
+        <Text style={styles.navTitle} numberOfLines={1}>
           {project.title}
         </Text>
         <TouchableOpacity
@@ -117,7 +111,7 @@ export default function HistoryDetailScreen() {
           style={styles.navBtn}
           activeOpacity={0.7}
         >
-          <IconSymbol name="trash.fill" size={22} color={colors.error} />
+          <IconSymbol name="trash.fill" size={22} color="#FF3B30" />
         </TouchableOpacity>
       </View>
 
@@ -126,18 +120,14 @@ export default function HistoryDetailScreen() {
         showsVerticalScrollIndicator={false}
       >
         {/* Date */}
-        <Text style={[styles.dateText, { color: colors.muted }]}>
-          {dateStr}
-        </Text>
+        <Text style={styles.dateText}>{dateStr}</Text>
 
         {/* Winner */}
         <View style={styles.winnerSection}>
           <View style={styles.trophyIconWrap}>
             <IconSymbol name="trophy.fill" size={32} color="#22C55E" />
           </View>
-          <Text style={[styles.winnerName, { color: colors.foreground }]}>
-            {project.winner}
-          </Text>
+          <Text style={styles.winnerName}>{project.winner}</Text>
         </View>
 
         {/* Circular score (static) */}
@@ -148,7 +138,7 @@ export default function HistoryDetailScreen() {
                 cx={size / 2}
                 cy={size / 2}
                 r={radius}
-                stroke={colors.border}
+                stroke="#E5E5EA"
                 strokeWidth={strokeWidth}
                 fill="none"
               />
@@ -169,9 +159,7 @@ export default function HistoryDetailScreen() {
               <Text style={[styles.scoreValue, { color: scoreColor }]}>
                 {winnerScore}
               </Text>
-              <Text style={[styles.scoreUnit, { color: colors.muted }]}>
-                / 100点
-              </Text>
+              <Text style={styles.scoreUnit}>/ 100点</Text>
             </View>
           </View>
         </View>
@@ -192,9 +180,7 @@ export default function HistoryDetailScreen() {
         </View>
 
         {/* Rankings */}
-        <Text style={[styles.rankingTitle, { color: colors.foreground }]}>
-          ランキング
-        </Text>
+        <Text style={styles.rankingTitle}>ランキング</Text>
         {sortedCandidates.map((candidate, index) => {
           const score = project.scores[candidate] || 0;
           const color = getScoreColor(score);
@@ -207,10 +193,8 @@ export default function HistoryDetailScreen() {
                 style={[
                   styles.rankItem,
                   {
-                    backgroundColor: colors.surface,
-                    borderColor:
-                      index === 0 ? scoreColor + "40" : colors.border,
-                    borderWidth: index === 0 ? 2 : 1,
+                    borderColor: index === 0 ? scoreColor + "40" : "#E5E5EA",
+                    borderWidth: index === 0 ? 2 : StyleSheet.hairlineWidth,
                   },
                 ]}
               >
@@ -220,29 +204,14 @@ export default function HistoryDetailScreen() {
                       <IconSymbol name="trophy.fill" size={16} color="#22C55E" />
                     </View>
                   ) : (
-                    <View
-                      style={[
-                        styles.rankNumber,
-                        { backgroundColor: colors.border },
-                      ]}
-                    >
-                      <Text
-                        style={[
-                          styles.rankNumberText,
-                          { color: colors.muted },
-                        ]}
-                      >
-                        {index + 1}
-                      </Text>
+                    <View style={[styles.rankNumber, { backgroundColor: "#E5E5EA" }]}>
+                      <Text style={styles.rankNumberText}>{index + 1}</Text>
                     </View>
                   )}
                   <Text
                     style={[
                       styles.rankItemName,
-                      {
-                        color: colors.foreground,
-                        fontWeight: index === 0 ? "700" : "500",
-                      },
+                      { fontWeight: index === 0 ? "700" : "500" },
                     ]}
                     numberOfLines={1}
                   >
@@ -261,11 +230,7 @@ export default function HistoryDetailScreen() {
                   >
                     {score}
                   </Text>
-                  <Text
-                    style={[styles.rankItemUnit, { color: colors.muted }]}
-                  >
-                    点
-                  </Text>
+                  <Text style={styles.rankItemUnit}>点</Text>
                 </View>
               </View>
             </Animated.View>
@@ -273,50 +238,18 @@ export default function HistoryDetailScreen() {
         })}
 
         {/* Detail: criteria rankings */}
-        <Text
-          style={[
-            styles.rankingTitle,
-            { color: colors.foreground, marginTop: 24 },
-          ]}
-        >
+        <Text style={[styles.rankingTitle, { marginTop: 24 }]}>
           項目別の順位
         </Text>
         {project.criteria.map((criterion) => {
           const ordered = project.rankings[criterion] || [];
           return (
-            <View
-              key={criterion}
-              style={[
-                styles.criterionDetail,
-                {
-                  backgroundColor: colors.surface,
-                  borderColor: colors.border,
-                },
-              ]}
-            >
-              <Text
-                style={[
-                  styles.criterionDetailTitle,
-                  { color: colors.primary },
-                ]}
-              >
-                {criterion}
-              </Text>
+            <View key={criterion} style={styles.criterionDetail}>
+              <Text style={styles.criterionDetailTitle}>{criterion}</Text>
               {ordered.map((candidate, idx) => (
                 <View key={candidate} style={styles.criterionRow}>
-                  <Text
-                    style={[styles.criterionRank, { color: colors.muted }]}
-                  >
-                    {idx + 1}位
-                  </Text>
-                  <Text
-                    style={[
-                      styles.criterionCandidate,
-                      { color: colors.foreground },
-                    ]}
-                  >
-                    {candidate}
-                  </Text>
+                  <Text style={styles.criterionRank}>{idx + 1}位</Text>
+                  <Text style={styles.criterionCandidate}>{candidate}</Text>
                 </View>
               ))}
             </View>
@@ -334,6 +267,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 16,
     paddingVertical: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: "#E5E5EA",
+    backgroundColor: "#FFFFFF",
   },
   navBtn: {
     width: 40,
@@ -346,15 +282,18 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     flex: 1,
     textAlign: "center",
+    color: "#1C1C1E",
   },
   scrollContent: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     paddingBottom: 40,
+    paddingTop: 16,
   },
   dateText: {
     fontSize: 13,
     textAlign: "center",
     marginBottom: 12,
+    color: "#8E8E93",
   },
   winnerSection: {
     alignItems: "center",
@@ -368,12 +307,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 10,
-    borderWidth: 1.5,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: "#86EFAC",
   },
   winnerName: {
     fontSize: 26,
     fontWeight: "700",
+    color: "#1C1C1E",
   },
   scoreCircleContainer: {
     alignItems: "center",
@@ -395,6 +335,7 @@ const styles = StyleSheet.create({
   scoreUnit: {
     fontSize: 13,
     marginTop: -4,
+    color: "#8E8E93",
   },
   confidenceBadge: {
     alignSelf: "center",
@@ -412,14 +353,16 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "700",
     marginBottom: 12,
+    color: "#1C1C1E",
   },
   rankItem: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     padding: 14,
-    borderRadius: 14,
+    borderRadius: 12,
     marginBottom: 8,
+    backgroundColor: "#FFFFFF",
   },
   rankItemLeft: {
     flexDirection: "row",
@@ -427,21 +370,22 @@ const styles = StyleSheet.create({
     flex: 1,
     gap: 10,
   },
-
   rankNumber: {
     width: 32,
     height: 32,
-    borderRadius: 12,
+    borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
   },
   rankNumberText: {
     fontSize: 15,
     fontWeight: "700",
+    color: "#8E8E93",
   },
   rankItemName: {
     fontSize: 16,
     flex: 1,
+    color: "#1C1C1E",
   },
   rankItemRight: {
     flexDirection: "row",
@@ -453,17 +397,21 @@ const styles = StyleSheet.create({
   },
   rankItemUnit: {
     fontSize: 13,
+    color: "#8E8E93",
   },
   criterionDetail: {
     borderRadius: 12,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "#E5E5EA",
     padding: 14,
     marginBottom: 10,
+    backgroundColor: "#FFFFFF",
   },
   criterionDetailTitle: {
     fontSize: 15,
     fontWeight: "700",
     marginBottom: 8,
+    color: "#5B4EFF",
   },
   criterionRow: {
     flexDirection: "row",
@@ -474,9 +422,11 @@ const styles = StyleSheet.create({
   criterionRank: {
     fontSize: 13,
     width: 30,
+    color: "#8E8E93",
   },
   criterionCandidate: {
     fontSize: 15,
+    color: "#1C1C1E",
   },
   center: {
     flex: 1,
@@ -486,11 +436,13 @@ const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: 16,
+    color: "#8E8E93",
   },
   backBtn: {
     paddingHorizontal: 24,
     paddingVertical: 12,
-    borderRadius: 12,
+    borderRadius: 28,
+    backgroundColor: "#5B4EFF",
   },
   backBtnText: {
     color: "#FFFFFF",

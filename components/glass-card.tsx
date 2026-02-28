@@ -25,8 +25,6 @@ export function GlassCard({
   const cardStyle =
     variant === "accent"
       ? styles.accentCard
-      : variant === "elevated"
-      ? styles.elevatedCard
       : styles.card;
 
   return (
@@ -59,23 +57,11 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: "#E5E5EA",
   },
-  // アクセントカード：薄紫背景（melmoの薄ピンク相当）
+  // アクセントカード：薄紫背景
   accentCard: {
     borderRadius: 12,
-    backgroundColor: "#F5F3FF",
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "#DDD6FE",
-  },
-  // 強調カード：白地・ごく薄い影のみ
-  elevatedCard: {
-    borderRadius: 12,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#EDEDFF",
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: "#E5E5EA",
-    shadowColor: "#000000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.06,
-    shadowRadius: 4,
-    elevation: 2,
   },
 });

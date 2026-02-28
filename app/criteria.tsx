@@ -20,7 +20,7 @@ import { useProjectContext } from "@/lib/project-context";
 import { TEMPLATES } from "@/lib/storage";
 import { PremiumModal } from "@/components/premium-modal";
 
-const BADGE_COLORS = ["#6D28D9", "#0EA5E9", "#10B981", "#F59E0B", "#EF4444", "#EC4899"];
+const BADGE_COLORS = ["#5B4EFF", "#0EA5E9", "#10B981", "#F59E0B", "#EF4444", "#EC4899"];
 
 export default function CriteriaScreen() {
   const router = useRouter();
@@ -108,30 +108,12 @@ export default function CriteriaScreen() {
               style={styles.navBackBtn}
               activeOpacity={0.7}
             >
-              <IconSymbol name="chevron.left" size={20} color="#6D28D9" />
+              <IconSymbol name="chevron.left" size={20} color="#5B4EFF" />
               <Text style={styles.navBackText}>戻る</Text>
             </TouchableOpacity>
             <Text style={styles.navTitle}>評価項目</Text>
-            <View style={styles.navSpacer} />
+            <Text style={styles.stepText}>3/3</Text>
           </Animated.View>
-
-          <Animated.View entering={FadeInDown.duration(300)} style={styles.stepRow}>
-            {[1, 2, 3].map((step) => (
-              <View key={step} style={styles.stepItem}>
-                <View style={[styles.stepDot, styles.stepDotActive]}>
-                  {step < 3 ? (
-                    <IconSymbol name="checkmark" size={12} color="#FFFFFF" />
-                  ) : (
-                    <Text style={styles.stepNumActive}>{step}</Text>
-                  )}
-                </View>
-                {step < 3 && <View style={[styles.stepLine, styles.stepLineActive]} />}
-              </View>
-            ))}
-          </Animated.View>
-          <Animated.Text entering={FadeInDown.delay(50).duration(300)} style={styles.stepLabel}>
-            ステップ 3 / 3 — 評価項目を設定
-          </Animated.Text>
 
           <ScrollView
             contentContainerStyle={styles.scrollContent}
@@ -166,7 +148,7 @@ export default function CriteriaScreen() {
                       ref={(ref) => { inputRefs.current[index] = ref; }}
                       style={styles.input}
                       placeholder={`評価項目 ${index + 1}`}
-                      placeholderTextColor="#C4B5FD"
+                      placeholderTextColor="#8E8E93"
                       value={criterion}
                       onChangeText={(v) => handleChange(index, v)}
                       returnKeyType="done"
@@ -178,7 +160,7 @@ export default function CriteriaScreen() {
                         activeOpacity={0.7}
                         hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
                       >
-                        <IconSymbol name="xmark" size={16} color="#DC2626" />
+                        <IconSymbol name="xmark" size={16} color="#FF3B30" />
                       </TouchableOpacity>
                     )}
                   </View>
@@ -193,7 +175,7 @@ export default function CriteriaScreen() {
                 style={styles.addBtn}
               >
                 <View style={styles.addBtnIcon}>
-                  <IconSymbol name="plus" size={18} color="#6D28D9" />
+                  <IconSymbol name="plus" size={18} color="#5B4EFF" />
                 </View>
                 <Text style={styles.addBtnText}>項目を追加</Text>
               </TouchableOpacity>
@@ -207,7 +189,7 @@ export default function CriteriaScreen() {
               activeOpacity={0.85}
               style={[styles.nextBtn, !canProceed && styles.nextBtnDisabled]}
             >
-              <IconSymbol name="star.fill" size={20} color={canProceed ? "#FFFFFF" : "#C4B5FD"} />
+              <IconSymbol name="star.fill" size={20} color={canProceed ? "#FFFFFF" : "#8E8E93"} />
               <Text style={[styles.nextBtnText, !canProceed && styles.nextBtnTextDisabled]}>
                 スコアリング開始
               </Text>
@@ -251,7 +233,7 @@ const styles = StyleSheet.create({
   },
   navBackText: {
     fontSize: 16,
-    color: "#6D28D9",
+    color: "#5B4EFF",
     fontWeight: "500",
   },
   navTitle: {
@@ -261,56 +243,16 @@ const styles = StyleSheet.create({
     color: "#1C1C1E",
     textAlign: "center",
   },
-  navSpacer: {
-    minWidth: 80,
-  },
-  stepRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 20,
-    marginBottom: 8,
-  },
-  stepItem: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  stepDot: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: "#6D28D9",
-    justifyContent: "center",
-    alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#6D28D9",
-  },
-  stepDotActive: {
-    backgroundColor: "#6D28D9",
-    borderColor: "#6D28D9",
-  },
-  stepNumActive: {
-    fontSize: 12,
-    fontWeight: "700",
-    color: "#FFFFFF",
-  },
-  stepLine: {
-    width: 40,
-    height: 2,
-    backgroundColor: "rgba(109, 40, 217, 0.1)",
-    marginHorizontal: 4,
-  },
-  stepLineActive: {
-    backgroundColor: "#6D28D9",
-  },
-  stepLabel: {
-    textAlign: "center",
+  stepText: {
     fontSize: 13,
     color: "#8E8E93",
-    marginBottom: 24,
+    fontWeight: "500",
+    minWidth: 60,
+    textAlign: "right",
   },
   scrollContent: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
+    paddingTop: 24,
     paddingBottom: 20,
   },
   sectionTitle: {
@@ -332,12 +274,12 @@ const styles = StyleSheet.create({
     height: 4,
     borderRadius: 2,
     overflow: "hidden",
-    backgroundColor: "#EDE9FF",
+    backgroundColor: "#EDEDFF",
   },
   limitBarFill: {
     height: "100%",
     borderRadius: 2,
-    backgroundColor: "#6D28D9",
+    backgroundColor: "#5B4EFF",
   },
   inputCard: {
     marginBottom: 10,
@@ -386,26 +328,26 @@ const styles = StyleSheet.create({
     marginTop: 4,
     borderRadius: 14,
     borderWidth: 1.5,
-    borderColor: "#DDD6FE",
+    borderColor: "#E5E5EA",
     borderStyle: "dashed",
-    backgroundColor: "#FAFAFE",
+    backgroundColor: "#FFFFFF",
     minHeight: 56,
   },
   addBtnIcon: {
     width: 28,
     height: 28,
     borderRadius: 8,
-    backgroundColor: "#EDE9FF",
+    backgroundColor: "#EDEDFF",
     alignItems: "center",
     justifyContent: "center",
   },
   addBtnText: {
     fontSize: 15,
     fontWeight: "600",
-    color: "#6D28D9",
+    color: "#5B4EFF",
   },
   bottomBar: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     paddingVertical: 12,
     paddingBottom: 32,
   },
@@ -414,15 +356,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: 18,
-    borderRadius: 12,
-    backgroundColor: "#6D28D9",
+    borderRadius: 28,
+    backgroundColor: "#5B4EFF",
     gap: 8,
     minHeight: 56,
   },
   nextBtnDisabled: {
-    backgroundColor: "#EDE9FF",
-    shadowOpacity: 0,
-    elevation: 0,
+    backgroundColor: "#EDEDFF",
   },
   nextBtnText: {
     fontSize: 16,
@@ -430,6 +370,6 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
   nextBtnTextDisabled: {
-    color: "#C4B5FD",
+    color: "#8E8E93",
   },
 });
