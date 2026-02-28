@@ -441,7 +441,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   listTitle: {
-    fontSize: 15,
+    fontSize: 17,
     fontWeight: "600",
     color: "#1C1C1E",
     flex: 1,
