@@ -68,7 +68,7 @@ export default function HomeScreen() {
     <View style={styles.root}>
       {/* ── 全画面グラデーション背景 ── */}
       <LinearGradient
-        colors={["#EDE0FF", "#D8BAFF", "#C9A0FF"]}
+        colors={["#F5EEFF", "#E8D5FF", "#D4B8FF"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
         style={StyleSheet.absoluteFill}
