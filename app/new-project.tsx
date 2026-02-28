@@ -114,7 +114,7 @@ export default function NewProjectScreen() {
             <GlassCard style={styles.inputCard}>
               <TextInput
                 style={styles.input}
-                placeholder="タップして入力（例：今日のランチ、転職先候補...）"
+                placeholder="例：ランチのお店、新しい服"
                 placeholderTextColor="#C4B5FD"
                 value={title}
                 onChangeText={setTitle}
