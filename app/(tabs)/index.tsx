@@ -206,48 +206,36 @@ export default function HomeScreen() {
           {/* お知らせ */}
           <TouchableOpacity style={styles.listCardShadow} activeOpacity={0.7}>
             <View style={styles.listCardInner}>
-              <View style={styles.listIconCircle}>
-                <Ionicons name="notifications-outline" size={20} color="#1C1C1E" />
+              <View style={styles.listTitleRow}>
+                <Ionicons name="notifications-outline" size={22} color="#1C1C1E" style={styles.listIcon} />
+                <Text style={styles.listTitle}>お知らせ</Text>
+                <Ionicons name="chevron-forward" size={16} color="#1C1C1E" />
               </View>
-              <View style={styles.listCardBody}>
-                <Text style={styles.listCardTitle}>お知らせ</Text>
-                <Text style={styles.listCardSubtitle}>
-                  アップデート情報をお届けします
-                </Text>
-              </View>
-              <IconSymbol name="chevron.right" size={14} color="#1C1C1E" />
+              <Text style={styles.listSubtitle}>アップデート情報をお届けします</Text>
             </View>
           </TouchableOpacity>
 
           {/* 使い方ガイド */}
           <TouchableOpacity style={styles.listCardShadow} activeOpacity={0.7}>
             <View style={styles.listCardInner}>
-              <View style={styles.listIconCircle}>
-                <Ionicons name="information-circle-outline" size={20} color="#1C1C1E" />
+              <View style={styles.listTitleRow}>
+                <Ionicons name="information-circle-outline" size={22} color="#1C1C1E" style={styles.listIcon} />
+                <Text style={styles.listTitle}>使い方ガイド</Text>
+                <Ionicons name="chevron-forward" size={16} color="#1C1C1E" />
               </View>
-              <View style={styles.listCardBody}>
-                <Text style={styles.listCardTitle}>使い方ガイド</Text>
-                <Text style={styles.listCardSubtitle}>
-                  決断スコアの使い方を確認する
-                </Text>
-              </View>
-              <IconSymbol name="chevron.right" size={14} color="#1C1C1E" />
+              <Text style={styles.listSubtitle}>決断スコアの使い方を確認する</Text>
             </View>
           </TouchableOpacity>
 
           {/* プレミアムプラン */}
           <TouchableOpacity style={styles.listCardShadow} activeOpacity={0.7}>
             <View style={styles.listCardInner}>
-              <View style={styles.listIconCircle}>
-                <Ionicons name="star-outline" size={20} color="#1C1C1E" />
+              <View style={styles.listTitleRow}>
+                <Ionicons name="star-outline" size={22} color="#1C1C1E" style={styles.listIcon} />
+                <Text style={styles.listTitle}>プレミアムプラン</Text>
+                <Ionicons name="chevron-forward" size={16} color="#1C1C1E" />
               </View>
-              <View style={styles.listCardBody}>
-                <Text style={styles.listCardTitle}>プレミアムプラン</Text>
-                <Text style={styles.listCardSubtitle}>
-                  無制限で決断を作成できます
-                </Text>
-              </View>
-              <IconSymbol name="chevron.right" size={14} color="#1C1C1E" />
+              <Text style={styles.listSubtitle}>無制限で決断を作成できます</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -438,35 +426,29 @@ const styles = StyleSheet.create({
   },
   listCardInner: {
     borderRadius: 12,
-    paddingVertical: 12,
+    paddingVertical: 14,
     paddingHorizontal: 16,
     backgroundColor: "#FFFFFF",
     overflow: "hidden",
+    flexDirection: "column",
+  },
+  listTitleRow: {
     flexDirection: "row",
-    alignItems: "flex-start",
-  },
-  listIconCircle: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: "#FFFFFF",
     alignItems: "center",
-    justifyContent: "center",
-    marginRight: 20,
-    marginTop: 2,
+    marginBottom: 5,
   },
-  listCardBody: {
-    flex: 1,
-    gap: 2,
+  listIcon: {
+    marginRight: 10,
   },
-  listCardTitle: {
+  listTitle: {
     fontSize: 15,
     fontWeight: "600",
     color: "#1C1C1E",
+    flex: 1,
   },
-  listCardSubtitle: {
+  listSubtitle: {
     fontSize: 12,
     color: "#8E8E93",
-    marginTop: 2,
+    paddingLeft: 0,
   },
 });
