@@ -143,7 +143,7 @@ export default function HomeScreen() {
                         {item.candidates?.length ?? 0}つの選択肢
                       </Text>
                     </View>
-                    <IconSymbol name="chevron.right" size={14} color="#C7C7CC" />
+                    <IconSymbol name="chevron.right" size={14} color="#1C1C1E" />
                   </TouchableOpacity>
                 ))}
               </View>
@@ -184,7 +184,7 @@ export default function HomeScreen() {
                         {formatDate(item.createdAt)}　完了
                       </Text>
                     </View>
-                    <IconSymbol name="chevron.right" size={14} color="#C7C7CC" />
+                    <IconSymbol name="chevron.right" size={14} color="#1C1C1E" />
                   </TouchableOpacity>
                 ))}
               </View>
@@ -215,7 +215,7 @@ export default function HomeScreen() {
                   アップデート情報をお届けします
                 </Text>
               </View>
-              <IconSymbol name="chevron.right" size={14} color="#C7C7CC" />
+              <IconSymbol name="chevron.right" size={14} color="#1C1C1E" />
             </View>
           </TouchableOpacity>
 
@@ -231,7 +231,7 @@ export default function HomeScreen() {
                   決断スコアの使い方を確認する
                 </Text>
               </View>
-              <IconSymbol name="chevron.right" size={14} color="#C7C7CC" />
+              <IconSymbol name="chevron.right" size={14} color="#1C1C1E" />
             </View>
           </TouchableOpacity>
 
@@ -247,7 +247,7 @@ export default function HomeScreen() {
                   無制限で決断を作成できます
                 </Text>
               </View>
-              <IconSymbol name="chevron.right" size={14} color="#C7C7CC" />
+              <IconSymbol name="chevron.right" size={14} color="#1C1C1E" />
             </View>
           </TouchableOpacity>
         </View>
