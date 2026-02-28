@@ -77,10 +77,10 @@ export default function HomeScreen() {
       <ScrollView
         style={styles.scroll}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: insets.bottom + 100 }}
+        contentContainerStyle={{ paddingTop: 16, paddingBottom: insets.bottom + 100, flexGrow: 1 }}
       >
         {/* ── ヘッダー ── */}
-        <View style={[styles.header, { paddingTop: insets.top + 8 }]}>
+        <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
           <View style={styles.logoRow}>
             <View style={styles.logoIcon}>
               <IconSymbol name="sparkles" size={18} color="#5B4EFF" />
@@ -305,20 +305,20 @@ const styles = StyleSheet.create({
 
   // ── メインカード（グラスモーフィズム） ──
   mainCardOuter: {
-    marginHorizontal: 16,
-    marginTop: 24,
+    marginHorizontal: 24,
+    marginTop: 32,
     borderRadius: 20,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.12,
-    shadowRadius: 16,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.18,
+    shadowRadius: 20,
     elevation: 8,
   },
   mainCard: {
     backgroundColor: "rgba(255,255,255,0.45)",
     borderRadius: 20,
-    borderWidth: 2,
-    borderColor: "rgba(255,255,255,0.9)",
+    borderWidth: 2.5,
+    borderColor: "rgba(255,255,255,1.0)",
     overflow: "hidden",
   },
   emptyWrap: {
@@ -407,8 +407,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#5B4EFF",
     borderRadius: 28,
     paddingVertical: 16,
-    marginHorizontal: 16,
-    marginTop: 16,
+    marginHorizontal: 40,
+    marginTop: 20,
   },
   ctaBtnText: {
     fontSize: 16,
@@ -419,19 +419,20 @@ const styles = StyleSheet.create({
   // ── 下部セクション ──
   bottomSection: {
     backgroundColor: "#F2F2F7",
-    marginTop: 24,
+    marginTop: 28,
     paddingTop: 24,
-    paddingBottom: 32,
+    paddingBottom: 48,
+    flexGrow: 1,
   },
   listCard: {
     backgroundColor: "#FFFFFF",
     borderRadius: 12,
-    marginHorizontal: 16,
-    marginBottom: 12,
+    marginHorizontal: 24,
+    marginBottom: 14,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.10,
+    shadowRadius: 12,
     elevation: 2,
     overflow: "hidden",
   },
