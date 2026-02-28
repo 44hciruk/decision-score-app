@@ -68,7 +68,7 @@ export default function HomeScreen() {
     <View style={styles.root}>
       {/* ── 全画面グラデーション背景 ── */}
       <LinearGradient
-        colors={["#FFD6F0", "#EDD5FF", "#D4B8FF"]}
+        colors={["#E8D5FF", "#C9B8FF", "#B8D4FF"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={StyleSheet.absoluteFill}
@@ -259,7 +259,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: "#FFD6F0", // グラデーション読み込み前のフォールバック
+    backgroundColor: "#E8D5FF", // グラデーション読み込み前のフォールバック
   },
   inner: {
     flex: 1,
