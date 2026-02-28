@@ -3,7 +3,6 @@ import {
   View,
   TouchableOpacity,
   StyleSheet,
-  ScrollView,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
@@ -74,11 +73,7 @@ export default function HomeScreen() {
         style={StyleSheet.absoluteFill}
       />
 
-      <ScrollView
-        style={styles.scroll}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingTop: 0, paddingBottom: insets.bottom + 100, flexGrow: 1 }}
-      >
+      <View style={styles.inner}>
         {/* ── ヘッダー ── */}
         <View style={[styles.header, { paddingTop: insets.top + 4 }]}>
           <View style={styles.logoRow}>
@@ -246,7 +241,7 @@ export default function HomeScreen() {
             </TouchableOpacity>
           </View>
         </View>
-      </ScrollView>
+      </View>
     </View>
   );
 }
@@ -256,9 +251,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#C9A0FF", // グラデーション読み込み前のフォールバック
   },
-  scroll: {
+  inner: {
     flex: 1,
-    backgroundColor: "transparent",
   },
 
   // ── ヘッダー ──
@@ -306,17 +300,17 @@ const styles = StyleSheet.create({
   // ── メインカード（グラスモーフィズム） ──
   mainCardOuter: {
     marginHorizontal: 32,
-    marginTop: 32,
-    borderRadius: 28,
+    marginTop: 48,
+    borderRadius: 36,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.18,
-    shadowRadius: 20,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.22,
+    shadowRadius: 24,
     elevation: 8,
   },
   mainCard: {
     backgroundColor: "rgba(255,255,255,0.45)",
-    borderRadius: 28,
+    borderRadius: 36,
     borderWidth: 3.5,
     borderColor: "rgba(255,255,255,1.0)",
     overflow: "hidden",
@@ -419,7 +413,7 @@ const styles = StyleSheet.create({
     marginTop: 40,
     paddingTop: 20,
     paddingBottom: 48,
-    flexGrow: 1,
+    flex: 1,
   },
   listCard: {
     backgroundColor: "#FFFFFF",
