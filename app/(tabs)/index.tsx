@@ -204,15 +204,19 @@ export default function HomeScreen() {
         {/* ── 下部セクション（情報カード群） ── */}
         <View style={styles.bottomSection}>
           {/* お知らせ */}
-          <TouchableOpacity style={styles.listCardShadow} activeOpacity={0.7}>
+          <TouchableOpacity
+            style={styles.listCardShadow}
+            activeOpacity={0.7}
+          >
             <View style={styles.listCardInner}>
               <View style={styles.listIconCircle}>
                 <Ionicons name="notifications-outline" size={20} color="#1C1C1E" />
               </View>
-              <View style={styles.listCardBody}>
-                <Text style={styles.listCardTitle}>お知らせ</Text>
+              <View style={styles.listTextBlock}>
+                <Text style={styles.listTitle}>お知らせ</Text>
+                <Text style={styles.listSubtitle}>アップデート情報をお届けします</Text>
               </View>
-              <IconSymbol name="chevron.right" size={14} color="#C7C7CC" />
+              <Ionicons name="chevron-forward" size={16} color="#C7C7CC" style={styles.chevron} />
             </View>
           </TouchableOpacity>
 
