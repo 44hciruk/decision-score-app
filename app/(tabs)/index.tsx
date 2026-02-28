@@ -203,19 +203,19 @@ export default function HomeScreen() {
         {/* ── 下部セクション（情報カード群） ── */}
         <View style={styles.bottomSection}>
           {/* お知らせ */}
-          <View style={styles.listCard}>
-            <TouchableOpacity style={styles.listRow} activeOpacity={0.75}>
+          <TouchableOpacity style={styles.listCardShadow} activeOpacity={0.7}>
+            <View style={styles.listCardInner}>
               <IconSymbol name="bell.fill" size={20} color="#8E8E93" />
               <View style={styles.listCardBody}>
                 <Text style={styles.listCardTitle}>お知らせ</Text>
               </View>
               <IconSymbol name="chevron.right" size={14} color="#C7C7CC" />
-            </TouchableOpacity>
-          </View>
+            </View>
+          </TouchableOpacity>
 
           {/* 使い方ガイド */}
-          <View style={styles.listCard}>
-            <TouchableOpacity style={styles.listRow} activeOpacity={0.75}>
+          <TouchableOpacity style={styles.listCardShadow} activeOpacity={0.7}>
+            <View style={styles.listCardInner}>
               <IconSymbol name="info.circle" size={20} color="#5B4EFF" />
               <View style={styles.listCardBody}>
                 <Text style={styles.listCardTitle}>使い方ガイド</Text>
@@ -224,12 +224,12 @@ export default function HomeScreen() {
                 </Text>
               </View>
               <IconSymbol name="chevron.right" size={14} color="#C7C7CC" />
-            </TouchableOpacity>
-          </View>
+            </View>
+          </TouchableOpacity>
 
           {/* プレミアムプラン */}
-          <View style={styles.listCard}>
-            <TouchableOpacity style={styles.listRow} activeOpacity={0.75}>
+          <TouchableOpacity style={styles.listCardShadow} activeOpacity={0.7}>
+            <View style={styles.listCardInner}>
               <IconSymbol name="star.fill" size={20} color="#FF9500" />
               <View style={styles.listCardBody}>
                 <Text style={styles.listCardTitle}>プレミアムプラン</Text>
@@ -238,8 +238,8 @@ export default function HomeScreen() {
                 </Text>
               </View>
               <IconSymbol name="chevron.right" size={14} color="#C7C7CC" />
-            </TouchableOpacity>
-          </View>
+            </View>
+          </TouchableOpacity>
         </View>
       </View>
     </View>
@@ -304,9 +304,9 @@ const styles = StyleSheet.create({
     borderRadius: 36,
     shadowColor: "#4A00B4",
     shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.50,
+    shadowOpacity: 0.28,
     shadowRadius: 12,
-    elevation: 16,
+    elevation: 10,
   },
   mainCard: {
     backgroundColor: "rgba(255,255,255,0.45)",
@@ -415,21 +415,25 @@ const styles = StyleSheet.create({
     paddingBottom: 48,
     flex: 1,
   },
-  listCard: {
+  listCardShadow: {
     backgroundColor: "#FFFFFF",
     borderRadius: 12,
     marginHorizontal: 24,
     marginBottom: 12,
-    padding: 14,
-    borderWidth: 1,
-    borderColor: "#D1D1D6",
+    shadowColor: "#000000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.12,
+    shadowRadius: 6,
+    elevation: 5,
   },
-  listRow: {
+  listCardInner: {
+    borderRadius: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    backgroundColor: "#FFFFFF",
+    overflow: "hidden",
     flexDirection: "row",
     alignItems: "center",
-    padding: 16,
-    gap: 12,
-    minHeight: 56,
   },
   listCardBody: {
     flex: 1,
