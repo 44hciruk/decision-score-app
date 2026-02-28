@@ -308,7 +308,7 @@ const styles = StyleSheet.create({
   },
   mainCard: {
     backgroundColor: "rgba(255,255,255,0.72)",
-    borderRadius: 30,
+    borderRadius: 14,
     borderWidth: 4,
     borderColor: "#FFFFFF",
     overflow: "hidden",
@@ -394,7 +394,7 @@ const styles = StyleSheet.create({
   ctaBtn: {
     alignSelf: "center",
     backgroundColor: "#5B4EFF",
-    borderRadius: 28,
+    borderRadius: 14,
     paddingVertical: 20,
     paddingHorizontal: 56,
     marginTop: 20,
@@ -415,7 +415,7 @@ const styles = StyleSheet.create({
   },
   listCardShadow: {
     backgroundColor: "#FFFFFF",
-    borderRadius: 12,
+    borderRadius: 14,
     marginHorizontal: 24,
     marginBottom: 12,
     shadowColor: "#000000",
@@ -425,7 +425,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   listCardInner: {
-    borderRadius: 12,
+    borderRadius: 14,
     paddingVertical: 14,
     paddingHorizontal: 16,
     backgroundColor: "#FFFFFF",
