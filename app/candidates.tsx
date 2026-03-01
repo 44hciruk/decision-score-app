@@ -8,6 +8,7 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import * as Haptics from "expo-haptics";
@@ -27,23 +28,13 @@ export default function CandidatesScreen() {
   const { getLimits } = useProjectContext();
   const limits = getLimits();
 
-  const [candidates, setCandidates] = useState<string[]>(["", ""]);
+  const [candidates, setCandidates] = useState<string[]>(["", "", ""]);
   const [showPremiumModal, setShowPremiumModal] = useState(false);
   const inputRefs = useRef<(TextInput | null)[]>([]);
 
   const handleAdd = useCallback(() => {
-    if (candidates.length >= limits.candidates) {
-      setShowPremiumModal(true);
-      return;
-    }
-    if (Platform.OS !== "web") {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    }
-    setCandidates((prev) => [...prev, ""]);
-    setTimeout(() => {
-      inputRefs.current[candidates.length]?.focus();
-    }, 100);
-  }, [candidates.length, limits.candidates]);
+    Alert.alert("プレミアムプラン", "プレミアムプランで4つ以上の候補を追加できます");
+  }, []);
 
   const handleRemove = useCallback(
     (index: number) => {
@@ -104,25 +95,9 @@ export default function CandidatesScreen() {
             <View style={styles.navSpacer} />
           </Animated.View>
 
-          <Animated.View entering={FadeInDown.duration(300)} style={styles.stepRow}>
-            {[1, 2, 3].map((step) => (
-              <View key={step} style={styles.stepItem}>
-                <View style={[styles.stepDot, step <= 2 && styles.stepDotActive]}>
-                  {step <= 1 ? (
-                    <IconSymbol name="checkmark" size={12} color="#FFFFFF" />
-                  ) : step === 2 ? (
-                    <Text style={styles.stepNumActive}>{step}</Text>
-                  ) : (
-                    <Text style={styles.stepNum}>{step}</Text>
-                  )}
-                </View>
-                {step < 3 && <View style={[styles.stepLine, step <= 1 && styles.stepLineActive]} />}
-              </View>
-            ))}
-          </Animated.View>
-          <Animated.Text entering={FadeInDown.delay(50).duration(300)} style={styles.stepLabel}>
-            ステップ 2 / 3 — 候補を入力
-          </Animated.Text>
+          <View style={{ alignItems: 'center', marginTop: 16, marginBottom: 8 }}>
+            <Text style={{ fontSize: 13, color: '#8E8E93' }}>ステップ 2 / 3</Text>
+          </View>
 
           <ScrollView
             contentContainerStyle={styles.scrollContent}
@@ -132,13 +107,7 @@ export default function CandidatesScreen() {
             <Animated.View entering={FadeInDown.delay(100).duration(300)}>
               <Text style={styles.sectionTitle}>比較する候補を入力</Text>
               <View style={styles.limitRow}>
-                <Text style={styles.limitText}>
-                  {candidates.length} / {limits.candidates} 候補
-                  {limits.candidates <= 3 ? "（無料版）" : ""}
-                </Text>
-                <View style={styles.limitBarBg}>
-                  <View style={[styles.limitBarFill, { width: (fillPercent + "%") as any }]} />
-                </View>
+                <Text style={{ fontSize: 13, color: '#8E8E93' }}>最大3候補まで追加できます</Text>
               </View>
             </Animated.View>
 
@@ -149,7 +118,7 @@ export default function CandidatesScreen() {
               >
                 <GlassCard style={styles.inputCard}>
                   <View style={styles.inputRow}>
-                    <View style={[styles.indexBadge, { backgroundColor: BADGE_COLORS[index % BADGE_COLORS.length] }]}>
+                    <View style={[styles.indexBadge, { backgroundColor: '#5B4EFF' }]}>
                       <Text style={styles.indexText}>
                         {String.fromCharCode(65 + index)}
                       </Text>
@@ -200,9 +169,8 @@ export default function CandidatesScreen() {
               style={[styles.nextBtn, !canProceed && styles.nextBtnDisabled]}
             >
               <Text style={[styles.nextBtnText, !canProceed && styles.nextBtnTextDisabled]}>
-                次へ — 評価項目を設定
+                次へ
               </Text>
-              <IconSymbol name="arrow.right" size={20} color={canProceed ? "#FFFFFF" : "#C4B5FD"} />
             </TouchableOpacity>
           </Animated.View>
         </KeyboardAvoidingView>
@@ -223,7 +191,7 @@ export default function CandidatesScreen() {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1 },
+  flex: { flex: 1, backgroundColor: "#F2F2F7" },
   navHeader: {
     flexDirection: "row",
     alignItems: "center",
@@ -309,6 +277,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: 20,
     paddingBottom: 20,
+    backgroundColor: "#F2F2F7",
   },
   sectionTitle: {
     fontSize: 20,
@@ -379,14 +348,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 10,
-    paddingVertical: 18,
     marginTop: 4,
-    borderRadius: 14,
-    borderWidth: 1.5,
-    borderColor: "#DDD6FE",
-    borderStyle: "dashed",
-    backgroundColor: "#FAFAFE",
-    minHeight: 56,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#E5E5EA",
+    padding: 16,
+    shadowColor: "#000000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 2,
   },
   addBtnIcon: {
     width: 28,
@@ -411,8 +383,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: 18,
-    borderRadius: 12,
-    backgroundColor: "#6D28D9",
+    borderRadius: 20,
+    backgroundColor: "#5B4EFF",
     gap: 8,
     minHeight: 56,
   },
