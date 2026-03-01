@@ -91,7 +91,7 @@ export default function NewProjectScreen() {
         <View style={{ alignItems: 'center', marginTop: 16, marginBottom: 8 }}>
           <Text style={{ fontSize: 13, color: '#8E8E93' }}>ステップ 1 / 3</Text>
         </View>
-        <View style={{ marginTop: 4, marginBottom: 8, marginHorizontal: 32 }}>
+        <View style={{ marginTop: 4, marginBottom: 20, marginHorizontal: 32 }}>
           <View style={{ height: 4, backgroundColor: '#E5E5EA', borderRadius: 2 }}>
             <View style={{ width: '33%', height: 4, backgroundColor: '#5B4EFF', borderRadius: 2 }} />
           </View>
