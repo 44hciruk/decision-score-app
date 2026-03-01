@@ -138,28 +138,32 @@ export default function RankingScreen() {
           <TouchableOpacity
             onPress={() => handleMoveUp(index)}
             style={{
-              width: 36,
-              height: 36,
-              borderRadius: 18,
-              backgroundColor: isFirst ? '#C7C7CC' : '#5B4EFF',
+              width: 30,
+              height: 30,
+              borderRadius: 15,
+              backgroundColor: 'transparent',
+              borderWidth: 1.5,
+              borderColor: isFirst ? '#C7C7CC' : '#5B4EFF',
               justifyContent: 'center',
               alignItems: 'center',
             }}
           >
-            <Ionicons name="arrow-up" size={18} color="#FFFFFF" />
+            <Ionicons name="arrow-up" size={16} color={isFirst ? '#C7C7CC' : '#5B4EFF'} />
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => handleMoveDown(index)}
             style={{
-              width: 36,
-              height: 36,
-              borderRadius: 18,
-              backgroundColor: isLastItem ? '#C7C7CC' : '#5B4EFF',
+              width: 30,
+              height: 30,
+              borderRadius: 15,
+              backgroundColor: 'transparent',
+              borderWidth: 1.5,
+              borderColor: isLastItem ? '#C7C7CC' : '#5B4EFF',
               justifyContent: 'center',
               alignItems: 'center',
             }}
           >
-            <Ionicons name="arrow-down" size={18} color="#FFFFFF" />
+            <Ionicons name="arrow-down" size={16} color={isLastItem ? '#C7C7CC' : '#5B4EFF'} />
           </TouchableOpacity>
         </View>
       </TouchableOpacity>
@@ -192,7 +196,7 @@ export default function RankingScreen() {
             </Text>
           </View>
           <Text style={{ fontSize: 13, color: '#8E8E93', marginHorizontal: 16, marginBottom: 16 }}>
-            評価基準ごとに順位をつけてください
+            「{currentCriterion}」が優れていると思う順に並べてください。{'\n'}ドラッグまたは ↑↓ ボタンで並び替えできます。
           </Text>
         </Animated.View>
 
