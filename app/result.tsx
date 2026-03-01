@@ -121,6 +121,7 @@ export default function ResultScreen() {
         <View style={styles.navSpacer} />
       </Animated.View>
 
+      <View style={{ flex: 1, backgroundColor: '#F2F2F7' }}>
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
@@ -131,7 +132,7 @@ export default function ResultScreen() {
           style={styles.winnerSection}
         >
           <View style={styles.winnerIconWrap}>
-            <IconSymbol name="trophy.fill" size={40} color="#22C55E" />
+            <IconSymbol name="trophy.fill" size={44} color="#22C55E" />
           </View>
           <Text style={styles.winnerName}>{winner}</Text>
           <Text style={styles.winnerSubText}>総合1位</Text>
@@ -212,6 +213,7 @@ export default function ResultScreen() {
           })}
         </Animated.View>
       </ScrollView>
+      </View>
 
       {/* ボトムボタン */}
       <Animated.View entering={FadeInDown.delay(1400).duration(400)} style={styles.bottomBar}>
@@ -332,7 +334,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingVertical: 14,
     backgroundColor: "#FFFFFF",
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: "#E5E5EA",
@@ -353,11 +355,12 @@ const styles = StyleSheet.create({
   winnerSection: {
     alignItems: "center",
     marginBottom: 8,
+    paddingTop: 28,
   },
   winnerIconWrap: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: 88,
+    height: 88,
+    borderRadius: 44,
     backgroundColor: "#DCFCE7",
     alignItems: "center",
     justifyContent: "center",
