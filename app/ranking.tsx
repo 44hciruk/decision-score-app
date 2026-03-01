@@ -106,32 +106,18 @@ export default function RankingScreen() {
         <View style={styles.navSpacer} />
       </Animated.View>
 
-      {/* プログレスバー */}
-      <Animated.View entering={FadeInDown.delay(50).duration(300)} style={styles.progressContainer}>
-        <View style={styles.progressBarBg}>
-          <Animated.View
-            style={[styles.progressBarFill, { width: (progress + "%") as any }]}
-          />
-        </View>
-        <View style={styles.progressLabelRow}>
-          <Text style={styles.progressLabel} numberOfLines={1}>
-            {criteria[currentCriterionIndex]}
+      {/* 評価基準名 + カウンター */}
+      <Animated.View key={currentCriterionIndex} entering={FadeIn.duration(300)}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginHorizontal: 16, marginTop: 16, marginBottom: 4 }}>
+          <Text style={{ fontSize: 22, fontWeight: '700', color: '#1C1C1E' }}>
+            {currentCriterion}
+          </Text>
+          <Text style={{ fontSize: 15, color: '#8E8E93', fontWeight: '500' }}>
+            {currentCriterionIndex + 1} / {criteria.length}
           </Text>
         </View>
-      </Animated.View>
-
-      {/* 現在の評価基準 */}
-      <Animated.View
-        key={currentCriterionIndex}
-        entering={FadeIn.duration(300)}
-        style={styles.criterionContainer}
-      >
-        <Text style={{ fontSize: 13, color: '#8E8E93', marginBottom: 8 }}>
+        <Text style={{ fontSize: 13, color: '#8E8E93', marginHorizontal: 16, marginBottom: 16 }}>
           評価基準ごとに順位をつけてください
-        </Text>
-        <Text style={styles.criterionName}>{currentCriterion}</Text>
-        <Text style={{ fontSize: 13, color: '#5B4EFF', marginBottom: 12 }}>
-          長押しでドラッグ。上が1位です。
         </Text>
       </Animated.View>
 
@@ -165,22 +151,23 @@ export default function RankingScreen() {
             <Text style={{ fontSize: 14, color: '#5B4EFF' }}>← 前の項目に戻る</Text>
           </TouchableOpacity>
         )}
-        <TouchableOpacity
-          onPress={handleNext}
-          activeOpacity={0.85}
-          style={{
-            backgroundColor: '#5B4EFF',
-            borderRadius: 20,
-            paddingVertical: 16,
-            alignItems: 'center',
-            marginHorizontal: 16,
-            marginBottom: 32,
-          }}
-        >
-          <Text style={{ color: '#FFFFFF', fontSize: 17, fontWeight: '600' }}>
-            {isLast ? '結果を見る' : '次の評価項目へ'}
-          </Text>
-        </TouchableOpacity>
+        <View style={{ marginHorizontal: 16, marginBottom: 32 }}>
+          <TouchableOpacity
+            onPress={handleNext}
+            activeOpacity={0.85}
+            style={{
+              backgroundColor: '#5B4EFF',
+              borderRadius: 20,
+              paddingVertical: 16,
+              alignItems: 'center',
+              width: '100%',
+            }}
+          >
+            <Text style={{ color: '#FFFFFF', fontSize: 17, fontWeight: '600' }}>
+              {isLast ? '結果を見る' : '次の評価項目へ'}
+            </Text>
+          </TouchableOpacity>
+        </View>
       </Animated.View>
       </View>
     </ScreenContainer>
