@@ -151,7 +151,7 @@ export default function RankingScreen() {
             <Text style={{ fontSize: 14, color: '#5B4EFF' }}>← 前の項目に戻る</Text>
           </TouchableOpacity>
         )}
-        <View style={{ paddingHorizontal: 16, marginBottom: 32 }}>
+        <View style={{ marginBottom: 32 }}>
           <TouchableOpacity
             onPress={handleNext}
             activeOpacity={0.85}
