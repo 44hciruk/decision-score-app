@@ -67,6 +67,7 @@ export default function NewProjectScreen() {
   }, [router]);
 
   const isValid = title.trim().length > 0;
+  const isActive = title.length > 0 || selectedTemplate !== null;
 
   return (
     <ScreenContainer edges={["top", "left", "right"]} containerClassName="bg-background">
@@ -113,7 +114,7 @@ export default function NewProjectScreen() {
               <TextInput
                 style={styles.input}
                 placeholder="例：ランチのお店、新しい服"
-                placeholderTextColor="#C4B5FD"
+                placeholderTextColor="#C7C7CC"
                 value={title}
                 onChangeText={setTitle}
                 returnKeyType="done"
@@ -147,7 +148,7 @@ export default function NewProjectScreen() {
                           </View>
                         )}
                         <View style={[styles.templateIconWrap, isSelected && styles.templateIconWrapSelected]}>
-                          <Ionicons name={template.icon as any} size={24} color={isSelected ? "#FFFFFF" : "#1C1C1E"} />
+                          <Ionicons name={template.icon as any} size={24} color={isSelected ? "#FFFFFF" : "#5B4EFF"} />
                         </View>
                         <Text style={[styles.templateName, isSelected && styles.templateNameSelected]}>
                           {template.label}
@@ -167,12 +168,12 @@ export default function NewProjectScreen() {
             onPress={handleNext}
             disabled={!isValid}
             activeOpacity={0.85}
-            style={[styles.nextBtn, !isValid && styles.nextBtnDisabled]}
+            style={[styles.nextBtn, !isActive && styles.nextBtnDisabled]}
           >
-            <Text style={[styles.nextBtnText, !isValid && styles.nextBtnTextDisabled]}>
+            <Text style={[styles.nextBtnText, !isActive && styles.nextBtnTextDisabled]}>
               次へ — 候補を入力
             </Text>
-            <IconSymbol name="arrow.right" size={20} color={isValid ? "#FFFFFF" : "#C4B5FD"} />
+            <IconSymbol name="arrow.right" size={20} color="#FFFFFF" />
           </TouchableOpacity>
         </Animated.View>
       </View>
@@ -328,7 +329,7 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 14,
-    backgroundColor: "#F2F2F7",
+    backgroundColor: "#EDEDFF",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -355,12 +356,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingVertical: 16,
     borderRadius: 12,
-    backgroundColor: "#6D28D9",
+    backgroundColor: "#5B4EFF",
     gap: 8,
     minHeight: 54,
   },
   nextBtnDisabled: {
-    backgroundColor: "#F2F2F7",
+    backgroundColor: "#C9B8FF",
     shadowOpacity: 0,
     elevation: 0,
   },
