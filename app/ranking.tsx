@@ -91,6 +91,7 @@ export default function RankingScreen() {
 
   return (
     <ScreenContainer edges={["top", "left", "right"]} containerClassName="bg-background">
+      <View style={{ flex: 1, backgroundColor: '#F2F2F7' }}>
       {/* ナビゲーションヘッダー */}
       <Animated.View entering={FadeIn.duration(300)} style={styles.navHeader}>
         <TouchableOpacity
@@ -116,9 +117,6 @@ export default function RankingScreen() {
           <Text style={styles.progressLabel} numberOfLines={1}>
             {criteria[currentCriterionIndex]}
           </Text>
-          <Text style={styles.progressText}>
-            {currentCriterionIndex + 1} / {criteria.length}
-          </Text>
         </View>
       </Animated.View>
 
@@ -128,12 +126,11 @@ export default function RankingScreen() {
         entering={FadeIn.duration(300)}
         style={styles.criterionContainer}
       >
-        <View style={styles.criterionBadge}>
-          <IconSymbol name="star.fill" size={12} color="#6D28D9" />
-          <Text style={styles.criterionBadgeText}>評価基準</Text>
-        </View>
+        <Text style={{ fontSize: 13, color: '#8E8E93', marginBottom: 8 }}>
+          評価基準ごとに順位をつけてください
+        </Text>
         <Text style={styles.criterionName}>{currentCriterion}</Text>
-        <Text style={styles.criterionHint}>
+        <Text style={{ fontSize: 13, color: '#5B4EFF', marginBottom: 12 }}>
           長押しでドラッグ。上が1位です。
         </Text>
       </Animated.View>
@@ -160,24 +157,32 @@ export default function RankingScreen() {
 
       {/* ボトムボタン */}
       <Animated.View entering={FadeInDown.delay(300).duration(400)} style={styles.bottomBar}>
+        {currentCriterionIndex > 0 && (
+          <TouchableOpacity
+            onPress={handleBack}
+            style={{ alignItems: 'center', paddingVertical: 12 }}
+          >
+            <Text style={{ fontSize: 14, color: '#5B4EFF' }}>← 前の項目に戻る</Text>
+          </TouchableOpacity>
+        )}
         <TouchableOpacity
           onPress={handleNext}
           activeOpacity={0.85}
-          style={styles.nextBtn}
+          style={{
+            backgroundColor: '#5B4EFF',
+            borderRadius: 20,
+            paddingVertical: 16,
+            alignItems: 'center',
+            marginHorizontal: 16,
+            marginBottom: 32,
+          }}
         >
-          {isLast ? (
-            <>
-              <IconSymbol name="chart.bar.fill" size={20} color="#FFFFFF" />
-              <Text style={styles.nextBtnText}>結果を見る</Text>
-            </>
-          ) : (
-            <>
-              <Text style={styles.nextBtnText}>次の評価項目へ</Text>
-              <IconSymbol name="arrow.right" size={20} color="#FFFFFF" />
-            </>
-          )}
+          <Text style={{ color: '#FFFFFF', fontSize: 17, fontWeight: '600' }}>
+            {isLast ? '結果を見る' : '次の評価項目へ'}
+          </Text>
         </TouchableOpacity>
       </Animated.View>
+      </View>
     </ScreenContainer>
   );
 }
@@ -357,8 +362,8 @@ function DraggableItem({
         ]}
       >
         {/* 順位バッジ */}
-        <View style={[styles.rankBadge, { backgroundColor: rankColor + "20", borderColor: rankColor + "50" }]}>
-          <Text style={[styles.rankText, { color: rankColor }]}>
+        <View style={[styles.rankBadge, { backgroundColor: '#5B4EFF', borderColor: '#5B4EFF' }]}>
+          <Text style={[styles.rankText, { color: '#FFFFFF' }]}>
             {visualIndex + 1}
           </Text>
         </View>
@@ -469,7 +474,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   criterionName: {
-    fontSize: 26,
+    fontSize: 22,
     fontWeight: "700",
     color: "#1C1C1E",
     marginBottom: 6,
@@ -528,7 +533,7 @@ const styles = StyleSheet.create({
     width: 4,
     height: 4,
     borderRadius: 2,
-    backgroundColor: "#C4B5FD",
+    backgroundColor: "#8E8E93",
   },
   bottomBar: {
     paddingHorizontal: 20,
