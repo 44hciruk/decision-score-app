@@ -320,6 +320,12 @@ function DraggableItem({
       borderColor: '#5B4EFF',
       borderRadius: 12,
       backgroundColor: '#FFFFFF',
+      zIndex: 999,
+      elevation: 999,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.15,
+      shadowRadius: 8,
     };
   });
 
