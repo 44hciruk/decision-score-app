@@ -14,6 +14,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import DraggableFlatList, { RenderItemParams } from "react-native-draggable-flatlist";
+import { Ionicons } from "@expo/vector-icons";
 
 import { ScreenContainer } from "@/components/screen-container";
 import { IconSymbol } from "@/components/ui/icon-symbol";
@@ -111,14 +112,34 @@ export default function RankingScreen() {
             {item}
           </Text>
 
-          {/* ドラッグハンドル */}
-          <View style={styles.dragHandle}>
-            <View style={styles.handleDot} />
-            <View style={styles.handleDot} />
-            <View style={styles.handleDot} />
-            <View style={styles.handleDot} />
-            <View style={styles.handleDot} />
-            <View style={styles.handleDot} />
+          {/* 上下移動ボタン */}
+          <View style={{ flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+            {visualIndex > 0 && (
+              <TouchableOpacity
+                onPress={() => {
+                  const newData = [...currentOrder];
+                  const temp = newData[visualIndex];
+                  newData[visualIndex] = newData[visualIndex - 1];
+                  newData[visualIndex - 1] = temp;
+                  setCurrentOrder(newData);
+                }}
+              >
+                <Ionicons name="chevron-up" size={20} color="#5B4EFF" />
+              </TouchableOpacity>
+            )}
+            {visualIndex < currentOrder.length - 1 && (
+              <TouchableOpacity
+                onPress={() => {
+                  const newData = [...currentOrder];
+                  const temp = newData[visualIndex];
+                  newData[visualIndex] = newData[visualIndex + 1];
+                  newData[visualIndex + 1] = temp;
+                  setCurrentOrder(newData);
+                }}
+              >
+                <Ionicons name="chevron-down" size={20} color="#5B4EFF" />
+              </TouchableOpacity>
+            )}
           </View>
         </TouchableOpacity>
     );
