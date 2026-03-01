@@ -178,7 +178,7 @@ export default function CandidatesScreen() {
               disabled={!canProceed}
               activeOpacity={0.85}
               style={{
-                backgroundColor: isValid ? '#5B4EFF' : '#A89EFF',
+                backgroundColor: isValid ? '#5B4EFF' : 'rgba(91, 78, 255, 0.45)',
                 borderRadius: 20,
                 paddingVertical: 16,
                 alignItems: 'center',
