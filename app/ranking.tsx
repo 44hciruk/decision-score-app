@@ -151,8 +151,7 @@ export default function RankingScreen() {
             <Text style={{ fontSize: 14, color: '#5B4EFF' }}>← 前の項目に戻る</Text>
           </TouchableOpacity>
         )}
-        <View style={{ marginBottom: 32 }}>
-          <TouchableOpacity
+        <TouchableOpacity
             onPress={handleNext}
             activeOpacity={0.85}
             style={{
@@ -160,14 +159,12 @@ export default function RankingScreen() {
               borderRadius: 20,
               paddingVertical: 16,
               alignItems: 'center',
-              alignSelf: 'stretch',
             }}
           >
             <Text style={{ color: '#FFFFFF', fontSize: 17, fontWeight: '600' }}>
               {isLast ? '結果を見る' : '次の評価項目へ'}
             </Text>
           </TouchableOpacity>
-        </View>
       </Animated.View>
       </View>
     </ScreenContainer>
@@ -321,11 +318,6 @@ function DraggableItem({
       borderRadius: 12,
       backgroundColor: '#FFFFFF',
       zIndex: 999,
-      elevation: 999,
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.15,
-      shadowRadius: 8,
     };
   });
 
@@ -525,13 +517,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#8E8E93",
   },
   bottomBar: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
     paddingHorizontal: 16,
+    paddingTop: 8,
     paddingBottom: 32,
-    backgroundColor: '#F2F2F7',
   },
   nextBtn: {
     flexDirection: "row",
