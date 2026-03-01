@@ -67,6 +67,7 @@ export default function CandidatesScreen() {
 
   const filledCandidates = candidates.filter((c) => c.trim());
   const canProceed = filledCandidates.length >= 2;
+  const isValid = candidates.some((c) => c.trim().length > 0);
 
   const handleNext = useCallback(() => {
     if (!canProceed) return;
@@ -166,11 +167,9 @@ export default function CandidatesScreen() {
               <TouchableOpacity
                 onPress={handleAdd}
                 activeOpacity={0.75}
-                style={styles.addBtn}
+                style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingVertical: 14 }}
               >
-                <View style={styles.addBtnIcon}>
-                  <IconSymbol name="plus" size={18} color="#1C1C1E" />
-                </View>
+                <IconSymbol name="plus" size={18} color="#5B4EFF" />
                 <Text style={styles.addBtnText}>候補を追加</Text>
               </TouchableOpacity>
             </Animated.View>
@@ -181,9 +180,16 @@ export default function CandidatesScreen() {
               onPress={handleNext}
               disabled={!canProceed}
               activeOpacity={0.85}
-              style={[styles.nextBtn, !canProceed && styles.nextBtnDisabled]}
+              style={{
+                backgroundColor: isValid ? '#5B4EFF' : '#C9B8FF',
+                borderRadius: 20,
+                paddingVertical: 16,
+                alignItems: 'center',
+                marginHorizontal: 16,
+                marginBottom: 32,
+              }}
             >
-              <Text style={[styles.nextBtnText, !canProceed && styles.nextBtnTextDisabled]}>
+              <Text style={{ color: '#FFFFFF', fontSize: 17, fontWeight: '600' }}>
                 次へ
               </Text>
             </TouchableOpacity>
@@ -386,7 +392,7 @@ const styles = StyleSheet.create({
   addBtnText: {
     fontSize: 15,
     fontWeight: "600",
-    color: "#1C1C1E",
+    color: "#5B4EFF",
   },
   bottomBar: {
     paddingHorizontal: 20,
