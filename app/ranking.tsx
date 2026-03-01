@@ -126,7 +126,7 @@ export default function RankingScreen() {
           alignItems: 'center',
         }}
       >
-        <Ionicons name="reorder-two" size={20} color="#C7C7CC" style={{ marginRight: 8 }} />
+        <Ionicons name="grid" size={18} color="#C7C7CC" style={{ marginRight: 8 }} />
 
         <View style={styles.rankBadge}>
           <Text style={styles.rankText}>{index + 1}</Text>
@@ -134,7 +134,7 @@ export default function RankingScreen() {
 
         <Text style={styles.itemName} numberOfLines={1}>{item}</Text>
 
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
           <TouchableOpacity
             onPress={() => handleMoveUp(index)}
             style={{
