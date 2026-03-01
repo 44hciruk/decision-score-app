@@ -13,25 +13,29 @@ import { useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";
 import Animated, { FadeInDown, FadeIn } from "react-native-reanimated";
 
+import { Ionicons } from "@expo/vector-icons";
+
 import { ScreenContainer } from "@/components/screen-container";
 import { GlassCard } from "@/components/glass-card";
 import { IconSymbol } from "@/components/ui/icon-symbol";
-import { TEMPLATES, type Template } from "@/lib/storage";
 
-// テンプレートアイコンマッピング（iconフィールドはSF Symbolsアイコン名）
-type TemplateIconName = "scale.3d" | "doc.text.fill" | "star.fill" | "lightbulb.fill" | "person.2.fill" | "chart.bar.fill" | "bookmark.fill";
-const VALID_ICONS: TemplateIconName[] = ["scale.3d", "doc.text.fill", "star.fill", "lightbulb.fill", "person.2.fill", "chart.bar.fill", "bookmark.fill"];
-function getTemplateIcon(icon: string): TemplateIconName {
-  return (VALID_ICONS.includes(icon as TemplateIconName) ? icon : "scale.3d") as TemplateIconName;
-}
+type LocalTemplate = { id: string; label: string; icon: string };
+const LOCAL_TEMPLATES: LocalTemplate[] = [
+  { id: "restaurant", label: "飲食店",   icon: "restaurant-outline" },
+  { id: "shopping",   label: "商品比較", icon: "cart-outline" },
+  { id: "travel",     label: "旅行先",   icon: "airplane-outline" },
+  { id: "lesson",     label: "習い事",   icon: "school-outline" },
+  { id: "housing",    label: "住居",     icon: "home-outline" },
+  { id: "job",        label: "就職先",   icon: "briefcase-outline" },
+];
 
 export default function NewProjectScreen() {
   const router = useRouter();
   const [title, setTitle] = useState("");
-  const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
+  const [selectedTemplate, setSelectedTemplate] = useState<LocalTemplate | null>(null);
 
   const handleTemplateSelect = useCallback(
-    (template: Template) => {
+    (template: LocalTemplate) => {
       if (Platform.OS !== "web") {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
       }
@@ -39,12 +43,10 @@ export default function NewProjectScreen() {
         setSelectedTemplate(null);
       } else {
         setSelectedTemplate(template);
-        if (!title) {
-          setTitle(template.name + "の比較");
-        }
+        setTitle(template.label);
       }
     },
-    [selectedTemplate, title]
+    [selectedTemplate]
   );
 
   const handleNext = useCallback(() => {
@@ -129,9 +131,8 @@ export default function NewProjectScreen() {
             <Text style={styles.sectionTitle}>テンプレートから選ぶ</Text>
             <Text style={styles.sectionHint}>選択すると評価項目が自動入力されます</Text>
             <View style={styles.templateGrid}>
-              {TEMPLATES.map((template, idx) => {
+              {LOCAL_TEMPLATES.map((template, idx) => {
                 const isSelected = selectedTemplate?.id === template.id;
-                const iconName = getTemplateIcon(template.icon);
                 return (
                   <Animated.View
                     key={template.id}
@@ -151,10 +152,10 @@ export default function NewProjectScreen() {
                           </View>
                         )}
                         <View style={[styles.templateIconWrap, isSelected && styles.templateIconWrapSelected]}>
-                          <IconSymbol name={iconName} size={24} color={isSelected ? "#FFFFFF" : "#7C3AED"} />
+                          <Ionicons name={template.icon as any} size={24} color={isSelected ? "#FFFFFF" : "#7C3AED"} />
                         </View>
                         <Text style={[styles.templateName, isSelected && styles.templateNameSelected]}>
-                          {template.name}
+                          {template.label}
                         </Text>
                       </View>
                     </Pressable>
@@ -223,6 +224,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 20,
+    marginTop: 16,
     marginBottom: 8,
   },
   stepItem: {
@@ -276,7 +278,7 @@ const styles = StyleSheet.create({
   },
   sectionHint: {
     fontSize: 13,
-    color: "#9CA3AF",
+    color: "#8E8E93",
     marginBottom: 12,
     marginTop: -8,
   },
