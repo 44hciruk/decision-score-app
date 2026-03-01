@@ -126,9 +126,12 @@ export default function RankingScreen() {
           alignItems: 'center',
         }}
       >
-        <View style={{ width: 20, marginRight: 8, flexDirection: 'row', flexWrap: 'wrap', gap: 3, alignItems: 'center', justifyContent: 'center' }}>
-          {[0,1,2,3,4,5].map((i) => (
-            <View key={i} style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: '#C7C7CC' }} />
+        <View style={{ width: 11, marginRight: 8 }}>
+          {[0, 1, 2].map((row) => (
+            <View key={row} style={{ flexDirection: 'row', marginBottom: row < 2 ? 3 : 0 }}>
+              <View style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: '#C7C7CC' }} />
+              <View style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: '#C7C7CC', marginLeft: 3 }} />
+            </View>
           ))}
         </View>
 
