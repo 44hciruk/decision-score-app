@@ -86,7 +86,7 @@ export default function ResultScreen() {
   }, [router]);
 
   return (
-    <ScreenContainer edges={["top", "bottom", "left", "right"]}>
+    <ScreenContainer edges={["top", "left", "right"]}>
       <View style={{ flex: 1, backgroundColor: "#F2F2F7" }}>
         {/* ヘッダー */}
         <Animated.View entering={FadeIn.duration(300)} style={styles.navHeader}>
@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
   bottomBar: {
     paddingHorizontal: 20,
     paddingTop: 8,
-    paddingBottom: 32,
+    paddingBottom: 16,
   },
   primaryBtn: {
     backgroundColor: "#5B4EFF",
