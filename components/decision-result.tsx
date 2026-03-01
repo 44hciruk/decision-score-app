@@ -177,7 +177,7 @@ const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 function CircularScoreAnimated({ score }: { score: number }) {
   const size = 200;
-  const strokeWidth = 14;
+  const strokeWidth = 18;
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const animatedProgress = useSharedValue(0);
@@ -233,7 +233,7 @@ function AnimatedScoreText({ score }: { score: number }) {
 // ─── アニメーションなし円グラフ（history-detail.tsx用） ─
 function CircularScoreStatic({ score }: { score: number }) {
   const size = 200;
-  const strokeWidth = 14;
+  const strokeWidth = 18;
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference * (1 - score / 100);
