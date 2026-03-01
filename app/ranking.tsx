@@ -214,7 +214,7 @@ export default function RankingScreen() {
             onDragEnd={handleDragEnd}
             renderItem={renderItem}
             activationDistance={5}
-            scrollEnabled={false}
+            scrollEnabled={true}
           />
         </GestureHandlerRootView>
 
