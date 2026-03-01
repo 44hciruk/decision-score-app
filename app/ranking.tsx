@@ -317,7 +317,10 @@ function DraggableItem({
       borderColor: '#5B4EFF',
       borderRadius: 12,
       backgroundColor: '#FFFFFF',
-      zIndex: 999,
+      zIndex: 9999,
+      elevation: 0,
+      shadowColor: 'transparent',
+      shadowOpacity: 0,
     };
   });
 
@@ -469,9 +472,11 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
     paddingVertical: 4,
+    overflow: 'visible',
   },
   sortableListWrapper: {
     flex: 1,
+    overflow: 'visible',
   },
   listContent: {
     gap: ITEM_GAP,
