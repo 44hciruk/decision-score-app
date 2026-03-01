@@ -20,12 +20,12 @@ import { IconSymbol } from "@/components/ui/icon-symbol";
 
 type LocalTemplate = { id: string; label: string; icon: string };
 const LOCAL_TEMPLATES: LocalTemplate[] = [
-  { id: "restaurant", label: "飲食店",   icon: "restaurant-outline" },
-  { id: "shopping",   label: "商品比較", icon: "cart-outline" },
-  { id: "travel",     label: "旅行先",   icon: "airplane-outline" },
-  { id: "lesson",     label: "習い事",   icon: "school-outline" },
-  { id: "housing",    label: "住居",     icon: "home-outline" },
-  { id: "job",        label: "就職先",   icon: "briefcase-outline" },
+  { id: "restaurant",   label: "飲食店",     icon: "restaurant-outline" },
+  { id: "shopping",     label: "ショッピング", icon: "bag-outline" },
+  { id: "travel",       label: "旅先",       icon: "airplane-outline" },
+  { id: "lesson",       label: "習い事",     icon: "school-outline" },
+  { id: "entertainment", label: "映画・アニメ", icon: "film-outline" },
+  { id: "career",       label: "就職先",     icon: "briefcase-outline" },
 ];
 
 export default function NewProjectScreen() {
