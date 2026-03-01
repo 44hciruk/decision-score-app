@@ -126,7 +126,11 @@ export default function RankingScreen() {
           alignItems: 'center',
         }}
       >
-        <Ionicons name="grid" size={18} color="#C7C7CC" style={{ marginRight: 8 }} />
+        <View style={{ width: 20, marginRight: 8, flexDirection: 'row', flexWrap: 'wrap', gap: 3, alignItems: 'center', justifyContent: 'center' }}>
+          {[0,1,2,3,4,5].map((i) => (
+            <View key={i} style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: '#C7C7CC' }} />
+          ))}
+        </View>
 
         <View style={styles.rankBadge}>
           <Text style={styles.rankText}>{index + 1}</Text>
