@@ -82,7 +82,7 @@ export default function RankingScreen() {
     }
   }, [rankings, currentCriterion, currentOrder, isLast, candidates, params, router]);
 
-  const renderItem = useCallback(({ item, drag, isActive, getIndex }: RenderItemParams<string>) => {
+  const renderItem = ({ item, drag, isActive, getIndex }: RenderItemParams<string>) => {
     const visualIndex = getIndex() ?? 0;
     return (
       <TouchableOpacity
@@ -120,7 +120,7 @@ export default function RankingScreen() {
         </View>
       </TouchableOpacity>
     );
-  }, []);
+  };
 
   return (
     <ScreenContainer edges={["top", "left", "right"]} containerClassName="bg-background">
