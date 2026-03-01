@@ -99,11 +99,6 @@ export default function RankingScreen() {
             marginBottom: 8,
             flexDirection: 'row',
             alignItems: 'center',
-            shadowColor: isActive ? '#5B4EFF' : 'transparent',
-            shadowOffset: isActive ? { width: 0, height: 4 } : { width: 0, height: 0 },
-            shadowOpacity: isActive ? 0.2 : 0,
-            shadowRadius: isActive ? 8 : 0,
-            elevation: isActive ? 6 : 0,
           }}
         >
           {/* 順位バッジ */}
