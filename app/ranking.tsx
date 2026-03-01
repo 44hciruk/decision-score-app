@@ -13,7 +13,7 @@ import Animated, {
   FadeInDown,
 } from "react-native-reanimated";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import DraggableFlatList, { RenderItemParams, ScaleDecorator } from "react-native-draggable-flatlist";
+import DraggableFlatList, { RenderItemParams, ShadowDecorator } from "react-native-draggable-flatlist";
 
 import { ScreenContainer } from "@/components/screen-container";
 import { IconSymbol } from "@/components/ui/icon-symbol";
@@ -85,20 +85,26 @@ export default function RankingScreen() {
   const renderItem = ({ item, drag, isActive, getIndex }: RenderItemParams<string>) => {
     const visualIndex = getIndex() ?? 0;
     return (
-      <ScaleDecorator>
+      <ShadowDecorator>
         <TouchableOpacity
           onLongPress={drag}
           delayLongPress={300}
           activeOpacity={0.85}
-          style={[
-            styles.draggableItem,
-            {
-              backgroundColor: isActive ? '#F0EEFF' : '#FFFFFF',
-              borderWidth: isActive ? 2 : 1,
-              borderColor: isActive ? '#5B4EFF' : 'rgba(91, 78, 255, 0.1)',
-              marginBottom: ITEM_GAP,
-            },
-          ]}
+          style={{
+            backgroundColor: isActive ? '#F0EEFF' : '#FFFFFF',
+            borderWidth: isActive ? 2 : 0,
+            borderColor: '#5B4EFF',
+            borderRadius: 12,
+            padding: 16,
+            marginBottom: 8,
+            flexDirection: 'row',
+            alignItems: 'center',
+            shadowColor: isActive ? '#5B4EFF' : 'transparent',
+            shadowOffset: isActive ? { width: 0, height: 4 } : { width: 0, height: 0 },
+            shadowOpacity: isActive ? 0.2 : 0,
+            shadowRadius: isActive ? 8 : 0,
+            elevation: isActive ? 6 : 0,
+          }}
         >
           {/* 順位バッジ */}
           <View style={[styles.rankBadge, { backgroundColor: '#5B4EFF', borderColor: '#5B4EFF' }]}>
@@ -121,7 +127,7 @@ export default function RankingScreen() {
             <View style={styles.handleDot} />
           </View>
         </TouchableOpacity>
-      </ScaleDecorator>
+      </ShadowDecorator>
     );
   };
 
