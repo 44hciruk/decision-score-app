@@ -13,7 +13,7 @@ import Animated, {
   FadeInDown,
 } from "react-native-reanimated";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import DraggableFlatList, { RenderItemParams } from "react-native-draggable-flatlist";
+import DraggableFlatList, { RenderItemParams, ScaleDecorator } from "react-native-draggable-flatlist";
 
 import { ScreenContainer } from "@/components/screen-container";
 import { IconSymbol } from "@/components/ui/icon-symbol";
@@ -85,40 +85,43 @@ export default function RankingScreen() {
   const renderItem = ({ item, drag, isActive, getIndex }: RenderItemParams<string>) => {
     const visualIndex = getIndex() ?? 0;
     return (
-      <TouchableOpacity
-        onLongPress={drag}
-        activeOpacity={0.85}
-        style={[
-          styles.draggableItem,
-          {
-            backgroundColor: isActive ? '#F0EEFF' : '#FFFFFF',
-            borderWidth: isActive ? 2 : 1,
-            borderColor: isActive ? '#5B4EFF' : 'rgba(91, 78, 255, 0.1)',
-            marginBottom: ITEM_GAP,
-          },
-        ]}
-      >
-        {/* 順位バッジ */}
-        <View style={[styles.rankBadge, { backgroundColor: '#5B4EFF', borderColor: '#5B4EFF' }]}>
-          <Text style={[styles.rankText, { color: '#FFFFFF' }]}>
-            {visualIndex + 1}
+      <ScaleDecorator>
+        <TouchableOpacity
+          onLongPress={drag}
+          delayLongPress={300}
+          activeOpacity={0.85}
+          style={[
+            styles.draggableItem,
+            {
+              backgroundColor: isActive ? '#F0EEFF' : '#FFFFFF',
+              borderWidth: isActive ? 2 : 1,
+              borderColor: isActive ? '#5B4EFF' : 'rgba(91, 78, 255, 0.1)',
+              marginBottom: ITEM_GAP,
+            },
+          ]}
+        >
+          {/* 順位バッジ */}
+          <View style={[styles.rankBadge, { backgroundColor: '#5B4EFF', borderColor: '#5B4EFF' }]}>
+            <Text style={[styles.rankText, { color: '#FFFFFF' }]}>
+              {visualIndex + 1}
+            </Text>
+          </View>
+
+          <Text style={styles.itemName} numberOfLines={1}>
+            {item}
           </Text>
-        </View>
 
-        <Text style={styles.itemName} numberOfLines={1}>
-          {item}
-        </Text>
-
-        {/* ドラッグハンドル */}
-        <View style={styles.dragHandle}>
-          <View style={styles.handleDot} />
-          <View style={styles.handleDot} />
-          <View style={styles.handleDot} />
-          <View style={styles.handleDot} />
-          <View style={styles.handleDot} />
-          <View style={styles.handleDot} />
-        </View>
-      </TouchableOpacity>
+          {/* ドラッグハンドル */}
+          <View style={styles.dragHandle}>
+            <View style={styles.handleDot} />
+            <View style={styles.handleDot} />
+            <View style={styles.handleDot} />
+            <View style={styles.handleDot} />
+            <View style={styles.handleDot} />
+            <View style={styles.handleDot} />
+          </View>
+        </TouchableOpacity>
+      </ScaleDecorator>
     );
   };
 
@@ -161,6 +164,8 @@ export default function RankingScreen() {
             keyExtractor={(item) => item}
             onDragEnd={handleDragEnd}
             renderItem={renderItem}
+            activationDistance={5}
+            scrollEnabled={false}
           />
         </GestureHandlerRootView>
 
