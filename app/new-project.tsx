@@ -4,7 +4,6 @@ import {
   View,
   TextInput,
   Pressable,
-  ScrollView,
   Platform,
   StyleSheet,
   TouchableOpacity,
@@ -82,7 +81,7 @@ export default function NewProjectScreen() {
             <IconSymbol name="chevron.left" size={20} color="#7C3AED" />
             <Text style={styles.navBackText}>戻る</Text>
           </TouchableOpacity>
-          <Text style={styles.navTitle}>新しい決断</Text>
+          <Text style={styles.navTitle}>テーマを決める</Text>
           <View style={styles.navSpacer} />
         </Animated.View>
 
@@ -105,11 +104,7 @@ export default function NewProjectScreen() {
           ステップ 1 / 3 — テーマを決める
         </Animated.Text>
 
-        <ScrollView
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled"
-        >
+        <View style={styles.scrollContent}>
           {/* タイトル入力 */}
           <Animated.View entering={FadeInDown.delay(100).duration(300)}>
             <Text style={styles.sectionTitle}>何を比較しますか？</Text>
@@ -152,7 +147,7 @@ export default function NewProjectScreen() {
                           </View>
                         )}
                         <View style={[styles.templateIconWrap, isSelected && styles.templateIconWrapSelected]}>
-                          <Ionicons name={template.icon as any} size={24} color={isSelected ? "#FFFFFF" : "#7C3AED"} />
+                          <Ionicons name={template.icon as any} size={24} color={isSelected ? "#FFFFFF" : "#1C1C1E"} />
                         </View>
                         <Text style={[styles.templateName, isSelected && styles.templateNameSelected]}>
                           {template.label}
@@ -164,7 +159,7 @@ export default function NewProjectScreen() {
               })}
             </View>
           </Animated.View>
-        </ScrollView>
+        </View>
 
         {/* ボトムボタン */}
         <Animated.View entering={FadeInDown.delay(400).duration(400)} style={styles.bottomBar}>
@@ -235,11 +230,11 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     borderRadius: 15,
-    backgroundColor: "#EDE9FE",
+    backgroundColor: "#F2F2F7",
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 1.5,
-    borderColor: "#DDD6FE",
+    borderColor: "#D1D1D6",
   },
   stepDotActive: {
     backgroundColor: "#6D28D9",
@@ -253,7 +248,7 @@ const styles = StyleSheet.create({
   stepLine: {
     width: 40,
     height: 2,
-    backgroundColor: "#E5E1FF",
+    backgroundColor: "#D1D1D6",
     marginHorizontal: 4,
   },
   stepLineActive: {
@@ -287,7 +282,7 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1.5,
-    borderColor: "#C9A0FF",
+    borderColor: "#D1D1D6",
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 14,
@@ -314,9 +309,9 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   templateCardSelected: {
-    borderColor: "#6D28D9",
+    borderColor: "#1C1C1E",
     borderWidth: 2,
-    backgroundColor: "#F5F3FF",
+    backgroundColor: "#F2F2F7",
   },
   checkBadge: {
     position: "absolute",
@@ -325,7 +320,7 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     borderRadius: 10,
-    backgroundColor: "#7C3AED",
+    backgroundColor: "#1C1C1E",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -333,21 +328,21 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 14,
-    backgroundColor: "#EDE9FF",
+    backgroundColor: "#F2F2F7",
     alignItems: "center",
     justifyContent: "center",
   },
   templateIconWrapSelected: {
-    backgroundColor: "#7C3AED",
+    backgroundColor: "#1C1C1E",
   },
   templateName: {
     fontSize: 13,
     fontWeight: "600",
-    color: "#1A1535",
+    color: "#1C1C1E",
     textAlign: "center",
   },
   templateNameSelected: {
-    color: "#7C3AED",
+    color: "#1C1C1E",
   },
   bottomBar: {
     paddingHorizontal: 20,
@@ -365,7 +360,7 @@ const styles = StyleSheet.create({
     minHeight: 54,
   },
   nextBtnDisabled: {
-    backgroundColor: "#EDE9FF",
+    backgroundColor: "#F2F2F7",
     shadowOpacity: 0,
     elevation: 0,
   },
