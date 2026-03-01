@@ -101,6 +101,9 @@ export default function RankingScreen() {
             alignItems: 'center',
           }}
         >
+          {/* ドラッグハンドル */}
+          <Ionicons name="reorder-two" size={20} color="#C7C7CC" style={{ marginRight: 8 }} />
+
           {/* 順位バッジ */}
           <View style={[styles.rankBadge, { backgroundColor: '#5B4EFF', borderColor: '#5B4EFF' }]}>
             <Text style={[styles.rankText, { color: '#FFFFFF' }]}>
@@ -124,7 +127,9 @@ export default function RankingScreen() {
                   setCurrentOrder(newData);
                 }}
               >
-                <Ionicons name="chevron-up" size={20} color="#5B4EFF" />
+                <View style={{ backgroundColor: 'rgba(91,78,255,0.12)', borderRadius: 6, width: 28, height: 28, justifyContent: 'center', alignItems: 'center' }}>
+                  <Ionicons name="arrow-up" size={20} color="#5B4EFF" />
+                </View>
               </TouchableOpacity>
             )}
             {visualIndex < currentOrder.length - 1 && (
@@ -137,7 +142,9 @@ export default function RankingScreen() {
                   setCurrentOrder(newData);
                 }}
               >
-                <Ionicons name="chevron-down" size={20} color="#5B4EFF" />
+                <View style={{ backgroundColor: 'rgba(91,78,255,0.12)', borderRadius: 6, width: 28, height: 28, justifyContent: 'center', alignItems: 'center' }}>
+                  <Ionicons name="arrow-down" size={20} color="#5B4EFF" />
+                </View>
               </TouchableOpacity>
             )}
           </View>
