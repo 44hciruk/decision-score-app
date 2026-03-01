@@ -416,6 +416,6 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
   nextBtnTextDisabled: {
-    color: "#C9B8FF",
+    color: "#B8B0FF",
   },
 });
