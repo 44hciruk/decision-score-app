@@ -186,7 +186,7 @@ export default function RankingScreen() {
             style={styles.navBackBtn}
             activeOpacity={0.7}
           >
-            <IconSymbol name="chevron.left" size={20} color="#6D28D9" />
+            <IconSymbol name="chevron.left" size={20} color="#5B4EFF" />
             <Text style={styles.navBackText}>戻る</Text>
           </TouchableOpacity>
           <Text style={styles.navTitle}>順位をつける</Text>
@@ -267,7 +267,7 @@ const styles = StyleSheet.create({
   },
   navBackText: {
     fontSize: 16,
-    color: "#6D28D9",
+    color: "#5B4EFF",
     fontWeight: "500",
   },
   navTitle: {
