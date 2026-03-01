@@ -114,7 +114,7 @@ export default function CriteriaScreen() {
               style={styles.navBackBtn}
               activeOpacity={0.7}
             >
-              <IconSymbol name="chevron.left" size={20} color="#6D28D9" />
+              <IconSymbol name="chevron.left" size={20} color="#5B4EFF" />
               <Text style={styles.navBackText}>戻る</Text>
             </TouchableOpacity>
             <Text style={styles.navTitle}>評価項目</Text>
@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
   },
   navBackText: {
     fontSize: 16,
-    color: "#6D28D9",
+    color: "#5B4EFF",
     fontWeight: "500",
   },
   navTitle: {
@@ -282,15 +282,15 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: "#6D28D9",
+    backgroundColor: "#5B4EFF",
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "#6D28D9",
+    borderColor: "#5B4EFF",
   },
   stepDotActive: {
-    backgroundColor: "#6D28D9",
-    borderColor: "#6D28D9",
+    backgroundColor: "#5B4EFF",
+    borderColor: "#5B4EFF",
   },
   stepNumActive: {
     fontSize: 12,
@@ -304,7 +304,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 4,
   },
   stepLineActive: {
-    backgroundColor: "#6D28D9",
+    backgroundColor: "#5B4EFF",
   },
   stepLabel: {
     textAlign: "center",
@@ -335,12 +335,12 @@ const styles = StyleSheet.create({
     height: 4,
     borderRadius: 2,
     overflow: "hidden",
-    backgroundColor: "#EDE9FF",
+    backgroundColor: "#EDEDFF",
   },
   limitBarFill: {
     height: "100%",
     borderRadius: 2,
-    backgroundColor: "#6D28D9",
+    backgroundColor: "#5B4EFF",
   },
   inputCard: {
     marginBottom: 10,
@@ -389,7 +389,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
     borderRadius: 14,
     borderWidth: 1.5,
-    borderColor: "#DDD6FE",
+    borderColor: "#EDEDFF",
     borderStyle: "dashed",
     backgroundColor: "#FAFAFE",
     minHeight: 56,
@@ -398,7 +398,7 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 8,
-    backgroundColor: "#EDE9FF",
+    backgroundColor: "#EDEDFF",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -418,12 +418,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingVertical: 18,
     borderRadius: 12,
-    backgroundColor: "#6D28D9",
+    backgroundColor: "#5B4EFF",
     gap: 8,
     minHeight: 56,
   },
   nextBtnDisabled: {
-    backgroundColor: "#EDE9FF",
+    backgroundColor: "#EDEDFF",
     shadowOpacity: 0,
     elevation: 0,
   },
@@ -433,6 +433,6 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
   nextBtnTextDisabled: {
-    color: "#C4B5FD",
+    color: "#C9B8FF",
   },
 });

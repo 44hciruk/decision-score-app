@@ -80,7 +80,7 @@ export default function NewProjectScreen() {
             style={styles.navBackBtn}
             activeOpacity={0.7}
           >
-            <IconSymbol name="chevron.left" size={20} color="#7C3AED" />
+            <IconSymbol name="chevron.left" size={20} color="#5B4EFF" />
             <Text style={styles.navBackText}>戻る</Text>
           </TouchableOpacity>
           <Text style={styles.navTitle}>テーマを決める</Text>
@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
   },
   navBackText: {
     fontSize: 16,
-    color: "#6D28D9",
+    color: "#5B4EFF",
     fontWeight: "400",
   },
   navTitle: {
@@ -229,8 +229,8 @@ const styles = StyleSheet.create({
     borderColor: "#D1D1D6",
   },
   stepDotActive: {
-    backgroundColor: "#6D28D9",
-    borderColor: "#6D28D9",
+    backgroundColor: "#5B4EFF",
+    borderColor: "#5B4EFF",
   },
   stepNum: {
     fontSize: 12,
@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 4,
   },
   stepLineActive: {
-    backgroundColor: "#7C3AED",
+    backgroundColor: "#5B4EFF",
   },
   stepLabel: {
     textAlign: "center",
