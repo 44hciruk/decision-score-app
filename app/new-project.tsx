@@ -168,7 +168,7 @@ export default function NewProjectScreen() {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: "#FFFFFF" },
+  flex: { flex: 1, backgroundColor: "#F2F2F7" },
   navHeader: {
     flexDirection: "row",
     alignItems: "center",
@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: 20,
     paddingBottom: 20,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#F2F2F7",
   },
   sectionTitle: {
     fontSize: 20,
