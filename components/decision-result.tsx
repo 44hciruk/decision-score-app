@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import {
   Text,
   View,
+  TouchableOpacity,
   StyleSheet,
 } from "react-native";
 import Animated, {
@@ -44,6 +45,7 @@ export function DecisionResult({
   rankings,
   animated = true,
 }: DecisionResultProps) {
+  const [activeTab, setActiveTab] = useState<'overall' | 'criteria'>('overall');
   const winnerScore = scores[winner] || 0;
   const secondScore = sortedCandidates[1] ? scores[sortedCandidates[1]] || 0 : 0;
   const scoreDiff = winnerScore - secondScore;
@@ -87,80 +89,110 @@ export function DecisionResult({
         </View>
       </Animated.View>
 
+      {/* タブ */}
+      <View style={styles.tabContainer}>
+        <TouchableOpacity
+          style={[styles.tabItem, activeTab === 'overall' && styles.tabItemActive]}
+          onPress={() => setActiveTab('overall')}
+          activeOpacity={0.7}
+        >
+          <Text style={[styles.tabText, activeTab === 'overall' && styles.tabTextActive]}>
+            総合
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.tabItem, activeTab === 'criteria' && styles.tabItemActive]}
+          onPress={() => setActiveTab('criteria')}
+          activeOpacity={0.7}
+        >
+          <Text style={[styles.tabText, activeTab === 'criteria' && styles.tabTextActive]}>
+            項目別
+          </Text>
+        </TouchableOpacity>
+      </View>
+
       {/* ランキング */}
-      <Animated.View
-        entering={animated ? FadeInDown.delay(1000).duration(400) : undefined}
-      >
-        <Text style={styles.sectionTitle}>ランキング</Text>
-        {sortedCandidates.map((candidate, index) => {
-          const score = scores[candidate] || 0;
-          const rankColor = getRankColor(index, sortedCandidates.length);
-          const isWinner = index === 0;
-          return (
-            <Animated.View
-              key={`${candidate}-${index}`}
-              entering={animated ? FadeInDown.delay(1100 + index * 100).duration(300) : undefined}
-            >
-              <GlassCard
-                style={[
-                  styles.rankItem,
-                  isWinner && { borderColor: "#22C55E", borderWidth: 2 },
-                ]}
-              >
-                <View style={styles.rankItemLeft}>
-                  {isWinner ? (
-                    <View style={[styles.rankBadge, { backgroundColor: "#DCFCE7", borderColor: "#22C55E", borderWidth: 1.5 }]}>
-                      <IconSymbol name="trophy.fill" size={16} color="#22C55E" />
-                    </View>
-                  ) : (
-                    <View style={[styles.rankBadge, { backgroundColor: rankColor + "20", borderColor: rankColor + "50", borderWidth: 1.5 }]}>
-                      <Text style={[styles.rankBadgeText, { color: rankColor }]}>
-                        {index + 1}
+      {activeTab === 'overall' && (
+        <View>
+          <Animated.View
+            entering={animated ? FadeInDown.delay(1000).duration(400) : undefined}
+          >
+            <Text style={styles.sectionTitle}>ランキング</Text>
+            {sortedCandidates.map((candidate, index) => {
+              const score = scores[candidate] || 0;
+              const rankColor = getRankColor(index, sortedCandidates.length);
+              const isWinner = index === 0;
+              return (
+                <Animated.View
+                  key={`${candidate}-${index}`}
+                  entering={animated ? FadeInDown.delay(1100 + index * 100).duration(300) : undefined}
+                >
+                  <GlassCard
+                    style={[
+                      styles.rankItem,
+                      isWinner && { borderColor: "#22C55E", borderWidth: 2 },
+                    ]}
+                  >
+                    <View style={styles.rankItemLeft}>
+                      {isWinner ? (
+                        <View style={[styles.rankBadge, { backgroundColor: "#DCFCE7", borderColor: "#22C55E", borderWidth: 1.5 }]}>
+                          <IconSymbol name="trophy.fill" size={16} color="#22C55E" />
+                        </View>
+                      ) : (
+                        <View style={[styles.rankBadge, { backgroundColor: rankColor + "20", borderColor: rankColor + "50", borderWidth: 1.5 }]}>
+                          <Text style={[styles.rankBadgeText, { color: rankColor }]}>
+                            {index + 1}
+                          </Text>
+                        </View>
+                      )}
+                      <Text
+                        style={[
+                          styles.rankItemName,
+                          { fontWeight: isWinner ? "700" : "500", color: isWinner ? "#1A1535" : "#3C3C43" },
+                        ]}
+                        numberOfLines={1}
+                      >
+                        {candidate}
                       </Text>
                     </View>
-                  )}
-                  <Text
-                    style={[
-                      styles.rankItemName,
-                      { fontWeight: isWinner ? "700" : "500", color: isWinner ? "#1A1535" : "#3C3C43" },
-                    ]}
-                    numberOfLines={1}
-                  >
-                    {candidate}
-                  </Text>
-                </View>
-                <View style={styles.rankItemRight}>
-                  <Text style={[styles.rankItemScore, { color: rankColor, fontSize: isWinner ? 26 : 22 }]}>
-                    {score}
-                  </Text>
-                  <Text style={styles.rankItemUnit}>点</Text>
-                </View>
-              </GlassCard>
-            </Animated.View>
-          );
-        })}
-      </Animated.View>
+                    <View style={styles.rankItemRight}>
+                      <Text style={[styles.rankItemScore, { color: rankColor, fontSize: isWinner ? 26 : 22 }]}>
+                        {score}
+                      </Text>
+                      <Text style={styles.rankItemUnit}>点</Text>
+                    </View>
+                  </GlassCard>
+                </Animated.View>
+              );
+            })}
+          </Animated.View>
+        </View>
+      )}
 
       {/* 項目別の順位 */}
-      <Animated.View
-        entering={animated ? FadeInDown.delay(1200).duration(400) : undefined}
-      >
-        <Text style={[styles.sectionTitle, { marginTop: 24 }]}>項目別の順位</Text>
-        {criteria.map((criterion) => {
-          const ordered = rankings[criterion] || [];
-          return (
-            <View key={criterion} style={styles.criterionDetail}>
-              <Text style={styles.criterionDetailTitle}>{criterion}</Text>
-              {ordered.map((candidate, idx) => (
-                <View key={`${candidate}-${idx}`} style={styles.criterionRow}>
-                  <Text style={styles.criterionRank}>{idx + 1}位</Text>
-                  <Text style={styles.criterionCandidate}>{candidate}</Text>
+      {activeTab === 'criteria' && (
+        <View>
+          <Animated.View
+            entering={animated ? FadeInDown.delay(1200).duration(400) : undefined}
+          >
+            <Text style={[styles.sectionTitle, { marginTop: 24 }]}>項目別の順位</Text>
+            {criteria.map((criterion) => {
+              const ordered = rankings[criterion] || [];
+              return (
+                <View key={criterion} style={styles.criterionDetail}>
+                  <Text style={styles.criterionDetailTitle}>{criterion}</Text>
+                  {ordered.map((candidate, idx) => (
+                    <View key={`${candidate}-${idx}`} style={styles.criterionRow}>
+                      <Text style={styles.criterionRank}>{idx + 1}位</Text>
+                      <Text style={styles.criterionCandidate}>{candidate}</Text>
+                    </View>
+                  ))}
                 </View>
-              ))}
-            </View>
-          );
-        })}
-      </Animated.View>
+              );
+            })}
+          </Animated.View>
+        </View>
+      )}
     </View>
   );
 }
@@ -390,5 +422,37 @@ const styles = StyleSheet.create({
   criterionCandidate: {
     fontSize: 15,
     color: "#1C1C1E",
+  },
+  tabContainer: {
+    flexDirection: 'row',
+    backgroundColor: '#E5E5EA',
+    borderRadius: 10,
+    padding: 3,
+    marginHorizontal: 16,
+    marginBottom: 20,
+    marginTop: 8,
+  },
+  tabItem: {
+    flex: 1,
+    paddingVertical: 8,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  tabItemActive: {
+    backgroundColor: '#FFFFFF',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  tabText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#8E8E93',
+  },
+  tabTextActive: {
+    color: '#5B4EFF',
+    fontWeight: '600',
   },
 });
