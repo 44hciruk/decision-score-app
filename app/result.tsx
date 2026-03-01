@@ -222,23 +222,30 @@ export default function ResultScreen() {
 
       {/* ボトムボタン */}
       <Animated.View entering={FadeInDown.delay(1400).duration(400)} style={styles.bottomBar}>
-        <View style={styles.buttonRow}>
-          <TouchableOpacity
-            onPress={handleRetry}
-            activeOpacity={0.7}
-            style={styles.secondaryBtn}
-          >
-            <Text style={styles.secondaryBtnText}>保存せずに戻る</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={handleSave}
-            activeOpacity={0.85}
-            style={styles.primaryBtn}
-          >
-            <IconSymbol name="checkmark" size={18} color="#FFFFFF" />
-            <Text style={styles.primaryBtnText}>保存して戻る</Text>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity
+          onPress={handleSave}
+          activeOpacity={0.85}
+          style={{
+            backgroundColor: '#5B4EFF',
+            borderRadius: 20,
+            paddingVertical: 16,
+            alignItems: 'center',
+            flexDirection: 'row',
+            justifyContent: 'center',
+            gap: 8,
+            marginBottom: 4,
+          }}
+        >
+          <IconSymbol name="checkmark" size={18} color="#FFFFFF" />
+          <Text style={{ color: '#FFFFFF', fontSize: 17, fontWeight: '600' }}>保存して戻る</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={handleRetry}
+          activeOpacity={0.7}
+          style={{ alignItems: 'center', paddingVertical: 12 }}
+        >
+          <Text style={{ fontSize: 14, color: '#5B4EFF' }}>保存せずに戻る</Text>
+        </TouchableOpacity>
       </Animated.View>
     </ScreenContainer>
   );
@@ -492,21 +499,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#F5F3FF",
     borderWidth: 1.5,
-    borderColor: "#DDD6FE",
+    borderColor: "rgba(91,78,255,0.3)",
     minHeight: 58,
     justifyContent: "center",
   },
   secondaryBtnText: {
     fontSize: 14,
     fontWeight: "700",
-    color: "#6D28D9",
+    color: "#5B4EFF",
   },
   primaryBtn: {
     flex: 2,
     paddingVertical: 18,
     borderRadius: 12,
     alignItems: "center",
-    backgroundColor: "#6D28D9",
+    backgroundColor: "#5B4EFF",
     flexDirection: "row",
     justifyContent: "center",
     gap: 8,
