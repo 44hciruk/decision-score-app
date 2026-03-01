@@ -106,10 +106,10 @@ export default function ResultScreen() {
 
   // 順位に基づいて色を決める（信号カラー）
   const getRankColor = (index: number, total: number) => {
-    if (index === 0) return "#22C55E"; // 1位: 緑
-    if (index === 1) return "#F59E0B"; // 2位: オレンジ
-    if (index === total - 1) return "#EF4444"; // 最下位: 赤
-    return "#7C3AED"; // その他: 紫
+    if (index === 0) return "#22C55E";           // 1位: 緑
+    if (index === total - 1) return "#EF4444";   // 最下位: 赤（2件のときは2位も赤）
+    if (index === 1) return "#F59E0B";           // 2位: オレンジ
+    return "#3C3C43";                            // 3位以下: 黒
   };
 
   return (
@@ -131,12 +131,10 @@ export default function ResultScreen() {
           style={styles.winnerSection}
         >
           <View style={styles.winnerIconWrap}>
-            <IconSymbol name="trophy.fill" size={36} color="#22C55E" />
-          </View>
-          <View style={styles.winnerBadge}>
-            <Text style={styles.winnerBadgeText}>決断スコア 1位</Text>
+            <IconSymbol name="trophy.fill" size={40} color="#22C55E" />
           </View>
           <Text style={styles.winnerName}>{winner}</Text>
+          <Text style={styles.winnerSubText}>総合1位</Text>
         </Animated.View>
 
         {/* 円形スコア */}
@@ -149,14 +147,9 @@ export default function ResultScreen() {
 
         {/* 信頼度メッセージ */}
         <Animated.View entering={FadeInDown.delay(800).duration(400)} style={styles.confidenceContainer}>
-          <GlassCard style={styles.confidenceBadge}>
-            <View style={styles.confidenceInner}>
-              <IconSymbol name="lightbulb.fill" size={16} color="#7C3AED" />
-              <Text style={styles.confidenceText}>
-                {scoreDiff}点差 — {confidenceMessage}
-              </Text>
-            </View>
-          </GlassCard>
+          <Text style={styles.confidenceText}>
+            {scoreDiff}点差 — {confidenceMessage}
+          </Text>
         </Animated.View>
 
         {/* ランキング */}
@@ -284,7 +277,7 @@ function CircularScore({ score }: { score: number }) {
           cx={size / 2}
           cy={size / 2}
           r={radius}
-          stroke="#EDE9FF"
+          stroke="#DCFCE7"
           strokeWidth={strokeWidth}
           fill="none"
         />
@@ -340,6 +333,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 16,
     paddingVertical: 12,
+    backgroundColor: "#FFFFFF",
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: "#E5E5EA",
   },
   navSpacer: {
     width: 40,
@@ -359,15 +355,13 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   winnerIconWrap: {
-    width: 72,
-    height: 72,
-    borderRadius: 12,
+    width: 80,
+    height: 80,
+    borderRadius: 40,
     backgroundColor: "#DCFCE7",
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 12,
-    borderWidth: 1.5,
-    borderColor: "#86EFAC",
+    marginBottom: 16,
   },
   winnerBadge: {
     backgroundColor: "#DCFCE7",
@@ -390,6 +384,12 @@ const styles = StyleSheet.create({
     color: "#1C1C1E",
     letterSpacing: -0.8,
     textAlign: "center",
+  },
+  winnerSubText: {
+    fontSize: 14,
+    color: "#8E8E93",
+    marginTop: 4,
+    fontWeight: "500",
   },
   scoreCircleContainer: {
     alignItems: "center",
@@ -416,7 +416,8 @@ const styles = StyleSheet.create({
     color: "#8E8E93",
   },
   confidenceContainer: {
-    marginBottom: 24,
+    alignItems: "center",
+    marginBottom: 28,
   },
   confidenceBadge: {
     alignSelf: "center",
@@ -429,9 +430,9 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   confidenceText: {
-    fontSize: 15,
-    fontWeight: "600",
-    color: "#1A1535",
+    fontSize: 14,
+    fontWeight: "500",
+    color: "#8E8E93",
     textAlign: "center",
   },
   rankingTitle: {
