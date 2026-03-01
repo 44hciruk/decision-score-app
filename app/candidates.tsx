@@ -71,12 +71,26 @@ export default function CandidatesScreen() {
     if (Platform.OS !== "web") {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     }
+    // 同名候補を「名前 1」「名前 2」に自動リネーム
+    const nameCount: Record<string, number> = {};
+    const nameIndex: Record<string, number> = {};
+    for (const c of filledCandidates) {
+      nameCount[c] = (nameCount[c] || 0) + 1;
+    }
+    const renamedCandidates = filledCandidates.map((c) => {
+      if (nameCount[c] > 1) {
+        nameIndex[c] = (nameIndex[c] || 0) + 1;
+        return `${c} ${nameIndex[c]}`;
+      }
+      return c;
+    });
+
     router.push({
       pathname: "/criteria",
       params: {
         title: params.title || "",
         templateId: params.templateId || "",
-        candidates: JSON.stringify(filledCandidates),
+        candidates: JSON.stringify(renamedCandidates),
       },
     });
   }, [canProceed, filledCandidates, params, router]);
