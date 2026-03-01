@@ -90,7 +90,14 @@ export default function ResultScreen() {
       <View style={{ flex: 1, backgroundColor: "#F2F2F7" }}>
         {/* ヘッダー */}
         <Animated.View entering={FadeIn.duration(300)} style={styles.navHeader}>
-          <View style={styles.navSpacer} />
+          <TouchableOpacity
+            onPress={handleRetry}
+            style={styles.navBackBtn}
+            activeOpacity={0.7}
+          >
+            <IconSymbol name="chevron.left" size={20} color="#5B4EFF" />
+            <Text style={styles.navBackText}>戻る</Text>
+          </TouchableOpacity>
           <Text style={styles.navTitle}>結果発表</Text>
           <View style={styles.navSpacer} />
         </Animated.View>
@@ -122,7 +129,7 @@ export default function ResultScreen() {
           activeOpacity={0.7}
           style={styles.secondaryBtn}
         >
-          <Text style={styles.secondaryBtnText}>保存せずに戻る</Text>
+          <Text style={styles.secondaryBtnText}>最初からやり直す</Text>
         </TouchableOpacity>
       </Animated.View>
     </ScreenContainer>
@@ -140,7 +147,20 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: "#E5E5EA",
   },
-  navSpacer: { width: 40 },
+  navBackBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    paddingVertical: 8,
+    paddingRight: 12,
+    minWidth: 80,
+  },
+  navBackText: {
+    fontSize: 16,
+    color: "#5B4EFF",
+    fontWeight: "500",
+  },
+  navSpacer: { minWidth: 80 },
   navTitle: {
     fontSize: 17,
     fontWeight: "700",
