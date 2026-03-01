@@ -315,17 +315,11 @@ function DraggableItem({
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
-      transform: [
-        { translateY: translateY.value },
-        { scale: scale.value },
-      ],
-      zIndex: zIdx.value,
-      backgroundColor: "#FFFFFF",
+      transform: [{ translateY: translateY.value }],
       borderWidth: 2,
       borderColor: '#5B4EFF',
       borderRadius: 12,
-      marginHorizontal: 16,
-      overflow: 'hidden',
+      backgroundColor: '#FFFFFF',
     };
   });
 
@@ -525,9 +519,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#8E8E93",
   },
   bottomBar: {
-    paddingHorizontal: 20,
-    paddingVertical: 12,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingHorizontal: 16,
     paddingBottom: 32,
+    backgroundColor: '#F2F2F7',
   },
   nextBtn: {
     flexDirection: "row",
