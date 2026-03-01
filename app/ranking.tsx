@@ -116,37 +116,47 @@ export default function RankingScreen() {
           </Text>
 
           {/* 上下移動ボタン */}
-          <View style={{ flexDirection: 'column', alignItems: 'center', gap: 4 }}>
-            {visualIndex > 0 && (
-              <TouchableOpacity
-                onPress={() => {
-                  const newData = [...currentOrder];
-                  const temp = newData[visualIndex];
-                  newData[visualIndex] = newData[visualIndex - 1];
-                  newData[visualIndex - 1] = temp;
-                  setCurrentOrder(newData);
-                }}
-              >
-                <View style={{ backgroundColor: 'rgba(91,78,255,0.12)', borderRadius: 6, width: 28, height: 28, justifyContent: 'center', alignItems: 'center' }}>
-                  <Ionicons name="arrow-up" size={20} color="#5B4EFF" />
-                </View>
-              </TouchableOpacity>
-            )}
-            {visualIndex < currentOrder.length - 1 && (
-              <TouchableOpacity
-                onPress={() => {
-                  const newData = [...currentOrder];
-                  const temp = newData[visualIndex];
-                  newData[visualIndex] = newData[visualIndex + 1];
-                  newData[visualIndex + 1] = temp;
-                  setCurrentOrder(newData);
-                }}
-              >
-                <View style={{ backgroundColor: 'rgba(91,78,255,0.12)', borderRadius: 6, width: 28, height: 28, justifyContent: 'center', alignItems: 'center' }}>
-                  <Ionicons name="arrow-down" size={20} color="#5B4EFF" />
-                </View>
-              </TouchableOpacity>
-            )}
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            <TouchableOpacity
+              onPress={() => {
+                if (visualIndex === 0) return;
+                const newData = [...currentOrder];
+                const temp = newData[visualIndex];
+                newData[visualIndex] = newData[visualIndex - 1];
+                newData[visualIndex - 1] = temp;
+                setCurrentOrder(newData);
+              }}
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: 18,
+                backgroundColor: visualIndex === 0 ? '#C7C7CC' : '#5B4EFF',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <Ionicons name="arrow-up" size={18} color="#FFFFFF" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                if (visualIndex === currentOrder.length - 1) return;
+                const newData = [...currentOrder];
+                const temp = newData[visualIndex];
+                newData[visualIndex] = newData[visualIndex + 1];
+                newData[visualIndex + 1] = temp;
+                setCurrentOrder(newData);
+              }}
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: 18,
+                backgroundColor: visualIndex === currentOrder.length - 1 ? '#C7C7CC' : '#5B4EFF',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <Ionicons name="arrow-down" size={18} color="#FFFFFF" />
+            </TouchableOpacity>
           </View>
         </TouchableOpacity>
     );
