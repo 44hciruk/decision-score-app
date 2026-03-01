@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import {
   Text,
   View,
-  ScrollView,
   StyleSheet,
 } from "react-native";
 import Animated, {
@@ -26,8 +25,6 @@ export type DecisionResultProps = {
   rankings: Record<string, string[]>;
   /** result.tsx ではアニメあり、history-detail.tsx ではなし */
   animated?: boolean;
-  /** ScrollView の contentContainerStyle に追加する paddingBottom */
-  scrollPaddingBottom?: number;
 };
 
 // ─── ランク色 ─────────────────────────────────────────
@@ -46,7 +43,6 @@ export function DecisionResult({
   criteria,
   rankings,
   animated = true,
-  scrollPaddingBottom = 20,
 }: DecisionResultProps) {
   const winnerScore = scores[winner] || 0;
   const secondScore = sortedCandidates[1] ? scores[sortedCandidates[1]] || 0 : 0;
@@ -54,10 +50,7 @@ export function DecisionResult({
   const confidenceMessage = getConfidenceMessage(scoreDiff);
 
   return (
-    <ScrollView
-      contentContainerStyle={[styles.scrollContent, { paddingBottom: scrollPaddingBottom }]}
-      showsVerticalScrollIndicator={false}
-    >
+    <View style={styles.scrollContent}>
       {/* 1位発表 */}
       <Animated.View
         entering={animated ? FadeInDown.delay(200).duration(500) : undefined}
@@ -168,7 +161,7 @@ export function DecisionResult({
           );
         })}
       </Animated.View>
-    </ScrollView>
+    </View>
   );
 }
 

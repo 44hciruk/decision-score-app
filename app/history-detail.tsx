@@ -2,6 +2,7 @@ import { useMemo, useCallback } from "react";
 import {
   Text,
   View,
+  ScrollView,
   TouchableOpacity,
   Platform,
   Alert,
@@ -68,8 +69,8 @@ export default function HistoryDetailScreen() {
     (a, b) => (project.scores[b] || 0) - (project.scores[a] || 0)
   );
 
-  const date = new Date(project.createdAt);
-  const dateStr = `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
+  const d = new Date(project.createdAt);
+  const dateStr = `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日 ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
 
   return (
     <ScreenContainer edges={["top", "bottom", "left", "right"]}>
@@ -89,21 +90,28 @@ export default function HistoryDetailScreen() {
         <Text style={styles.dateText}>{dateStr}</Text>
 
         {/* 共通コンポーネント */}
-        <DecisionResult
-          winner={project.winner}
-          scores={project.scores}
-          sortedCandidates={sortedCandidates}
-          criteria={project.criteria}
-          rankings={project.rankings}
-          animated={false}
-          scrollPaddingBottom={40}
-        />
+        <ScrollView
+          contentContainerStyle={[styles.scrollContent, { paddingBottom: 24 }]}
+          showsVerticalScrollIndicator={false}
+        >
+          <DecisionResult
+            winner={project.winner}
+            scores={project.scores}
+            sortedCandidates={sortedCandidates}
+            criteria={project.criteria}
+            rankings={project.rankings}
+            animated={false}
+          />
+        </ScrollView>
       </View>
     </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
+  scrollContent: {
+    flexGrow: 1,
+  },
   navHeader: {
     flexDirection: "row",
     alignItems: "center",
@@ -134,6 +142,7 @@ const styles = StyleSheet.create({
     paddingTop: 12,
     paddingBottom: 0,
     backgroundColor: "#F2F2F7",
+    marginBottom: 28,
   },
   center: {
     flex: 1,

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo } from "react";
 import {
   Text,
   View,
+  ScrollView,
   Platform,
   StyleSheet,
   TouchableOpacity,
@@ -103,15 +104,19 @@ export default function ResultScreen() {
         </Animated.View>
 
         {/* 共通コンポーネント */}
-        <DecisionResult
-          winner={winner}
-          scores={scores}
-          sortedCandidates={sortedCandidates}
-          criteria={criteria}
-          rankings={rankings}
-          animated={true}
-          scrollPaddingBottom={20}
-        />
+        <ScrollView
+          contentContainerStyle={[styles.scrollContent, { paddingBottom: 24 }]}
+          showsVerticalScrollIndicator={false}
+        >
+          <DecisionResult
+            winner={winner}
+            scores={scores}
+            sortedCandidates={sortedCandidates}
+            criteria={criteria}
+            rankings={rankings}
+            animated={true}
+          />
+        </ScrollView>
       </View>
 
       {/* ボトムボタン */}
@@ -166,6 +171,9 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#1C1C1E",
     letterSpacing: -0.3,
+  },
+  scrollContent: {
+    flexGrow: 1,
   },
   bottomBar: {
     paddingHorizontal: 20,
