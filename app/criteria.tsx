@@ -132,6 +132,11 @@ export default function CriteriaScreen() {
           <Animated.Text entering={FadeInDown.delay(50).duration(300)} style={styles.stepLabel}>
             ステップ 3 / 3 — 評価項目を設定
           </Animated.Text>
+          <View style={{ marginTop: 4, marginBottom: 8, marginHorizontal: 32 }}>
+            <View style={{ height: 4, backgroundColor: '#E5E5EA', borderRadius: 2 }}>
+              <View style={{ width: '100%', height: 4, backgroundColor: '#5B4EFF', borderRadius: 2 }} />
+            </View>
+          </View>
 
           <ScrollView
             contentContainerStyle={styles.scrollContent}
