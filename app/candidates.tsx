@@ -40,9 +40,6 @@ export default function CandidatesScreen() {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
       }
       setCandidates((prev) => [...prev, ""]);
-      setTimeout(() => {
-        inputRefs.current[candidates.length]?.focus();
-      }, 100);
     }
   }, [candidates.length]);
 
