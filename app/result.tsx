@@ -114,6 +114,7 @@ export default function ResultScreen() {
 
   return (
     <ScreenContainer edges={["top", "bottom", "left", "right"]}>
+      <View style={{ flex: 1, backgroundColor: '#F2F2F7' }}>
       {/* ヘッダー */}
       <Animated.View entering={FadeIn.duration(300)} style={styles.navHeader}>
         <View style={styles.navSpacer} />
@@ -121,7 +122,6 @@ export default function ResultScreen() {
         <View style={styles.navSpacer} />
       </Animated.View>
 
-      <View style={{ flex: 1, backgroundColor: '#F2F2F7' }}>
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
@@ -131,9 +131,6 @@ export default function ResultScreen() {
           entering={FadeInDown.delay(200).duration(500)}
           style={styles.winnerSection}
         >
-          <View style={styles.winnerIconWrap}>
-            <IconSymbol name="trophy.fill" size={44} color="#22C55E" />
-          </View>
           <Text style={styles.winnerName}>{winner}</Text>
           <Text style={styles.winnerSubText}>総合1位</Text>
         </Animated.View>
@@ -147,10 +144,18 @@ export default function ResultScreen() {
         </Animated.View>
 
         {/* 信頼度メッセージ */}
-        <Animated.View entering={FadeInDown.delay(800).duration(400)} style={styles.confidenceContainer}>
-          <Text style={styles.confidenceText}>
-            {scoreDiff}点差 — {confidenceMessage}
-          </Text>
+        <Animated.View
+          entering={FadeInDown.delay(800).duration(400)}
+          style={styles.confidenceContainer}
+        >
+          <View style={[
+            styles.confidenceBadge,
+            { backgroundColor: '#22C55E' + '15', borderColor: '#22C55E' + '30' }
+          ]}>
+            <Text style={[styles.confidenceText, { color: '#22C55E' }]}>
+              {scoreDiff}点差 — {confidenceMessage}
+            </Text>
+          </View>
         </Animated.View>
 
         {/* ランキング */}
@@ -209,6 +214,28 @@ export default function ResultScreen() {
                   </View>
                 </GlassCard>
               </Animated.View>
+            );
+          })}
+        </Animated.View>
+
+        {/* 項目別の順位 */}
+        <Animated.View entering={FadeInDown.delay(1200).duration(400)}>
+          <Text style={[styles.rankingTitle, { marginTop: 24 }]}>項目別の順位</Text>
+          {criteria.map((criterion) => {
+            const ordered = rankings[criterion] || [];
+            return (
+              <View
+                key={criterion}
+                style={styles.criterionDetail}
+              >
+                <Text style={styles.criterionDetailTitle}>{criterion}</Text>
+                {ordered.map((candidate, idx) => (
+                  <View key={candidate} style={styles.criterionRow}>
+                    <Text style={styles.criterionRank}>{idx + 1}位</Text>
+                    <Text style={styles.criterionCandidate}>{candidate}</Text>
+                  </View>
+                ))}
+              </View>
             );
           })}
         </Animated.View>
@@ -424,6 +451,10 @@ const styles = StyleSheet.create({
   },
   confidenceBadge: {
     alignSelf: "center",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 12,
+    borderWidth: 1,
   },
   confidenceInner: {
     flexDirection: "row",
@@ -433,9 +464,8 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   confidenceText: {
-    fontSize: 14,
-    fontWeight: "500",
-    color: "#8E8E93",
+    fontSize: 15,
+    fontWeight: "600",
     textAlign: "center",
   },
   rankingTitle: {
@@ -527,5 +557,34 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "700",
     color: "#FFFFFF",
+  },
+  criterionDetail: {
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#E5E5EA",
+    backgroundColor: "#FFFFFF",
+    padding: 14,
+    marginBottom: 10,
+  },
+  criterionDetailTitle: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: "#5B4EFF",
+    marginBottom: 8,
+  },
+  criterionRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    paddingVertical: 3,
+  },
+  criterionRank: {
+    fontSize: 13,
+    color: "#8E8E93",
+    width: 30,
+  },
+  criterionCandidate: {
+    fontSize: 15,
+    color: "#1C1C1E",
   },
 });
