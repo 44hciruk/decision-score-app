@@ -17,10 +17,16 @@ import { ScreenContainer } from "@/components/screen-container";
 import { GlassCard } from "@/components/glass-card";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useProjectContext } from "@/lib/project-context";
-import { TEMPLATES } from "@/lib/storage";
 import { PremiumModal } from "@/components/premium-modal";
 
-const BADGE_COLORS = ["#6D28D9", "#0EA5E9", "#10B981", "#F59E0B", "#EF4444", "#EC4899"];
+const TEMPLATE_CRITERIA: Record<string, string[]> = {
+  restaurant:    ["価格", "味", "雰囲気", "アクセス", "接客"],
+  shopping:      ["価格", "デザイン", "機能性", "耐久性", "口コミ"],
+  travel:        ["費用", "観光スポット", "食事", "移動しやすさ", "安全性"],
+  lesson:        ["料金", "実績・評判", "通いやすさ", "カリキュラム", "口コミ"],
+  entertainment: ["ストーリー", "映像", "音楽", "世界観", "評価"],
+  career:        ["給与", "福利厚生", "勤務地", "休日・休暇", "仕事内容"],
+};
 
 export default function CriteriaScreen() {
   const router = useRouter();
@@ -33,8 +39,7 @@ export default function CriteriaScreen() {
   const limits = getLimits();
 
   const candidates: string[] = params.candidates ? JSON.parse(params.candidates) : [];
-  const template = TEMPLATES.find((t) => t.id === params.templateId);
-  const initialCriteria = template ? template.criteria.slice(0, limits.criteria) : ["", ""];
+  const initialCriteria = TEMPLATE_CRITERIA[params.templateId || ""] ?? ["", "", "", "", ""];
 
   const [criteria, setCriteria] = useState<string[]>(initialCriteria);
   const [showPremiumModal, setShowPremiumModal] = useState(false);
@@ -75,6 +80,7 @@ export default function CriteriaScreen() {
 
   const filledCriteria = criteria.filter((c) => c.trim());
   const canProceed = filledCriteria.length >= 2;
+  const isValid = criteria.some((c) => c.trim().length > 0);
 
   const handleStart = useCallback(() => {
     if (!canProceed) return;
@@ -115,24 +121,10 @@ export default function CriteriaScreen() {
             <View style={styles.navSpacer} />
           </Animated.View>
 
-          <Animated.View entering={FadeInDown.duration(300)} style={styles.stepRow}>
-            {[1, 2, 3].map((step) => (
-              <View key={step} style={styles.stepItem}>
-                <View style={[styles.stepDot, styles.stepDotActive]}>
-                  {step < 3 ? (
-                    <IconSymbol name="checkmark" size={12} color="#FFFFFF" />
-                  ) : (
-                    <Text style={styles.stepNumActive}>{step}</Text>
-                  )}
-                </View>
-                {step < 3 && <View style={[styles.stepLine, styles.stepLineActive]} />}
-              </View>
-            ))}
-          </Animated.View>
-          <Animated.Text entering={FadeInDown.delay(50).duration(300)} style={styles.stepLabel}>
-            ステップ 3 / 3 — 評価項目を設定
-          </Animated.Text>
-          <View style={{ marginTop: 4, marginBottom: 20, marginHorizontal: 32 }}>
+          <View style={{ alignItems: 'center', marginTop: 16, marginBottom: 4 }}>
+            <Text style={{ fontSize: 13, color: '#8E8E93' }}>ステップ 3 / 3</Text>
+          </View>
+          <View style={{ marginTop: 4, marginBottom: 16, marginHorizontal: 32 }}>
             <View style={{ height: 4, backgroundColor: '#E5E5EA', borderRadius: 2 }}>
               <View style={{ width: '100%', height: 4, backgroundColor: '#5B4EFF', borderRadius: 2 }} />
             </View>
@@ -145,6 +137,9 @@ export default function CriteriaScreen() {
           >
             <Animated.View entering={FadeInDown.delay(100).duration(300)}>
               <Text style={styles.sectionTitle}>何を基準に比較しますか？</Text>
+              <Text style={{ fontSize: 13, color: '#8E8E93', marginBottom: 12 }}>
+                大事にしたいポイントを入力してください（例：価格、立地）
+              </Text>
               {limits.criteria < Infinity && (
                 <View style={styles.limitRow}>
                   <Text style={styles.limitText}>
@@ -164,14 +159,14 @@ export default function CriteriaScreen() {
               >
                 <GlassCard style={styles.inputCard}>
                   <View style={styles.inputRow}>
-                    <View style={[styles.indexBadge, { backgroundColor: BADGE_COLORS[index % BADGE_COLORS.length] }]}>
+                    <View style={[styles.indexBadge, { backgroundColor: '#5B4EFF' }]}>
                       <Text style={styles.indexText}>{index + 1}</Text>
                     </View>
                     <TextInput
                       ref={(ref) => { inputRefs.current[index] = ref; }}
                       style={styles.input}
-                      placeholder={`評価項目 ${index + 1}`}
-                      placeholderTextColor="#C4B5FD"
+                      placeholder={`評価基準 ${index + 1}`}
+                      placeholderTextColor="#C7C7CC"
                       value={criterion}
                       onChangeText={(v) => handleChange(index, v)}
                       returnKeyType="done"
@@ -195,11 +190,9 @@ export default function CriteriaScreen() {
               <TouchableOpacity
                 onPress={handleAdd}
                 activeOpacity={0.75}
-                style={styles.addBtn}
+                style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingVertical: 14 }}
               >
-                <View style={styles.addBtnIcon}>
-                  <IconSymbol name="plus" size={18} color="#6D28D9" />
-                </View>
+                <IconSymbol name="plus" size={18} color="#5B4EFF" />
                 <Text style={styles.addBtnText}>項目を追加</Text>
               </TouchableOpacity>
             </Animated.View>
@@ -210,10 +203,15 @@ export default function CriteriaScreen() {
               onPress={handleStart}
               disabled={!canProceed}
               activeOpacity={0.85}
-              style={[styles.nextBtn, !canProceed && styles.nextBtnDisabled]}
+              style={{
+                backgroundColor: isValid ? '#5B4EFF' : '#C9B8FF',
+                borderRadius: 20,
+                paddingVertical: 16,
+                alignItems: 'center',
+                alignSelf: 'stretch',
+              }}
             >
-              <IconSymbol name="star.fill" size={20} color={canProceed ? "#FFFFFF" : "#C4B5FD"} />
-              <Text style={[styles.nextBtnText, !canProceed && styles.nextBtnTextDisabled]}>
+              <Text style={{ color: '#FFFFFF', fontSize: 17, fontWeight: '600' }}>
                 スコアリング開始
               </Text>
             </TouchableOpacity>
@@ -407,7 +405,7 @@ const styles = StyleSheet.create({
   addBtnText: {
     fontSize: 15,
     fontWeight: "600",
-    color: "#6D28D9",
+    color: "#5B4EFF",
   },
   bottomBar: {
     paddingHorizontal: 20,
