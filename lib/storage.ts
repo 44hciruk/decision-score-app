@@ -25,9 +25,9 @@ export interface AppSettings {
 // ============================================================
 
 export const FREE_LIMITS = {
-  candidates: 3,
-  criteria: 5,
-  projects: 3,
+  candidates: 10,
+  criteria: Infinity,
+  projects: Infinity,
 } as const;
 
 export const PREMIUM_LIMITS = {
