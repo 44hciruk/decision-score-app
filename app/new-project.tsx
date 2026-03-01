@@ -359,7 +359,7 @@ const styles = StyleSheet.create({
     minHeight: 54,
   },
   nextBtnDisabled: {
-    backgroundColor: "#B8B0FF",
+    backgroundColor: "#A89EFF",
     shadowOpacity: 0,
     elevation: 0,
   },

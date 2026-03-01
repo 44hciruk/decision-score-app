@@ -178,7 +178,7 @@ export default function CandidatesScreen() {
               disabled={!canProceed}
               activeOpacity={0.85}
               style={{
-                backgroundColor: isValid ? '#5B4EFF' : '#B8B0FF',
+                backgroundColor: isValid ? '#5B4EFF' : '#A89EFF',
                 borderRadius: 20,
                 paddingVertical: 16,
                 alignItems: 'center',
@@ -416,6 +416,6 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
   nextBtnTextDisabled: {
-    color: "#B8B0FF",
+    color: "#A89EFF",
   },
 });
