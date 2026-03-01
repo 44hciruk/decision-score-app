@@ -88,23 +88,9 @@ export default function NewProjectScreen() {
         </Animated.View>
 
         {/* ステップインジケーター */}
-        <Animated.View entering={FadeInDown.duration(300)} style={styles.stepRow}>
-          {[1, 2, 3].map((step) => (
-            <View key={step} style={styles.stepItem}>
-              <View style={[styles.stepDot, step === 1 && styles.stepDotActive]}>
-                {step === 1 ? (
-                  <IconSymbol name="checkmark" size={12} color="#FFFFFF" />
-                ) : (
-                  <Text style={styles.stepNum}>{step}</Text>
-                )}
-              </View>
-              {step < 3 && <View style={[styles.stepLine, step === 1 && styles.stepLineActive]} />}
-            </View>
-          ))}
-        </Animated.View>
-        <Animated.Text entering={FadeInDown.delay(50).duration(300)} style={styles.stepLabel}>
-          ステップ 1 / 3 — テーマを決める
-        </Animated.Text>
+        <View style={{ alignItems: 'center', marginTop: 16, marginBottom: 8 }}>
+          <Text style={{ fontSize: 13, color: '#8E8E93' }}>ステップ 1 / 3</Text>
+        </View>
 
         <View style={styles.scrollContent}>
           {/* タイトル入力 */}
@@ -172,7 +158,7 @@ export default function NewProjectScreen() {
             style={[styles.nextBtn, !isActive && styles.nextBtnDisabled]}
           >
             <Text style={[styles.nextBtnText, !isActive && styles.nextBtnTextDisabled]}>
-              次へ ー 候補を入力
+              次へ
             </Text>
           </TouchableOpacity>
         </Animated.View>
@@ -182,7 +168,7 @@ export default function NewProjectScreen() {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1 },
+  flex: { flex: 1, backgroundColor: "#FFFFFF" },
   navHeader: {
     flexDirection: "row",
     alignItems: "center",
@@ -264,6 +250,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: 20,
     paddingBottom: 20,
+    backgroundColor: "#FFFFFF",
   },
   sectionTitle: {
     fontSize: 20,
@@ -294,25 +281,26 @@ const styles = StyleSheet.create({
   templateGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 10,
+    gap: 8,
   },
   templateWrapper: {
     width: "48%",
   },
   templateCard: {
-    padding: 16,
+    padding: 12,
+    marginBottom: 8,
     alignItems: "center",
     gap: 10,
     borderRadius: 12,
     backgroundColor: "#FFFFFF",
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "#E5E5EA",
+    borderWidth: 2,
+    borderColor: "transparent",
     position: "relative",
   },
   templateCardSelected: {
-    borderColor: "#1C1C1E",
+    borderColor: "#5B4EFF",
     borderWidth: 2,
-    backgroundColor: "#F2F2F7",
+    backgroundColor: "#FFFFFF",
   },
   checkBadge: {
     position: "absolute",
@@ -321,7 +309,7 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     borderRadius: 10,
-    backgroundColor: "#1C1C1E",
+    backgroundColor: "#5B4EFF",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -334,7 +322,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   templateIconWrapSelected: {
-    backgroundColor: "#1C1C1E",
+    backgroundColor: "#5B4EFF",
   },
   templateName: {
     fontSize: 13,
