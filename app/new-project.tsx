@@ -111,10 +111,11 @@ export default function NewProjectScreen() {
           {/* タイトル入力 */}
           <Animated.View entering={FadeInDown.delay(100).duration(300)}>
             <Text style={styles.sectionTitle}>何を比較しますか？</Text>
+            <Text style={{ fontSize: 13, color: '#8E8E93', marginBottom: 8 }}>比較したいテーマを入力してください</Text>
             <GlassCard style={styles.inputCard}>
               <TextInput
                 style={styles.input}
-                placeholder="比較したいものを入力（例：ランチのお店、新しい服）"
+                placeholder="例：ランチのお店、新しい服"
                 placeholderTextColor="#C4B5FD"
                 value={title}
                 onChangeText={setTitle}
