@@ -19,9 +19,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { ScreenContainer } from "@/components/screen-container";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 
-const ITEM_HEIGHT = 68;
-const ITEM_GAP = 10;
-
 export default function RankingScreen() {
   const router = useRouter();
   const params = useLocalSearchParams<{
@@ -44,6 +41,34 @@ export default function RankingScreen() {
     setCurrentOrder(data);
   }, []);
 
+  const handleMoveUp = useCallback((index: number) => {
+    if (index === 0) return;
+    if (Platform.OS !== "web") {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+    setCurrentOrder((prev) => {
+      const newData = [...prev];
+      const temp = newData[index];
+      newData[index] = newData[index - 1];
+      newData[index - 1] = temp;
+      return newData;
+    });
+  }, []);
+
+  const handleMoveDown = useCallback((index: number) => {
+    setCurrentOrder((prev) => {
+      if (index === prev.length - 1) return prev;
+      if (Platform.OS !== "web") {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      }
+      const newData = [...prev];
+      const temp = newData[index];
+      newData[index] = newData[index + 1];
+      newData[index + 1] = temp;
+      return newData;
+    });
+  }, []);
+
   const handleBack = useCallback(() => {
     if (Platform.OS !== "web") {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -60,13 +85,11 @@ export default function RankingScreen() {
     if (Platform.OS !== "web") {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     }
-
     const updatedRankings = {
       ...rankings,
       [currentCriterion]: [...currentOrder],
     };
     setRankings(updatedRankings);
-
     if (isLast) {
       router.push({
         pathname: "/result",
@@ -83,89 +106,69 @@ export default function RankingScreen() {
     }
   }, [rankings, currentCriterion, currentOrder, isLast, candidates, params, router]);
 
-  const renderItem = ({ item, drag, isActive, getIndex }: RenderItemParams<string>) => {
-    const visualIndex = getIndex() ?? 0;
+  const renderItem = useCallback(({ item, drag, isActive, getIndex }: RenderItemParams<string>) => {
+    const index = getIndex() ?? 0;
+    const isFirst = index === 0;
+    const isLastItem = index === currentOrder.length - 1;
     return (
-        <TouchableOpacity
-          onLongPress={drag}
-          delayLongPress={150}
-          activeOpacity={0.85}
-          style={{
-            backgroundColor: isActive ? '#F0EEFF' : '#FFFFFF',
-            borderWidth: 2,
-            borderColor: isActive ? '#5B4EFF' : 'transparent',
-            borderRadius: 12,
-            padding: 16,
-            marginBottom: 8,
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}
-        >
-          {/* ドラッグハンドル */}
-          <Ionicons name="reorder-two" size={20} color="#C7C7CC" style={{ marginRight: 8 }} />
+      <TouchableOpacity
+        onLongPress={drag}
+        delayLongPress={150}
+        activeOpacity={0.85}
+        style={{
+          backgroundColor: isActive ? '#F0EEFF' : '#FFFFFF',
+          borderWidth: 2,
+          borderColor: isActive ? '#5B4EFF' : 'transparent',
+          borderRadius: 12,
+          padding: 16,
+          marginBottom: 8,
+          flexDirection: 'row',
+          alignItems: 'center',
+        }}
+      >
+        <Ionicons name="reorder-two" size={20} color="#C7C7CC" style={{ marginRight: 8 }} />
 
-          {/* 順位バッジ */}
-          <View style={[styles.rankBadge, { backgroundColor: '#5B4EFF', borderColor: '#5B4EFF' }]}>
-            <Text style={[styles.rankText, { color: '#FFFFFF' }]}>
-              {visualIndex + 1}
-            </Text>
-          </View>
+        <View style={styles.rankBadge}>
+          <Text style={styles.rankText}>{index + 1}</Text>
+        </View>
 
-          <Text style={styles.itemName} numberOfLines={1}>
-            {item}
-          </Text>
+        <Text style={styles.itemName} numberOfLines={1}>{item}</Text>
 
-          {/* 上下移動ボタン */}
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-            <TouchableOpacity
-              onPress={() => {
-                if (visualIndex === 0) return;
-                const newData = [...currentOrder];
-                const temp = newData[visualIndex];
-                newData[visualIndex] = newData[visualIndex - 1];
-                newData[visualIndex - 1] = temp;
-                setCurrentOrder(newData);
-              }}
-              style={{
-                width: 36,
-                height: 36,
-                borderRadius: 18,
-                backgroundColor: visualIndex === 0 ? '#C7C7CC' : '#5B4EFF',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <Ionicons name="arrow-up" size={18} color="#FFFFFF" />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                if (visualIndex === currentOrder.length - 1) return;
-                const newData = [...currentOrder];
-                const temp = newData[visualIndex];
-                newData[visualIndex] = newData[visualIndex + 1];
-                newData[visualIndex + 1] = temp;
-                setCurrentOrder(newData);
-              }}
-              style={{
-                width: 36,
-                height: 36,
-                borderRadius: 18,
-                backgroundColor: visualIndex === currentOrder.length - 1 ? '#C7C7CC' : '#5B4EFF',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <Ionicons name="arrow-down" size={18} color="#FFFFFF" />
-            </TouchableOpacity>
-          </View>
-        </TouchableOpacity>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+          <TouchableOpacity
+            onPress={() => handleMoveUp(index)}
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: 18,
+              backgroundColor: isFirst ? '#C7C7CC' : '#5B4EFF',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <Ionicons name="arrow-up" size={18} color="#FFFFFF" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => handleMoveDown(index)}
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: 18,
+              backgroundColor: isLastItem ? '#C7C7CC' : '#5B4EFF',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <Ionicons name="arrow-down" size={18} color="#FFFFFF" />
+          </TouchableOpacity>
+        </View>
+      </TouchableOpacity>
     );
-  };
+  }, [currentOrder.length, handleMoveUp, handleMoveDown]);
 
   return (
     <ScreenContainer edges={["top", "left", "right"]} containerClassName="bg-background">
       <View style={{ flex: 1, backgroundColor: '#F2F2F7' }}>
-        {/* ナビゲーションヘッダー */}
         <Animated.View entering={FadeIn.duration(300)} style={styles.navHeader}>
           <TouchableOpacity
             onPress={handleBack}
@@ -179,7 +182,6 @@ export default function RankingScreen() {
           <View style={styles.navSpacer} />
         </Animated.View>
 
-        {/* 評価基準名 + カウンター */}
         <Animated.View key={currentCriterionIndex} entering={FadeIn.duration(300)}>
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginHorizontal: 16, marginTop: 16, marginBottom: 4 }}>
             <Text style={{ fontSize: 22, fontWeight: '700', color: '#1C1C1E' }}>
@@ -194,11 +196,10 @@ export default function RankingScreen() {
           </Text>
         </Animated.View>
 
-        {/* ソータブルリスト */}
         <GestureHandlerRootView style={styles.listContainer}>
           <DraggableFlatList
             data={currentOrder}
-            keyExtractor={(item) => item}
+            keyExtractor={(item, index) => `${item}-${index}`}
             onDragEnd={handleDragEnd}
             renderItem={renderItem}
             activationDistance={5}
@@ -206,7 +207,6 @@ export default function RankingScreen() {
           />
         </GestureHandlerRootView>
 
-        {/* ボトムボタン */}
         <Animated.View entering={FadeInDown.delay(300).duration(400)} style={styles.bottomBar}>
           {currentCriterionIndex > 0 && (
             <TouchableOpacity
@@ -274,46 +274,26 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 4,
   },
-  draggableItem: {
-    height: ITEM_HEIGHT,
-    borderRadius: 12,
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 14,
-    gap: 12,
-  },
   rankBadge: {
     width: 36,
     height: 36,
     borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
-    borderWidth: 1.5,
-    marginRight: 12,
+    backgroundColor: '#5B4EFF',
+    marginRight: 10,
   },
   rankText: {
     fontSize: 15,
     fontWeight: "700",
+    color: '#FFFFFF',
   },
   itemName: {
     flex: 1,
     fontSize: 16,
     fontWeight: "600",
     color: "#1C1C1E",
-  },
-  dragHandle: {
-    width: 20,
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 3,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  handleDot: {
-    width: 4,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: "#8E8E93",
+    paddingLeft: 4,
   },
   bottomBar: {
     paddingHorizontal: 16,
