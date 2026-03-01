@@ -13,7 +13,7 @@ import Animated, {
   FadeInDown,
 } from "react-native-reanimated";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import DraggableFlatList, { RenderItemParams, ShadowDecorator } from "react-native-draggable-flatlist";
+import DraggableFlatList, { RenderItemParams } from "react-native-draggable-flatlist";
 
 import { ScreenContainer } from "@/components/screen-container";
 import { IconSymbol } from "@/components/ui/icon-symbol";
@@ -85,7 +85,6 @@ export default function RankingScreen() {
   const renderItem = ({ item, drag, isActive, getIndex }: RenderItemParams<string>) => {
     const visualIndex = getIndex() ?? 0;
     return (
-      <ShadowDecorator>
         <TouchableOpacity
           onLongPress={drag}
           delayLongPress={300}
@@ -122,7 +121,6 @@ export default function RankingScreen() {
             <View style={styles.handleDot} />
           </View>
         </TouchableOpacity>
-      </ShadowDecorator>
     );
   };
 
