@@ -258,6 +258,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 1.5,
+    marginRight: 12,
   },
   rankText: {
     fontSize: 15,
