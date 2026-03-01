@@ -33,8 +33,8 @@ export default function CandidatesScreen() {
   const inputRefs = useRef<(TextInput | null)[]>([]);
 
   const handleAdd = useCallback(() => {
-    if (candidates.length >= 3) {
-      Alert.alert("プレミアムプラン", "プレミアムプランで4つ以上の候補を追加できます");
+    if (candidates.length >= limits.candidates) {
+      setShowPremiumModal(true);
     } else {
       if (Platform.OS !== "web") {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -120,7 +120,9 @@ export default function CandidatesScreen() {
             <Animated.View entering={FadeInDown.delay(100).duration(300)}>
               <Text style={styles.sectionTitle}>比較する候補を入力</Text>
               <View style={styles.limitRow}>
-                <Text style={{ fontSize: 13, color: '#8E8E93' }}>最大3候補まで追加できます</Text>
+                <Text style={{ fontSize: 13, color: '#8E8E93' }}>
+                  最大{limits.candidates === Infinity ? '無制限' : `${limits.candidates}候補`}まで追加できます
+                </Text>
               </View>
             </Animated.View>
 
