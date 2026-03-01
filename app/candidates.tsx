@@ -33,8 +33,18 @@ export default function CandidatesScreen() {
   const inputRefs = useRef<(TextInput | null)[]>([]);
 
   const handleAdd = useCallback(() => {
-    Alert.alert("プレミアムプラン", "プレミアムプランで4つ以上の候補を追加できます");
-  }, []);
+    if (candidates.length >= 3) {
+      Alert.alert("プレミアムプラン", "プレミアムプランで4つ以上の候補を追加できます");
+    } else {
+      if (Platform.OS !== "web") {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      }
+      setCandidates((prev) => [...prev, ""]);
+      setTimeout(() => {
+        inputRefs.current[candidates.length]?.focus();
+      }, 100);
+    }
+  }, [candidates.length]);
 
   const handleRemove = useCallback(
     (index: number) => {
@@ -131,8 +141,8 @@ export default function CandidatesScreen() {
                     <TextInput
                       ref={(ref) => { inputRefs.current[index] = ref; }}
                       style={styles.input}
-                      placeholder={`候補${String.fromCharCode(65 + index)}の名前`}
-                      placeholderTextColor="#C4B5FD"
+                      placeholder="候補名を入力"
+                      placeholderTextColor="#C7C7CC"
                       value={candidate}
                       onChangeText={(v) => handleChange(index, v)}
                       returnKeyType="done"
@@ -159,7 +169,7 @@ export default function CandidatesScreen() {
                 style={styles.addBtn}
               >
                 <View style={styles.addBtnIcon}>
-                  <IconSymbol name="plus" size={18} color="#6D28D9" />
+                  <IconSymbol name="plus" size={18} color="#1C1C1E" />
                 </View>
                 <Text style={styles.addBtnText}>候補を追加</Text>
               </TouchableOpacity>
@@ -376,7 +386,7 @@ const styles = StyleSheet.create({
   addBtnText: {
     fontSize: 15,
     fontWeight: "600",
-    color: "#6D28D9",
+    color: "#1C1C1E",
   },
   bottomBar: {
     paddingHorizontal: 20,
