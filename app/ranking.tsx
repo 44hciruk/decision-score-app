@@ -87,7 +87,7 @@ export default function RankingScreen() {
     return (
         <TouchableOpacity
           onLongPress={drag}
-          delayLongPress={300}
+          delayLongPress={150}
           activeOpacity={0.85}
           style={{
             backgroundColor: isActive ? '#F0EEFF' : '#FFFFFF',
