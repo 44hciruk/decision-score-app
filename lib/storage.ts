@@ -90,41 +90,31 @@ export function calculateScores(
   rankings: Record<string, string[]>
 ): Record<string, number> {
   const n = candidates.length;
-  const rawScores: Record<string, number> = {};
+  const rawScores: number[] = new Array(n).fill(0);
 
-  // Initialize
-  for (const c of candidates) {
-    rawScores[c] = 0;
-  }
-
-  console.log("[CALC] Starting calculation:");
-  console.log("[CALC] Candidates:", candidates);
-  console.log("[CALC] Criteria:", criteria);
-  console.log("[CALC] Rankings:", rankings);
-
-  // Sum rank points for each criterion
   for (const criterion of criteria) {
     const ordered = rankings[criterion];
-    console.log(`[CALC] Processing criterion "${criterion}":`, ordered);
     if (!ordered) continue;
-    for (let i = 0; i < ordered.length; i++) {
-      const candidate = ordered[i];
-      const rankPoint = n - i; // 1st gets n points, last gets 1
-      rawScores[candidate] = (rawScores[candidate] || 0) + rankPoint;
-      console.log(
-        `[CALC]   ${candidate}: +${rankPoint} (total: ${rawScores[candidate]})`
-      );
+    const assigned = new Set<number>();
+    for (let rankPos = 0; rankPos < ordered.length; rankPos++) {
+      const name = ordered[rankPos];
+      for (let ci = 0; ci < n; ci++) {
+        if (candidates[ci] === name && !assigned.has(ci)) {
+          assigned.add(ci);
+          rawScores[ci] += n - rankPos;
+          break;
+        }
+      }
     }
   }
 
-  // Convert to 100-point scale
   const maxRaw = criteria.length * n;
   const scores: Record<string, number> = {};
-  for (const c of candidates) {
-    scores[c] = maxRaw > 0 ? Math.round((rawScores[c] / maxRaw) * 100) : 0;
+  for (let i = 0; i < n; i++) {
+    scores[candidates[i]] = maxRaw > 0
+      ? Math.round((rawScores[i] / maxRaw) * 100)
+      : 0;
   }
-
-  console.log("[CALC] Final scores:", scores);
   return scores;
 }
 

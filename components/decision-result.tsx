@@ -105,7 +105,7 @@ export function DecisionResult({
           const isWinner = index === 0;
           return (
             <Animated.View
-              key={candidate}
+              key={`${candidate}-${index}`}
               entering={animated ? FadeInDown.delay(1100 + index * 100).duration(300) : undefined}
             >
               <GlassCard
@@ -159,7 +159,7 @@ export function DecisionResult({
             <View key={criterion} style={styles.criterionDetail}>
               <Text style={styles.criterionDetailTitle}>{criterion}</Text>
               {ordered.map((candidate, idx) => (
-                <View key={candidate} style={styles.criterionRow}>
+                <View key={`${candidate}-${idx}`} style={styles.criterionRow}>
                   <Text style={styles.criterionRank}>{idx + 1}位</Text>
                   <Text style={styles.criterionCandidate}>{candidate}</Text>
                 </View>
