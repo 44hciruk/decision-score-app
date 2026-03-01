@@ -31,17 +31,18 @@ const LOCAL_TEMPLATES: LocalTemplate[] = [
 export default function NewProjectScreen() {
   const router = useRouter();
   const [title, setTitle] = useState("");
-  const [selectedTemplate, setSelectedTemplate] = useState<LocalTemplate | null>(null);
+  const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
 
   const handleTemplateSelect = useCallback(
     (template: LocalTemplate) => {
       if (Platform.OS !== "web") {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
       }
-      if (selectedTemplate?.id === template.id) {
+      if (selectedTemplate === template.id) {
         setSelectedTemplate(null);
+        setTitle("");
       } else {
-        setSelectedTemplate(template);
+        setSelectedTemplate(template.id);
         setTitle(template.label);
       }
     },
@@ -57,7 +58,7 @@ export default function NewProjectScreen() {
       pathname: "/candidates",
       params: {
         title: title.trim(),
-        templateId: selectedTemplate?.id || "",
+        templateId: selectedTemplate || "",
       },
     });
   }, [title, selectedTemplate, router]);
@@ -128,7 +129,7 @@ export default function NewProjectScreen() {
             <Text style={styles.sectionHint}>選択すると評価項目が自動入力されます</Text>
             <View style={styles.templateGrid}>
               {LOCAL_TEMPLATES.map((template, idx) => {
-                const isSelected = selectedTemplate?.id === template.id;
+                const isSelected = selectedTemplate === template.id;
                 return (
                   <Animated.View
                     key={template.id}
@@ -171,9 +172,8 @@ export default function NewProjectScreen() {
             style={[styles.nextBtn, !isActive && styles.nextBtnDisabled]}
           >
             <Text style={[styles.nextBtnText, !isActive && styles.nextBtnTextDisabled]}>
-              次へ — 候補を入力
+              次へ ー 候補を入力
             </Text>
-            <IconSymbol name="arrow.right" size={20} color="#FFFFFF" />
           </TouchableOpacity>
         </Animated.View>
       </View>
@@ -371,6 +371,6 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
   nextBtnTextDisabled: {
-    color: "#C4B5FD",
+    color: "#FFFFFF",
   },
 });
