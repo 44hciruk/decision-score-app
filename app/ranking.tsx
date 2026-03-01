@@ -4,7 +4,6 @@ import {
   View,
   Platform,
   StyleSheet,
-  ScrollView,
   TouchableOpacity,
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
@@ -123,11 +122,7 @@ export default function RankingScreen() {
 
       {/* ソータブルリスト */}
       <View style={styles.listContainer}>
-        <ScrollView
-          scrollEnabled={false}
-          style={styles.sortableListWrapper}
-          contentContainerStyle={styles.listContent}
-        >
+        <View style={[styles.sortableListWrapper, styles.listContent]}>
           {currentOrder.map((item, visualIndex) => (
             <DraggableItem
               key={item}
@@ -138,7 +133,7 @@ export default function RankingScreen() {
               onReorder={handleReorder}
             />
           ))}
-        </ScrollView>
+        </View>
       </View>
 
       {/* ボトムボタン */}
