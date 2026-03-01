@@ -520,7 +520,7 @@ const styles = StyleSheet.create({
   bottomBar: {
     paddingHorizontal: 20,
     paddingVertical: 12,
-    paddingBottom: 32,
+    paddingBottom: 48,
   },
   buttonRow: {
     flexDirection: "row",

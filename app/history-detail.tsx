@@ -85,6 +85,13 @@ export default function HistoryDetailScreen() {
   const confidenceMessage = getConfidenceMessage(scoreDiff);
   const scoreColor = getScoreColor(winnerScore);
 
+  const getRankColor = (index: number, total: number) => {
+    if (index === 0) return "#22C55E";
+    if (index === total - 1) return "#EF4444";
+    if (index === 1) return "#F59E0B";
+    return "#3C3C43";
+  };
+
   const date = new Date(project.createdAt);
   const dateStr = `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
 
@@ -97,6 +104,7 @@ export default function HistoryDetailScreen() {
 
   return (
     <ScreenContainer edges={["top", "bottom", "left", "right"]}>
+      <View style={{ flex: 1, backgroundColor: '#F2F2F7' }}>
       {/* Header */}
       <View style={styles.navHeader}>
         <TouchableOpacity
@@ -104,7 +112,7 @@ export default function HistoryDetailScreen() {
           style={styles.navBtn}
           activeOpacity={0.7}
         >
-          <IconSymbol name="chevron.left" size={20} color="#6D28D9" />
+          <IconSymbol name="chevron.left" size={20} color="#5B4EFF" />
         </TouchableOpacity>
         <Text
           style={[styles.navTitle, { color: colors.foreground }]}
@@ -132,12 +140,10 @@ export default function HistoryDetailScreen() {
 
         {/* Winner */}
         <View style={styles.winnerSection}>
-          <View style={styles.trophyIconWrap}>
-            <IconSymbol name="trophy.fill" size={32} color="#22C55E" />
-          </View>
           <Text style={[styles.winnerName, { color: colors.foreground }]}>
             {project.winner}
           </Text>
+          <Text style={styles.winnerSubText}>総合1位</Text>
         </View>
 
         {/* Circular score (static) */}
@@ -197,7 +203,7 @@ export default function HistoryDetailScreen() {
         </Text>
         {sortedCandidates.map((candidate, index) => {
           const score = project.scores[candidate] || 0;
-          const color = getScoreColor(score);
+          const color = getRankColor(index, sortedCandidates.length);
           return (
             <Animated.View
               key={candidate}
@@ -209,7 +215,7 @@ export default function HistoryDetailScreen() {
                   {
                     backgroundColor: colors.surface,
                     borderColor:
-                      index === 0 ? scoreColor + "40" : colors.border,
+                      index === 0 ? "#22C55E" : "#E5E5EA",
                     borderWidth: index === 0 ? 2 : 1,
                   },
                 ]}
@@ -223,13 +229,13 @@ export default function HistoryDetailScreen() {
                     <View
                       style={[
                         styles.rankNumber,
-                        { backgroundColor: colors.border },
+                        { backgroundColor: color + "20", borderWidth: 1.5, borderColor: color + "50" },
                       ]}
                     >
                       <Text
                         style={[
                           styles.rankNumberText,
-                          { color: colors.muted },
+                          { color: color },
                         ]}
                       >
                         {index + 1}
@@ -255,7 +261,7 @@ export default function HistoryDetailScreen() {
                       styles.rankItemScore,
                       {
                         color: color,
-                        fontSize: index === 0 ? 22 : 18,
+                        fontSize: index === 0 ? 26 : 22,
                       },
                     ]}
                   >
@@ -323,6 +329,7 @@ export default function HistoryDetailScreen() {
           );
         })}
       </ScrollView>
+      </View>
     </ScreenContainer>
   );
 }
@@ -333,7 +340,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingVertical: 14,
+    backgroundColor: "#FFFFFF",
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: "#E5E5EA",
   },
   navBtn: {
     width: 40,
@@ -358,6 +368,7 @@ const styles = StyleSheet.create({
   },
   winnerSection: {
     alignItems: "center",
+    paddingTop: 20,
     marginBottom: 8,
   },
   trophyIconWrap: {
@@ -372,8 +383,16 @@ const styles = StyleSheet.create({
     borderColor: "#86EFAC",
   },
   winnerName: {
-    fontSize: 26,
+    fontSize: 34,
     fontWeight: "700",
+    letterSpacing: -0.8,
+    textAlign: "center",
+  },
+  winnerSubText: {
+    fontSize: 14,
+    color: "#8E8E93",
+    marginTop: 4,
+    fontWeight: "500",
   },
   scoreCircleContainer: {
     alignItems: "center",
