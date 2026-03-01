@@ -185,8 +185,7 @@ export default function CandidatesScreen() {
                 borderRadius: 20,
                 paddingVertical: 16,
                 alignItems: 'center',
-                marginHorizontal: 16,
-                marginBottom: 32,
+                alignSelf: 'stretch',
               }}
             >
               <Text style={{ color: '#FFFFFF', fontSize: 17, fontWeight: '600' }}>
