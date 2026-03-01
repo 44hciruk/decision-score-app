@@ -321,9 +321,11 @@ function DraggableItem({
       ],
       zIndex: zIdx.value,
       backgroundColor: "#FFFFFF",
-      borderColor: "#6D28D9",
       borderWidth: 2,
+      borderColor: '#5B4EFF',
       borderRadius: 12,
+      marginHorizontal: 16,
+      overflow: 'hidden',
     };
   });
 
