@@ -188,7 +188,7 @@ export default function HomeScreen() {
       </TouchableOpacity>
 
       {/* 下部グレーセクション（固定・flex:1で残り全占有） */}
-      <View style={[styles.bottomSection, { paddingBottom: insets.bottom + 16 }]}>
+      <View style={[styles.bottomSection, { paddingBottom: insets.bottom + 80 }]}>
         <TouchableOpacity style={styles.listCardShadow} activeOpacity={0.7}>
           <View style={styles.listCardInner}>
             <View style={styles.listTitleRow}>
