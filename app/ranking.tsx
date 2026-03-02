@@ -195,7 +195,7 @@ export default function RankingScreen() {
             </Text>
           </View>
           <Text style={{ fontSize: 13, color: '#8E8E93', marginHorizontal: 16, marginBottom: 16 }}>
-            「{currentCriterion}」が優れていると思う順に並べてください。{'\n'}ドラッグまたは ↑↓ ボタンで並び替えできます。
+            「{currentCriterion}」が優れていると思う順に並べてください。{'\n'}長押しでドラッグ、または ^ ∨ で並び替えできます。
           </Text>
         </Animated.View>
 
