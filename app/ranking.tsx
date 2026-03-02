@@ -150,7 +150,7 @@ export default function RankingScreen() {
             <IconSymbol
               name="chevron.up"
               size={14}
-              color={index === 0 ? '#E5E5EA' : '#C7C7CC'}
+              color="#C7C7CC"
             />
           </TouchableOpacity>
           <TouchableOpacity
@@ -161,7 +161,7 @@ export default function RankingScreen() {
             <IconSymbol
               name="chevron.down"
               size={14}
-              color={index === candidates.length - 1 ? '#E5E5EA' : '#C7C7CC'}
+              color="#C7C7CC"
             />
           </TouchableOpacity>
         </View>
@@ -312,7 +312,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   arrowBtnDisabled: {
-    backgroundColor: '#F8F8F8',
+    opacity: 0.3,
   },
   arrowText: {
     fontSize: 18,
