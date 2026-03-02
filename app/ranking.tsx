@@ -141,27 +141,28 @@ export default function RankingScreen() {
 
         <Text style={styles.itemName} numberOfLines={1}>{item}</Text>
 
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+        <View style={styles.stepperContainer}>
           <TouchableOpacity
-            style={[styles.arrowTextBtn, index === 0 && styles.arrowBtnDisabled]}
+            style={styles.stepperBtn}
             onPress={() => handleMoveUp(index)}
             disabled={index === 0}
           >
             <IconSymbol
               name="chevron.up"
               size={14}
-              color="#C7C7CC"
+              color={index === 0 ? 'transparent' : '#8E8E93'}
             />
           </TouchableOpacity>
+          <View style={styles.stepperDivider} />
           <TouchableOpacity
-            style={[styles.arrowTextBtn, index === candidates.length - 1 && styles.arrowBtnDisabled]}
+            style={styles.stepperBtn}
             onPress={() => handleMoveDown(index)}
             disabled={index === candidates.length - 1}
           >
             <IconSymbol
               name="chevron.down"
               size={14}
-              color="#C7C7CC"
+              color={index === candidates.length - 1 ? 'transparent' : '#8E8E93'}
             />
           </TouchableOpacity>
         </View>
@@ -318,6 +319,24 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#AEAEB2',
     fontWeight: '400',
+  },
+  stepperContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F2F2F7',
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
+  stepperBtn: {
+    width: 36,
+    height: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  stepperDivider: {
+    width: StyleSheet.hairlineWidth,
+    height: 20,
+    backgroundColor: '#C7C7CC',
   },
   arrowTextDisabled: {
     color: '#D1D1D6',
