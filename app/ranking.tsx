@@ -128,9 +128,9 @@ export default function RankingScreen() {
       >
         <View style={{ width: 11, marginRight: 8 }}>
           {[0, 1, 2].map((row) => (
-            <View key={row} style={{ flexDirection: 'row', marginBottom: row < 2 ? 3 : 0 }}>
-              <View style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: '#C7C7CC' }} />
-              <View style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: '#C7C7CC', marginLeft: 3 }} />
+            <View key={row} style={{ flexDirection: 'row', marginBottom: row < 2 ? 5 : 0 }}>
+              <View style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: '#D1D1D6' }} />
+              <View style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: '#D1D1D6', marginLeft: 3 }} />
             </View>
           ))}
         </View>
@@ -303,10 +303,10 @@ const styles = StyleSheet.create({
   },
   arrowText: {
     fontSize: 18,
-    color: '#C7C7CC',
+    color: '#8E8E93',
     fontWeight: '400',
   },
   arrowTextDisabled: {
-    color: '#E5E5EA',
+    color: '#D1D1D6',
   },
 });
