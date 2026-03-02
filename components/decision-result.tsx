@@ -119,6 +119,7 @@ export function DecisionResult({
                 style={[
                   styles.rankingRow,
                   index === sortedCandidates.length - 1 && { borderBottomWidth: 0 },
+                  index === 0 && { backgroundColor: '#F0FFF4' },
                 ]}
               >
                 <View style={styles.rankingRowLeft}>

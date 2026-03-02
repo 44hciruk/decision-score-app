@@ -144,27 +144,15 @@ export default function RankingScreen() {
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
           <TouchableOpacity
             onPress={() => handleMoveUp(index)}
-            style={{
-              width: 30,
-              height: 30,
-              borderRadius: 15,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
+            style={styles.arrowTextBtn}
           >
-            <Ionicons name="arrow-up" size={16} color="#8E8E93" />
+            <Text style={styles.arrowText}>↑</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => handleMoveDown(index)}
-            style={{
-              width: 30,
-              height: 30,
-              borderRadius: 15,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
+            style={styles.arrowTextBtn}
           >
-            <Ionicons name="arrow-down" size={16} color="#8E8E93" />
+            <Text style={styles.arrowText}>↓</Text>
           </TouchableOpacity>
         </View>
       </TouchableOpacity>
@@ -304,5 +292,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 8,
     paddingBottom: 32,
+  },
+  arrowTextBtn: {
+    width: 32,
+    height: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  arrowText: {
+    fontSize: 18,
+    color: '#C7C7CC',
+    fontWeight: '400',
   },
 });
