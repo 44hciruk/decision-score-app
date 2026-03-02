@@ -24,9 +24,7 @@ export default function HomeScreen() {
     setProjects(data);
   }, []);
 
-  useEffect(() => {
-    loadData();
-  }, [loadData]);
+  useEffect(() => { loadData(); }, [loadData]);
 
   useEffect(() => {
     const interval = setInterval(loadData, 500);
@@ -34,26 +32,16 @@ export default function HomeScreen() {
   }, [loadData]);
 
   const handleNewProject = useCallback(() => {
-    if (Platform.OS !== "web") {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    }
+    if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     router.push("/new-project");
   }, []);
 
   const handleOpenProject = useCallback((project: Project) => {
-    if (Platform.OS !== "web") {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    }
+    if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     if (project.winner) {
-      router.push({
-        pathname: "/history-detail",
-        params: { projectId: project.id },
-      });
+      router.push({ pathname: "/history-detail", params: { projectId: project.id } });
     } else {
-      router.push({
-        pathname: "/candidates",
-        params: { projectId: project.id },
-      });
+      router.push({ pathname: "/candidates", params: { projectId: project.id } });
     }
   }, []);
 
@@ -67,7 +55,7 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.root}>
-      {/* ── 全画面グラデーション背景（ScrollViewの外でabsoluteFill） ── */}
+      {/* 全画面グラデーション背景 */}
       <LinearGradient
         colors={["#FFD4A8", "#EDD5FF", "#C9A0FF"]}
         start={{ x: 0, y: 0 }}
@@ -75,7 +63,7 @@ export default function HomeScreen() {
         style={StyleSheet.absoluteFill}
       />
 
-      {/* ── ヘッダー（ScrollViewの外に固定） ── */}
+      {/* ヘッダー（固定） */}
       <View style={[styles.header, { paddingTop: insets.top + 4 }]}>
         <View style={styles.logoRow}>
           <View style={styles.logoIcon}>
@@ -97,163 +85,134 @@ export default function HomeScreen() {
         </View>
       </View>
 
-      {/* ── スクロール可能エリア ── */}
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={[
-          styles.scrollContent,
-          { paddingBottom: insets.bottom + 32 },
-        ]}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* ── メインカード（グラスモーフィズム） ── */}
-        <View style={styles.mainCardOuter}>
-          <View style={styles.mainCard}>
-            {/* 空状態 */}
-            {projects.length === 0 && (
-              <View style={styles.emptyWrap}>
-                <View style={styles.mainCardIcon}>
-                  <IconSymbol
-                    name="checkmark.circle.fill"
-                    size={28}
-                    color="#5B4EFF"
-                  />
-                </View>
-                <Text style={styles.mainCardTitle}>現在の決断はありません</Text>
-                <Text style={styles.mainCardSubtitle}>
-                  下のボタンから最初の決断を{"\n"}作成してみましょう
-                </Text>
+      {/* メインカード（高さ固定・内部スクロール） */}
+      <View style={styles.mainCardOuter}>
+        <View style={styles.mainCard}>
+          {/* 空状態 */}
+          {projects.length === 0 && (
+            <View style={styles.emptyWrap}>
+              <View style={styles.mainCardIcon}>
+                <IconSymbol name="checkmark.circle.fill" size={28} color="#5B4EFF" />
               </View>
-            )}
+              <Text style={styles.mainCardTitle}>現在の決断はありません</Text>
+              <Text style={styles.mainCardSubtitle}>
+                下のボタンから最初の決断を{"\n"}作成してみましょう
+              </Text>
+            </View>
+          )}
 
-            {/* 進行中リスト */}
-            {inProgress.length > 0 && (
-              <View>
-                <Text style={styles.cardSectionLabel}>進行中の決断</Text>
-                {inProgress.map((item, index) => (
-                  <TouchableOpacity
-                    key={item.id}
-                    style={[
-                      styles.cardRow,
-                      index < inProgress.length - 1 && styles.cardRowBorder,
-                    ]}
-                    onPress={() => handleOpenProject(item)}
-                    activeOpacity={0.75}
-                  >
-                    <View style={styles.cardRowIcon}>
-                      <IconSymbol name="doc.text.fill" size={16} color="#5B4EFF" />
-                    </View>
-                    <View style={styles.cardRowBody}>
-                      <Text style={styles.cardRowTitle} numberOfLines={1}>
-                        {item.title}
-                      </Text>
-                      <Text style={styles.cardRowMeta}>
-                        {item.candidates?.length ?? 0}つの選択肢
-                      </Text>
-                    </View>
-                    <IconSymbol name="chevron.right" size={14} color="#1C1C1E" />
-                  </TouchableOpacity>
-                ))}
-              </View>
-            )}
-
-            {/* 完了済みリスト */}
-            {completed.length > 0 && (
-              <View
-                style={
-                  inProgress.length > 0 ? styles.cardSectionBorderTop : undefined
-                }
-              >
-                <Text style={styles.cardSectionLabel}>完了した決断</Text>
-                {completed.slice(0, 3).map((item, index) => {
-                  const sliced = completed.slice(0, 3);
-                  return (
+          {/* リスト（カード内部のみスクロール） */}
+          {projects.length > 0 && (
+            <ScrollView
+              style={styles.cardScroll}
+              showsVerticalScrollIndicator={false}
+              bounces={false}
+            >
+              {/* 進行中 */}
+              {inProgress.length > 0 && (
+                <View>
+                  <Text style={styles.cardSectionLabel}>進行中の決断</Text>
+                  {inProgress.map((item, index) => (
                     <TouchableOpacity
                       key={item.id}
-                      style={[
-                        styles.cardRow,
-                        index < sliced.length - 1 && styles.cardRowBorder,
-                      ]}
+                      style={[styles.cardRow, index < inProgress.length - 1 && styles.cardRowBorder]}
                       onPress={() => handleOpenProject(item)}
                       activeOpacity={0.75}
                     >
-                      <View style={[styles.cardRowIcon, styles.cardRowIconDone]}>
-                        <IconSymbol name="checkmark.circle.fill" size={16} color="#34C759" />
+                      <View style={styles.cardRowIcon}>
+                        <IconSymbol name="doc.text.fill" size={16} color="#5B4EFF" />
                       </View>
                       <View style={styles.cardRowBody}>
-                        <Text style={styles.cardRowTitle} numberOfLines={1}>
-                          {item.title}
-                        </Text>
-                        <Text style={styles.cardRowMeta}>
-                          {formatDate(item.createdAt)}　完了
-                        </Text>
+                        <Text style={styles.cardRowTitle} numberOfLines={1}>{item.title}</Text>
+                        <Text style={styles.cardRowMeta}>{item.candidates?.length ?? 0}つの選択肢</Text>
                       </View>
                       <IconSymbol name="chevron.right" size={14} color="#1C1C1E" />
                     </TouchableOpacity>
-                  );
-                })}
-                {completed.length > 3 && (
-                  <TouchableOpacity
-                    style={styles.seeAllBtn}
-                    onPress={() => router.push("/(tabs)/history")}
-                    activeOpacity={0.75}
-                  >
-                    <Text style={styles.seeAllText}>
-                      すべて見る（{completed.length}件）
-                    </Text>
-                    <IconSymbol name="chevron.right" size={13} color="#5B4EFF" />
-                  </TouchableOpacity>
-                )}
-              </View>
-            )}
-          </View>
-        </View>
+                  ))}
+                </View>
+              )}
 
-        {/* ── CTAボタン ── */}
-        <TouchableOpacity
-          style={styles.ctaBtn}
-          onPress={handleNewProject}
-          activeOpacity={0.88}
-        >
-          <Text style={styles.ctaBtnText}>＋ 決断を始める</Text>
+              {/* 完了済み（最大3件＋すべて見るボタン） */}
+              {completed.length > 0 && (
+                <View style={inProgress.length > 0 ? styles.cardSectionBorderTop : undefined}>
+                  <Text style={styles.cardSectionLabel}>完了した決断</Text>
+                  {completed.slice(0, 3).map((item, index) => {
+                    const sliced = completed.slice(0, 3);
+                    return (
+                      <TouchableOpacity
+                        key={item.id}
+                        style={[styles.cardRow, index < sliced.length - 1 && styles.cardRowBorder]}
+                        onPress={() => handleOpenProject(item)}
+                        activeOpacity={0.75}
+                      >
+                        <View style={[styles.cardRowIcon, styles.cardRowIconDone]}>
+                          <IconSymbol name="checkmark.circle.fill" size={16} color="#34C759" />
+                        </View>
+                        <View style={styles.cardRowBody}>
+                          <Text style={styles.cardRowTitle} numberOfLines={1}>{item.title}</Text>
+                          <Text style={styles.cardRowMeta}>{formatDate(item.createdAt)}　完了</Text>
+                        </View>
+                        <IconSymbol name="chevron.right" size={14} color="#1C1C1E" />
+                      </TouchableOpacity>
+                    );
+                  })}
+                  {completed.length > 3 && (
+                    <TouchableOpacity
+                      style={styles.seeAllBtn}
+                      onPress={() => router.push("/(tabs)/history")}
+                      activeOpacity={0.75}
+                    >
+                      <Text style={styles.seeAllText}>すべて見る（{completed.length}件）</Text>
+                      <IconSymbol name="chevron.right" size={13} color="#5B4EFF" />
+                    </TouchableOpacity>
+                  )}
+                </View>
+              )}
+            </ScrollView>
+          )}
+        </View>
+      </View>
+
+      {/* CTAボタン（固定） */}
+      <TouchableOpacity style={styles.ctaBtn} onPress={handleNewProject} activeOpacity={0.88}>
+        <Text style={styles.ctaBtnText}>＋ 決断を始める</Text>
+      </TouchableOpacity>
+
+      {/* 下部グレーセクション（固定・flex:1で残り全占有） */}
+      <View style={[styles.bottomSection, { paddingBottom: insets.bottom + 16 }]}>
+        <TouchableOpacity style={styles.listCardShadow} activeOpacity={0.7}>
+          <View style={styles.listCardInner}>
+            <View style={styles.listTitleRow}>
+              <Ionicons name="notifications-outline" size={22} color="#1C1C1E" style={styles.listIcon} />
+              <Text style={styles.listTitle}>お知らせ</Text>
+              <Ionicons name="chevron-forward" size={16} color="#1C1C1E" />
+            </View>
+            <Text style={styles.listSubtitle}>アップデート情報をお届けします</Text>
+          </View>
         </TouchableOpacity>
 
-        {/* ── 下部セクション（情報カード群） ── */}
-        <View style={styles.bottomSection}>
-          <TouchableOpacity style={styles.listCardShadow} activeOpacity={0.7}>
-            <View style={styles.listCardInner}>
-              <View style={styles.listTitleRow}>
-                <Ionicons name="notifications-outline" size={22} color="#1C1C1E" style={styles.listIcon} />
-                <Text style={styles.listTitle}>お知らせ</Text>
-                <Ionicons name="chevron-forward" size={16} color="#1C1C1E" />
-              </View>
-              <Text style={styles.listSubtitle}>アップデート情報をお届けします</Text>
+        <TouchableOpacity style={styles.listCardShadow} activeOpacity={0.7}>
+          <View style={styles.listCardInner}>
+            <View style={styles.listTitleRow}>
+              <Ionicons name="information-circle-outline" size={22} color="#1C1C1E" style={styles.listIcon} />
+              <Text style={styles.listTitle}>使い方ガイド</Text>
+              <Ionicons name="chevron-forward" size={16} color="#1C1C1E" />
             </View>
-          </TouchableOpacity>
+            <Text style={styles.listSubtitle}>決断スコアの使い方を確認する</Text>
+          </View>
+        </TouchableOpacity>
 
-          <TouchableOpacity style={styles.listCardShadow} activeOpacity={0.7}>
-            <View style={styles.listCardInner}>
-              <View style={styles.listTitleRow}>
-                <Ionicons name="information-circle-outline" size={22} color="#1C1C1E" style={styles.listIcon} />
-                <Text style={styles.listTitle}>使い方ガイド</Text>
-                <Ionicons name="chevron-forward" size={16} color="#1C1C1E" />
-              </View>
-              <Text style={styles.listSubtitle}>決断スコアの使い方を確認する</Text>
+        <TouchableOpacity style={styles.listCardShadow} activeOpacity={0.7}>
+          <View style={styles.listCardInner}>
+            <View style={styles.listTitleRow}>
+              <Ionicons name="star-outline" size={22} color="#1C1C1E" style={styles.listIcon} />
+              <Text style={styles.listTitle}>プレミアムプラン</Text>
+              <Ionicons name="chevron-forward" size={16} color="#1C1C1E" />
             </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.listCardShadow} activeOpacity={0.7}>
-            <View style={styles.listCardInner}>
-              <View style={styles.listTitleRow}>
-                <Ionicons name="star-outline" size={22} color="#1C1C1E" style={styles.listIcon} />
-                <Text style={styles.listTitle}>プレミアムプラン</Text>
-                <Ionicons name="chevron-forward" size={16} color="#1C1C1E" />
-              </View>
-              <Text style={styles.listSubtitle}>無制限で決断を作成できます</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
+            <Text style={styles.listSubtitle}>無制限で決断を作成できます</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -264,7 +223,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFD4A8",
   },
 
-  // ── ヘッダー ──
+  // ヘッダー
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -304,17 +263,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 
-  // ── スクロール ──
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    paddingTop: 48,
-  },
-
-  // ── メインカード ──
+  // メインカード（高さ固定）
   mainCardOuter: {
     marginHorizontal: 32,
+    marginTop: 40,
+    height: 220,
     borderRadius: 36,
     shadowColor: "#4A00B4",
     shadowOffset: { width: 0, height: 8 },
@@ -323,14 +276,20 @@ const styles = StyleSheet.create({
     elevation: 14,
   },
   mainCard: {
+    flex: 1,
     backgroundColor: "rgba(255,255,255,0.72)",
     borderRadius: 20,
     borderWidth: 4,
     borderColor: "#FFFFFF",
     overflow: "hidden",
   },
+  cardScroll: {
+    flex: 1,
+  },
   emptyWrap: {
+    flex: 1,
     alignItems: "center",
+    justifyContent: "center",
     padding: 32,
   },
   mainCardIcon: {
@@ -420,7 +379,7 @@ const styles = StyleSheet.create({
     color: "#5B4EFF",
   },
 
-  // ── CTAボタン ──
+  // CTAボタン
   ctaBtn: {
     alignSelf: "center",
     backgroundColor: "#5B4EFF",
@@ -435,12 +394,12 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
 
-  // ── 下部セクション ──
+  // 下部グレーセクション
   bottomSection: {
     backgroundColor: "#F2F2F7",
-    marginTop: 56,
+    marginTop: 40,
     paddingTop: 20,
-    paddingBottom: 24,
+    flex: 1,
   },
   listCardShadow: {
     backgroundColor: "#FFFFFF",
