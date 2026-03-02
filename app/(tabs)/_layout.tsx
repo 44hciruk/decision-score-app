@@ -7,7 +7,7 @@ import { IconSymbol } from "@/components/ui/icon-symbol";
 type TabIconProps = {
   focused: boolean;
   color: string;
-  iconName: "house.fill" | "gearshape.fill";
+  iconName: "house.fill" | "clock.fill" | "gearshape.fill";
   label: string;
 };
 
@@ -46,7 +46,6 @@ const tabStyles = StyleSheet.create({
 export default function TabLayout() {
   const insets = useSafeAreaInsets();
   const bottomPadding = Platform.OS === "web" ? 12 : Math.max(insets.bottom, 8);
-  const tabBarHeight = 56 + bottomPadding;
 
   return (
     <Tabs
@@ -71,6 +70,15 @@ export default function TabLayout() {
           title: "ホーム",
           tabBarIcon: ({ focused, color }) => (
             <TabIcon focused={focused} color={color} iconName="house.fill" label="ホーム" />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="history"
+        options={{
+          title: "履歴",
+          tabBarIcon: ({ focused, color }) => (
+            <TabIcon focused={focused} color={color} iconName="clock.fill" label="履歴" />
           ),
         }}
       />

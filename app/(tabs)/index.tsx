@@ -84,7 +84,11 @@ export default function HomeScreen() {
             <Text style={styles.logoText}>決断スコア</Text>
           </View>
           <View style={styles.headerActions}>
-            <TouchableOpacity style={styles.headerIconBtn} activeOpacity={0.75}>
+            <TouchableOpacity
+              style={styles.headerIconBtn}
+              activeOpacity={0.75}
+              onPress={() => router.push("/(tabs)/history")}
+            >
               <IconSymbol name="clock.fill" size={17} color="#3C3C43" />
             </TouchableOpacity>
             <TouchableOpacity style={styles.headerIconBtn} activeOpacity={0.75}>
@@ -159,34 +163,41 @@ export default function HomeScreen() {
                 }
               >
                 <Text style={styles.cardSectionLabel}>完了した決断</Text>
-                {completed.map((item, index) => (
+                {completed.slice(0, 3).map((item, index) => {
+                  const sliced = completed.slice(0, 3);
+                  return (
+                    <TouchableOpacity
+                      key={item.id}
+                      style={[
+                        styles.cardRow,
+                        index < sliced.length - 1 && styles.cardRowBorder,
+                      ]}
+                      onPress={() => handleOpenProject(item)}
+                      activeOpacity={0.75}
+                    >
+                      <View style={[styles.cardRowIcon, styles.cardRowIconDone]}>
+                        <IconSymbol name="checkmark.circle.fill" size={16} color="#34C759" />
+                      </View>
+                      <View style={styles.cardRowBody}>
+                        <Text style={styles.cardRowTitle} numberOfLines={1}>{item.title}</Text>
+                        <Text style={styles.cardRowMeta}>{formatDate(item.createdAt)}　完了</Text>
+                      </View>
+                      <IconSymbol name="chevron.right" size={14} color="#1C1C1E" />
+                    </TouchableOpacity>
+                  );
+                })}
+                {completed.length > 3 && (
                   <TouchableOpacity
-                    key={item.id}
-                    style={[
-                      styles.cardRow,
-                      index < completed.length - 1 && styles.cardRowBorder,
-                    ]}
-                    onPress={() => handleOpenProject(item)}
+                    style={styles.seeAllBtn}
+                    onPress={() => router.push("/(tabs)/history")}
                     activeOpacity={0.75}
                   >
-                    <View style={[styles.cardRowIcon, styles.cardRowIconDone]}>
-                      <IconSymbol
-                        name="checkmark.circle.fill"
-                        size={16}
-                        color="#34C759"
-                      />
-                    </View>
-                    <View style={styles.cardRowBody}>
-                      <Text style={styles.cardRowTitle} numberOfLines={1}>
-                        {item.title}
-                      </Text>
-                      <Text style={styles.cardRowMeta}>
-                        {formatDate(item.createdAt)}　完了
-                      </Text>
-                    </View>
-                    <IconSymbol name="chevron.right" size={14} color="#1C1C1E" />
+                    <Text style={styles.seeAllText}>
+                      すべて見る（{completed.length}件）
+                    </Text>
+                    <IconSymbol name="chevron.right" size={13} color="#5B4EFF" />
                   </TouchableOpacity>
-                ))}
+                )}
               </View>
             )}
           </View>
@@ -388,6 +399,21 @@ const styles = StyleSheet.create({
   cardRowMeta: {
     fontSize: 12,
     color: "#8E8E93",
+  },
+
+  seeAllBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 12,
+    gap: 4,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: "rgba(0,0,0,0.08)",
+  },
+  seeAllText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#5B4EFF",
   },
 
   // ── CTAボタン ──
