@@ -120,49 +120,45 @@ export function DecisionResult({
               const rankColor = getRankColor(index, sortedCandidates.length);
               const isWinner = index === 0;
               return (
-                <Animated.View
+                <View
                   key={`${candidate}-${index}`}
-                  entering={animated ? FadeInDown.delay(1100 + index * 100).duration(300) : undefined}
+                  style={[
+                    styles.rankItem,
+                    {
+                      borderWidth: 1,
+                      borderColor: index === 0 ? '#22C55E' : '#E5E5EA',
+                    },
+                  ]}
                 >
-                  <View
-                    style={[
-                      styles.rankItem,
-                      {
-                        borderWidth: 1,
-                        borderColor: index === 0 ? '#22C55E' : '#E5E5EA',
-                      },
-                    ]}
-                  >
-                    <View style={styles.rankItemLeft}>
-                      {isWinner ? (
-                        <View style={[styles.rankBadge, { backgroundColor: "#DCFCE7", borderColor: "#22C55E", borderWidth: 1.5 }]}>
-                          <IconSymbol name="trophy.fill" size={16} color="#22C55E" />
-                        </View>
-                      ) : (
-                        <View style={[styles.rankBadge, { backgroundColor: rankColor + "20", borderColor: rankColor + "50", borderWidth: 1.5 }]}>
-                          <Text style={[styles.rankBadgeText, { color: rankColor }]}>
-                            {index + 1}
-                          </Text>
-                        </View>
-                      )}
-                      <Text
-                        style={[
-                          styles.rankItemName,
-                          { fontWeight: isWinner ? "700" : "500", color: isWinner ? "#1A1535" : "#3C3C43" },
-                        ]}
-                        numberOfLines={1}
-                      >
-                        {candidate}
-                      </Text>
-                    </View>
-                    <View style={styles.rankItemRight}>
-                      <Text style={[styles.rankItemScore, { color: rankColor, fontSize: isWinner ? 26 : 22 }]}>
-                        {score}
-                      </Text>
-                      <Text style={styles.rankItemUnit}>点</Text>
-                    </View>
+                  <View style={styles.rankItemLeft}>
+                    {isWinner ? (
+                      <View style={[styles.rankBadge, { backgroundColor: "#DCFCE7", borderColor: "#22C55E", borderWidth: 1.5 }]}>
+                        <IconSymbol name="trophy.fill" size={16} color="#22C55E" />
+                      </View>
+                    ) : (
+                      <View style={[styles.rankBadge, { backgroundColor: rankColor + "20", borderColor: rankColor + "50", borderWidth: 1.5 }]}>
+                        <Text style={[styles.rankBadgeText, { color: rankColor }]}>
+                          {index + 1}
+                        </Text>
+                      </View>
+                    )}
+                    <Text
+                      style={[
+                        styles.rankItemName,
+                        { fontWeight: isWinner ? "700" : "500", color: isWinner ? "#1A1535" : "#3C3C43" },
+                      ]}
+                      numberOfLines={1}
+                    >
+                      {candidate}
+                    </Text>
                   </View>
-                </Animated.View>
+                  <View style={styles.rankItemRight}>
+                    <Text style={[styles.rankItemScore, { color: rankColor, fontSize: isWinner ? 26 : 22 }]}>
+                      {score}
+                    </Text>
+                    <Text style={styles.rankItemUnit}>点</Text>
+                  </View>
+                </View>
               );
             })}
           </Animated.View>
@@ -186,42 +182,17 @@ export function DecisionResult({
                     style={[
                       styles.rankItem,
                       {
+                        borderColor: '#E5E5EA',
                         borderWidth: 1,
-                        borderColor: idx === 0 ? '#22C55E' : '#E5E5EA',
                         marginBottom: 8,
                       },
                     ]}
                   >
                     <View style={styles.rankItemLeft}>
-                      <View
-                        style={[
-                          styles.rankNumber,
-                          {
-                            backgroundColor: getRankColor(idx, ordered.length) + '20',
-                            borderColor: getRankColor(idx, ordered.length) + '40',
-                            borderWidth: 1,
-                          },
-                        ]}
-                      >
-                        <Text
-                          style={[
-                            styles.rankNumberText,
-                            { color: getRankColor(idx, ordered.length) },
-                          ]}
-                        >
-                          {idx + 1}
-                        </Text>
-                      </View>
+                      <Text style={styles.criterionRankText}>{idx + 1}</Text>
                       <Text style={styles.rankName}>{candidate}</Text>
                     </View>
-                    <Text
-                      style={[
-                        styles.rankScore,
-                        { color: getRankColor(idx, ordered.length) },
-                      ]}
-                    >
-                      {idx + 1}位
-                    </Text>
+                    <Text style={[styles.rankScore, { color: '#8E8E93' }]}>{idx + 1}位</Text>
                   </View>
                 ))}
                 {ordered.length > 5 && (
@@ -253,8 +224,8 @@ export function DecisionResult({
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 function CircularScoreAnimated({ score }: { score: number }) {
-  const size = 200;
-  const strokeWidth = 18;
+  const size = 140;
+  const strokeWidth = 14;
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const animatedProgress = useSharedValue(0);
@@ -309,8 +280,8 @@ function AnimatedScoreText({ score }: { score: number }) {
 
 // ─── アニメーションなし円グラフ（history-detail.tsx用） ─
 function CircularScoreStatic({ score }: { score: number }) {
-  const size = 200;
-  const strokeWidth = 18;
+  const size = 140;
+  const strokeWidth = 14;
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference * (1 - score / 100);
@@ -371,14 +342,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   scoreValue: {
-    fontSize: 56,
+    fontSize: 40,
     fontWeight: "700",
     color: "#1C1C1E",
     letterSpacing: -2,
   },
   scoreUnit: {
-    fontSize: 14,
-    marginTop: -4,
+    fontSize: 12,
+    marginTop: -2,
     color: "#8E8E93",
   },
   confidenceContainer: {
@@ -474,6 +445,13 @@ const styles = StyleSheet.create({
   rankScore: {
     fontSize: 14,
     fontWeight: '600',
+  },
+  criterionRankText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#8E8E93',
+    width: 20,
+    textAlign: 'center',
   },
   rankingTitle: {
     fontSize: 20,
