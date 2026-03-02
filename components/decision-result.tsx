@@ -45,6 +45,7 @@ export function DecisionResult({
   animated = true,
 }: DecisionResultProps) {
   const [activeTab, setActiveTab] = useState<'overall' | 'criteria'>('overall');
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const winnerScore = scores[winner] || 0;
   const secondScore = sortedCandidates[1] ? scores[sortedCandidates[1]] || 0 : 0;
   const scoreDiff = winnerScore - secondScore;
@@ -171,14 +172,15 @@ export function DecisionResult({
       {/* 項目別の順位 */}
       {activeTab === 'criteria' && (
         <View>
-          <Animated.View
-            entering={animated ? FadeInDown.delay(1200).duration(400) : undefined}
-          >
-            <Text style={[styles.sectionTitle, { marginTop: 24 }]}>項目別の順位</Text>
-            {criteria.map(criterion => (
-              <View key={criterion} style={styles.criterionDetail}>
+          <Text style={styles.rankingTitle}>項目別の順位</Text>
+          {criteria.map(criterion => {
+            const ordered = rankings[criterion] || [];
+            const isExpanded = expanded[criterion] || false;
+            const displayList = isExpanded ? ordered : ordered.slice(0, 5);
+            return (
+              <View key={criterion} style={styles.criterionCard}>
                 <Text style={styles.criterionDetailTitle}>{criterion}</Text>
-                {(rankings[criterion] || []).map((candidate, idx) => (
+                {displayList.map((candidate, idx) => (
                   <View
                     key={`${candidate}-${idx}`}
                     style={[
@@ -195,8 +197,8 @@ export function DecisionResult({
                         style={[
                           styles.rankNumber,
                           {
-                            backgroundColor: getRankColor(idx, rankings[criterion]?.length ?? 0) + '20',
-                            borderColor: getRankColor(idx, rankings[criterion]?.length ?? 0) + '40',
+                            backgroundColor: getRankColor(idx, ordered.length) + '20',
+                            borderColor: getRankColor(idx, ordered.length) + '40',
                             borderWidth: 1,
                           },
                         ]}
@@ -204,7 +206,7 @@ export function DecisionResult({
                         <Text
                           style={[
                             styles.rankNumberText,
-                            { color: getRankColor(idx, rankings[criterion]?.length ?? 0) },
+                            { color: getRankColor(idx, ordered.length) },
                           ]}
                         >
                           {idx + 1}
@@ -215,16 +217,32 @@ export function DecisionResult({
                     <Text
                       style={[
                         styles.rankScore,
-                        { color: getRankColor(idx, rankings[criterion]?.length ?? 0) },
+                        { color: getRankColor(idx, ordered.length) },
                       ]}
                     >
                       {idx + 1}位
                     </Text>
                   </View>
                 ))}
+                {ordered.length > 5 && (
+                  <TouchableOpacity
+                    onPress={() => setExpanded(prev => ({ ...prev, [criterion]: !isExpanded }))}
+                    style={styles.expandButton}
+                    activeOpacity={0.7}
+                  >
+                    <Text style={styles.expandButtonText}>
+                      {isExpanded ? '閉じる' : `もっと見る（残り${ordered.length - 5}件）`}
+                    </Text>
+                    <IconSymbol
+                      name={isExpanded ? 'chevron.up' : 'chevron.down'}
+                      size={14}
+                      color="#5B4EFF"
+                    />
+                  </TouchableOpacity>
+                )}
               </View>
-            ))}
-          </Animated.View>
+            );
+          })}
         </View>
       )}
     </View>
@@ -456,6 +474,32 @@ const styles = StyleSheet.create({
   rankScore: {
     fontSize: 14,
     fontWeight: '600',
+  },
+  rankingTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#1C1C1E',
+    marginBottom: 14,
+    letterSpacing: -0.3,
+  },
+  criterionCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+  },
+  expandButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 4,
+    paddingVertical: 8,
+    marginTop: 4,
+  },
+  expandButtonText: {
+    fontSize: 14,
+    color: '#5B4EFF',
+    fontWeight: '500',
   },
   tabContainer: {
     flexDirection: 'row',
