@@ -77,8 +77,9 @@ export default function HistoryDetailScreen() {
       <View style={{ flex: 1, backgroundColor: "#F2F2F7" }}>
         {/* ヘッダー */}
         <View style={styles.navHeader}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.navBtn} activeOpacity={0.7}>
+          <TouchableOpacity onPress={() => router.back()} style={styles.navBackBtn} activeOpacity={0.7}>
             <IconSymbol name="chevron.left" size={20} color="#5B4EFF" />
+            <Text style={styles.navBackText}>戻る</Text>
           </TouchableOpacity>
           <Text style={styles.navTitle} numberOfLines={1}>{project.title}</Text>
           <TouchableOpacity onPress={handleDelete} style={styles.navBtn} activeOpacity={0.7}>
@@ -100,7 +101,7 @@ export default function HistoryDetailScreen() {
             sortedCandidates={sortedCandidates}
             criteria={project.criteria}
             rankings={project.rankings}
-            animated={false}
+            animated={true}
           />
         </ScrollView>
       </View>
@@ -127,6 +128,19 @@ const styles = StyleSheet.create({
     height: 40,
     justifyContent: "center",
     alignItems: "center",
+  },
+  navBackBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingVertical: 8,
+    paddingRight: 12,
+    minWidth: 80,
+  },
+  navBackText: {
+    fontSize: 16,
+    color: '#5B4EFF',
+    fontWeight: '500',
   },
   navTitle: {
     fontSize: 17,

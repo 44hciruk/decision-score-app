@@ -111,54 +111,62 @@ export function DecisionResult({
       {/* ランキング */}
       {activeTab === 'overall' && (
         <View>
-          <View>
-            <Text style={styles.sectionTitle}>ランキング</Text>
-            {sortedCandidates.map((candidate, index) => {
-              const score = scores[candidate] || 0;
-              const rankColor = getRankColor(index, sortedCandidates.length);
-              const isWinner = index === 0;
-              return (
-                <View
-                  key={`${candidate}-${index}`}
+          <Text style={styles.rankingTitle}>ランキング</Text>
+          <View style={styles.rankingCard}>
+            {sortedCandidates.map((candidate, index) => (
+              <View
+                key={`${candidate}-${index}`}
+                style={[
+                  styles.rankingRow,
+                  index === sortedCandidates.length - 1 && { borderBottomWidth: 0 },
+                ]}
+              >
+                <View style={styles.rankingRowLeft}>
+                  {index === 0 ? (
+                    <View style={styles.rankNumber1}>
+                      <IconSymbol name="trophy.fill" size={16} color="#22C55E" />
+                    </View>
+                  ) : (
+                    <View
+                      style={[
+                        styles.rankNumber,
+                        {
+                          backgroundColor: getRankColor(index, sortedCandidates.length) + '20',
+                          borderColor: getRankColor(index, sortedCandidates.length) + '40',
+                          borderWidth: 1,
+                        },
+                      ]}
+                    >
+                      <Text
+                        style={[
+                          styles.rankNumberText,
+                          { color: getRankColor(index, sortedCandidates.length) },
+                        ]}
+                      >
+                        {index + 1}
+                      </Text>
+                    </View>
+                  )}
+                  <Text
+                    style={[
+                      styles.rankName,
+                      index === 0 && { color: '#1C1C1E', fontWeight: '700' },
+                    ]}
+                  >
+                    {candidate}
+                  </Text>
+                </View>
+                <Text
                   style={[
-                    styles.rankItem,
-                    {
-                      borderWidth: 1,
-                      borderColor: index === 0 ? '#22C55E' : '#E5E5EA',
-                    },
+                    styles.rankScore,
+                    { color: index === 0 ? '#22C55E' : getRankColor(index, sortedCandidates.length) },
                   ]}
                 >
-                  <View style={styles.rankItemLeft}>
-                    {isWinner ? (
-                      <View style={[styles.rankBadge, { backgroundColor: "#DCFCE7", borderColor: "#22C55E", borderWidth: 1.5 }]}>
-                        <IconSymbol name="trophy.fill" size={16} color="#22C55E" />
-                      </View>
-                    ) : (
-                      <View style={[styles.rankBadge, { backgroundColor: rankColor + "20", borderColor: rankColor + "50", borderWidth: 1.5 }]}>
-                        <Text style={[styles.rankBadgeText, { color: rankColor }]}>
-                          {index + 1}
-                        </Text>
-                      </View>
-                    )}
-                    <Text
-                      style={[
-                        styles.rankItemName,
-                        { fontWeight: isWinner ? "700" : "500", color: isWinner ? "#1A1535" : "#3C3C43" },
-                      ]}
-                      numberOfLines={1}
-                    >
-                      {candidate}
-                    </Text>
-                  </View>
-                  <View style={styles.rankItemRight}>
-                    <Text style={[styles.rankItemScore, { color: rankColor, fontSize: isWinner ? 26 : 22 }]}>
-                      {score}
-                    </Text>
-                    <Text style={styles.rankItemUnit}>点</Text>
-                  </View>
-                </View>
-              );
-            })}
+                  {scores[candidate]}
+                  <Text style={styles.rankScoreUnit}>点</Text>
+                </Text>
+              </View>
+            ))}
           </View>
         </View>
       )}
@@ -166,12 +174,12 @@ export function DecisionResult({
       {/* 項目別の順位 */}
       {activeTab === 'criteria' && (
         <View>
-          {criteria.map(criterion => {
+          {criteria.map((criterion, criterionIndex) => {
             const ordered = rankings[criterion] || [];
             const isExpanded = expanded[criterion] || false;
             const displayList = isExpanded ? ordered : ordered.slice(0, 3);
             return (
-              <View key={criterion} style={styles.criterionCard}>
+              <View key={`${criterion}-${criterionIndex}`} style={styles.criterionCard}>
                 {/* セクションヘッダー */}
                 <View style={styles.criterionHeader}>
                   <View style={styles.criterionHeaderAccent} />
@@ -464,6 +472,42 @@ const styles = StyleSheet.create({
     color: '#1C1C1E',
     marginBottom: 14,
     letterSpacing: -0.3,
+  },
+  rankingCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 4,
+    marginBottom: 16,
+  },
+  rankingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 14,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#E5E5EA',
+  },
+  rankingRowLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    flex: 1,
+  },
+  rankNumber1: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    backgroundColor: '#DCFCE7',
+    borderWidth: 1,
+    borderColor: '#22C55E40',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  rankScoreUnit: {
+    fontSize: 13,
+    color: '#8E8E93',
+    fontWeight: '400',
   },
   criterionCard: {
     backgroundColor: '#FFFFFF',

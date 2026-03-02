@@ -148,14 +148,11 @@ export default function RankingScreen() {
               width: 30,
               height: 30,
               borderRadius: 15,
-              backgroundColor: 'transparent',
-              borderWidth: 1.5,
-              borderColor: isFirst ? '#C7C7CC' : '#5B4EFF',
               justifyContent: 'center',
               alignItems: 'center',
             }}
           >
-            <Ionicons name="arrow-up" size={16} color={isFirst ? '#C7C7CC' : '#5B4EFF'} />
+            <Ionicons name="arrow-up" size={16} color="#8E8E93" />
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => handleMoveDown(index)}
@@ -163,14 +160,11 @@ export default function RankingScreen() {
               width: 30,
               height: 30,
               borderRadius: 15,
-              backgroundColor: 'transparent',
-              borderWidth: 1.5,
-              borderColor: isLastItem ? '#C7C7CC' : '#5B4EFF',
               justifyContent: 'center',
               alignItems: 'center',
             }}
           >
-            <Ionicons name="arrow-down" size={16} color={isLastItem ? '#C7C7CC' : '#5B4EFF'} />
+            <Ionicons name="arrow-down" size={16} color="#8E8E93" />
           </TouchableOpacity>
         </View>
       </TouchableOpacity>
