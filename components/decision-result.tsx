@@ -111,9 +111,7 @@ export function DecisionResult({
       {/* ランキング */}
       {activeTab === 'overall' && (
         <View>
-          <Animated.View
-            entering={animated ? FadeInDown.delay(1000).duration(400) : undefined}
-          >
+          <View>
             <Text style={styles.sectionTitle}>ランキング</Text>
             {sortedCandidates.map((candidate, index) => {
               const score = scores[candidate] || 0;
@@ -161,7 +159,7 @@ export function DecisionResult({
                 </View>
               );
             })}
-          </Animated.View>
+          </View>
         </View>
       )}
 
@@ -465,6 +463,8 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 16,
     marginBottom: 16,
+    borderLeftWidth: 3,
+    borderLeftColor: '#5B4EFF',
   },
   expandButton: {
     flexDirection: 'row',
