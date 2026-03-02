@@ -13,7 +13,6 @@ import Animated, {
   Easing,
 } from "react-native-reanimated";
 import Svg, { Circle } from "react-native-svg";
-import { GlassCard } from "@/components/glass-card";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { getConfidenceMessage } from "@/lib/storage";
 
@@ -59,7 +58,6 @@ export function DecisionResult({
         style={styles.winnerSection}
       >
         <Text style={styles.winnerName}>{winner}</Text>
-        <Text style={styles.winnerSubText}>総合1位</Text>
       </Animated.View>
 
       {/* 円形スコア */}
@@ -67,10 +65,8 @@ export function DecisionResult({
         entering={animated ? FadeInDown.delay(400).duration(500) : undefined}
         style={styles.scoreCircleContainer}
       >
-        {animated ? (
+        {animated !== false && (
           <CircularScoreAnimated score={winnerScore} />
-        ) : (
-          <CircularScoreStatic score={winnerScore} />
         )}
       </Animated.View>
 
@@ -127,10 +123,13 @@ export function DecisionResult({
                   key={`${candidate}-${index}`}
                   entering={animated ? FadeInDown.delay(1100 + index * 100).duration(300) : undefined}
                 >
-                  <GlassCard
+                  <View
                     style={[
                       styles.rankItem,
-                      isWinner && { borderColor: "#22C55E", borderWidth: 2 },
+                      {
+                        borderWidth: 1,
+                        borderColor: index === 0 ? '#22C55E' : '#E5E5EA',
+                      },
                     ]}
                   >
                     <View style={styles.rankItemLeft}>
@@ -161,7 +160,7 @@ export function DecisionResult({
                       </Text>
                       <Text style={styles.rankItemUnit}>点</Text>
                     </View>
-                  </GlassCard>
+                  </View>
                 </Animated.View>
               );
             })}
@@ -176,20 +175,55 @@ export function DecisionResult({
             entering={animated ? FadeInDown.delay(1200).duration(400) : undefined}
           >
             <Text style={[styles.sectionTitle, { marginTop: 24 }]}>項目別の順位</Text>
-            {criteria.map((criterion) => {
-              const ordered = rankings[criterion] || [];
-              return (
-                <View key={criterion} style={styles.criterionDetail}>
-                  <Text style={styles.criterionDetailTitle}>{criterion}</Text>
-                  {ordered.map((candidate, idx) => (
-                    <View key={`${candidate}-${idx}`} style={styles.criterionRow}>
-                      <Text style={styles.criterionRank}>{idx + 1}位</Text>
-                      <Text style={styles.criterionCandidate}>{candidate}</Text>
+            {criteria.map(criterion => (
+              <View key={criterion} style={styles.criterionDetail}>
+                <Text style={styles.criterionDetailTitle}>{criterion}</Text>
+                {(rankings[criterion] || []).map((candidate, idx) => (
+                  <View
+                    key={`${candidate}-${idx}`}
+                    style={[
+                      styles.rankItem,
+                      {
+                        borderWidth: 1,
+                        borderColor: idx === 0 ? '#22C55E' : '#E5E5EA',
+                        marginBottom: 8,
+                      },
+                    ]}
+                  >
+                    <View style={styles.rankItemLeft}>
+                      <View
+                        style={[
+                          styles.rankNumber,
+                          {
+                            backgroundColor: getRankColor(idx, rankings[criterion]?.length ?? 0) + '20',
+                            borderColor: getRankColor(idx, rankings[criterion]?.length ?? 0) + '40',
+                            borderWidth: 1,
+                          },
+                        ]}
+                      >
+                        <Text
+                          style={[
+                            styles.rankNumberText,
+                            { color: getRankColor(idx, rankings[criterion]?.length ?? 0) },
+                          ]}
+                        >
+                          {idx + 1}
+                        </Text>
+                      </View>
+                      <Text style={styles.rankName}>{candidate}</Text>
                     </View>
-                  ))}
-                </View>
-              );
-            })}
+                    <Text
+                      style={[
+                        styles.rankScore,
+                        { color: getRankColor(idx, rankings[criterion]?.length ?? 0) },
+                      ]}
+                    >
+                      {idx + 1}位
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            ))}
           </Animated.View>
         </View>
       )}
@@ -294,11 +328,10 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   winnerName: {
-    fontSize: 34,
-    fontWeight: "700",
-    color: "#1C1C1E",
-    letterSpacing: -0.8,
-    textAlign: "center",
+    fontSize: 28,
+    fontWeight: '700',
+    color: '#1C1C1E',
+    textAlign: 'center',
   },
   winnerSubText: {
     fontSize: 14,
@@ -360,6 +393,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 14,
     marginBottom: 8,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 12,
   },
   rankItemLeft: {
     flexDirection: "row",
@@ -395,33 +430,32 @@ const styles = StyleSheet.create({
     color: "#8E8E93",
   },
   criterionDetail: {
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: "#E5E5EA",
-    backgroundColor: "#FFFFFF",
-    padding: 14,
-    marginBottom: 10,
+    marginBottom: 20,
   },
   criterionDetailTitle: {
     fontSize: 15,
-    fontWeight: "700",
-    color: "#5B4EFF",
-    marginBottom: 8,
+    fontWeight: '600',
+    color: '#1C1C1E',
+    marginBottom: 10,
   },
-  criterionRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    paddingVertical: 3,
+  rankNumber: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  criterionRank: {
-    fontSize: 13,
-    color: "#8E8E93",
-    width: 30,
-  },
-  criterionCandidate: {
+  rankNumberText: {
     fontSize: 15,
-    color: "#1C1C1E",
+    fontWeight: '700',
+  },
+  rankName: {
+    fontSize: 16,
+    flex: 1,
+  },
+  rankScore: {
+    fontSize: 14,
+    fontWeight: '600',
   },
   tabContainer: {
     flexDirection: 'row',
@@ -452,7 +486,7 @@ const styles = StyleSheet.create({
     color: '#8E8E93',
   },
   tabTextActive: {
-    color: '#5B4EFF',
+    color: '#1C1C1E',
     fontWeight: '600',
   },
 });

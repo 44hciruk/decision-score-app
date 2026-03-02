@@ -97,7 +97,7 @@ export default function ResultScreen() {
             activeOpacity={0.7}
           >
             <IconSymbol name="chevron.left" size={20} color="#5B4EFF" />
-            <Text style={styles.navBackText}>戻る</Text>
+            <Text style={styles.navBackText}>採点をやり直す</Text>
           </TouchableOpacity>
           <Text style={styles.navTitle}>結果発表</Text>
           <View style={styles.navSpacer} />
