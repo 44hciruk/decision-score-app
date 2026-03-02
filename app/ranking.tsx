@@ -143,16 +143,18 @@ export default function RankingScreen() {
 
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
           <TouchableOpacity
-            onPress={() => handleMoveUp(index)}
             style={styles.arrowTextBtn}
+            onPress={() => handleMoveUp(index)}
+            disabled={index === 0}
           >
-            <Text style={styles.arrowText}>↑</Text>
+            <Text style={[styles.arrowText, index === 0 && styles.arrowTextDisabled]}>↑</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => handleMoveDown(index)}
             style={styles.arrowTextBtn}
+            onPress={() => handleMoveDown(index)}
+            disabled={index === candidates.length - 1}
           >
-            <Text style={styles.arrowText}>↓</Text>
+            <Text style={[styles.arrowText, index === candidates.length - 1 && styles.arrowTextDisabled]}>↓</Text>
           </TouchableOpacity>
         </View>
       </TouchableOpacity>
@@ -303,5 +305,8 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#C7C7CC',
     fontWeight: '400',
+  },
+  arrowTextDisabled: {
+    color: '#E5E5EA',
   },
 });
