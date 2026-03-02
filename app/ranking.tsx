@@ -143,25 +143,25 @@ export default function RankingScreen() {
 
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
           <TouchableOpacity
-            style={styles.arrowTextBtn}
+            style={[styles.arrowTextBtn, index === 0 && styles.arrowBtnDisabled]}
             onPress={() => handleMoveUp(index)}
             disabled={index === 0}
           >
             <IconSymbol
               name="chevron.up"
-              size={16}
-              color={index === 0 ? '#D1D1D6' : '#AEAEB2'}
+              size={14}
+              color={index === 0 ? '#E5E5EA' : '#C7C7CC'}
             />
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles.arrowTextBtn}
+            style={[styles.arrowTextBtn, index === candidates.length - 1 && styles.arrowBtnDisabled]}
             onPress={() => handleMoveDown(index)}
             disabled={index === candidates.length - 1}
           >
             <IconSymbol
               name="chevron.down"
-              size={16}
-              color={index === candidates.length - 1 ? '#D1D1D6' : '#AEAEB2'}
+              size={14}
+              color={index === candidates.length - 1 ? '#E5E5EA' : '#C7C7CC'}
             />
           </TouchableOpacity>
         </View>
@@ -304,10 +304,15 @@ const styles = StyleSheet.create({
     paddingBottom: 32,
   },
   arrowTextBtn: {
-    width: 32,
-    height: 32,
+    width: 28,
+    height: 28,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: '#F2F2F7',
+    borderRadius: 6,
+  },
+  arrowBtnDisabled: {
+    backgroundColor: '#F8F8F8',
   },
   arrowText: {
     fontSize: 18,
