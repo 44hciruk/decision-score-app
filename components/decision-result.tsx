@@ -169,7 +169,7 @@ export function DecisionResult({
           {criteria.map(criterion => {
             const ordered = rankings[criterion] || [];
             const isExpanded = expanded[criterion] || false;
-            const displayList = isExpanded ? ordered : ordered.slice(0, 5);
+            const displayList = isExpanded ? ordered : ordered.slice(0, 3);
             return (
               <View key={criterion} style={styles.criterionCard}>
                 {/* セクションヘッダー */}
@@ -207,7 +207,7 @@ export function DecisionResult({
                     activeOpacity={0.7}
                   >
                     <Text style={styles.expandButtonText}>
-                      {isExpanded ? '閉じる' : `もっと見る（残り${ordered.length - 5}件）`}
+                      {isExpanded ? '閉じる' : `もっと見る（残り${ordered.length - 3}件）`}
                     </Text>
                     <IconSymbol
                       name={isExpanded ? 'chevron.up' : 'chevron.down'}
