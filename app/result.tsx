@@ -83,7 +83,7 @@ export default function ResultScreen() {
     if (Platform.OS !== "web") {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
-    router.dismissAll();
+    router.back();
   }, [router]);
 
   return (
