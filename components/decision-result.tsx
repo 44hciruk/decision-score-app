@@ -171,7 +171,7 @@ export function DecisionResult({
             const isExpanded = expanded[criterion] || false;
             const displayList = isExpanded ? ordered : ordered.slice(0, 5);
             return (
-              <View key={criterion} style={styles.criterionSection}>
+              <View key={criterion} style={styles.criterionCard}>
                 {/* セクションヘッダー */}
                 <View style={styles.criterionHeader}>
                   <View style={styles.criterionHeaderAccent} />
@@ -229,7 +229,7 @@ export function DecisionResult({
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 function CircularScoreAnimated({ score }: { score: number }) {
-  const size = 140;
+  const size = 160;
   const strokeWidth = 14;
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
@@ -285,7 +285,7 @@ function AnimatedScoreText({ score }: { score: number }) {
 
 // ─── アニメーションなし円グラフ（history-detail.tsx用） ─
 function CircularScoreStatic({ score }: { score: number }) {
-  const size = 140;
+  const size = 160;
   const strokeWidth = 14;
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
@@ -468,10 +468,10 @@ const styles = StyleSheet.create({
   criterionCard: {
     backgroundColor: '#FFFFFF',
     borderRadius: 12,
-    padding: 16,
+    paddingHorizontal: 16,
+    paddingTop: 14,
+    paddingBottom: 4,
     marginBottom: 16,
-    borderLeftWidth: 3,
-    borderLeftColor: '#5B4EFF',
   },
   expandButton: {
     flexDirection: 'row',
@@ -495,14 +495,11 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     marginTop: 8,
   },
-  criterionSection: {
-    marginBottom: 28,
-  },
   criterionHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    marginBottom: 8,
+    marginBottom: 12,
   },
   criterionHeaderAccent: {
     width: 3,
@@ -520,9 +517,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingVertical: 12,
-    paddingHorizontal: 4,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#E5E5EA',
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: '#E5E5EA',
   },
   criterionName: {
     fontSize: 15,
