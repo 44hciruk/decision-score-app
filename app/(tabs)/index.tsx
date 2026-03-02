@@ -187,40 +187,45 @@ export default function HomeScreen() {
         <Text style={styles.ctaBtnText}>＋ 決断を始める</Text>
       </TouchableOpacity>
 
-      {/* 下部グレーセクション（固定・flex:1で残り全占有） */}
-      <View style={[styles.bottomSection, { paddingBottom: insets.bottom + 80 }]}>
-        <TouchableOpacity style={styles.listCardShadow} activeOpacity={0.7}>
-          <View style={styles.listCardInner}>
-            <View style={styles.listTitleRow}>
-              <Ionicons name="notifications-outline" size={22} color="#1C1C1E" style={styles.listIcon} />
-              <Text style={styles.listTitle}>お知らせ</Text>
-              <Ionicons name="chevron-forward" size={16} color="#1C1C1E" />
+      {/* 下部グレーセクション（固定・内部スクロール） */}
+      <View style={styles.bottomSection}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingTop: 20, paddingBottom: insets.bottom + 100 }}
+        >
+          <TouchableOpacity style={styles.listCardShadow} activeOpacity={0.7}>
+            <View style={styles.listCardInner}>
+              <View style={styles.listTitleRow}>
+                <Ionicons name="notifications-outline" size={22} color="#1C1C1E" style={styles.listIcon} />
+                <Text style={styles.listTitle}>お知らせ</Text>
+                <Ionicons name="chevron-forward" size={16} color="#1C1C1E" />
+              </View>
+              <Text style={styles.listSubtitle}>アップデート情報をお届けします</Text>
             </View>
-            <Text style={styles.listSubtitle}>アップデート情報をお届けします</Text>
-          </View>
-        </TouchableOpacity>
+          </TouchableOpacity>
 
-        <TouchableOpacity style={styles.listCardShadow} activeOpacity={0.7}>
-          <View style={styles.listCardInner}>
-            <View style={styles.listTitleRow}>
-              <Ionicons name="information-circle-outline" size={22} color="#1C1C1E" style={styles.listIcon} />
-              <Text style={styles.listTitle}>使い方ガイド</Text>
-              <Ionicons name="chevron-forward" size={16} color="#1C1C1E" />
+          <TouchableOpacity style={styles.listCardShadow} activeOpacity={0.7}>
+            <View style={styles.listCardInner}>
+              <View style={styles.listTitleRow}>
+                <Ionicons name="information-circle-outline" size={22} color="#1C1C1E" style={styles.listIcon} />
+                <Text style={styles.listTitle}>使い方ガイド</Text>
+                <Ionicons name="chevron-forward" size={16} color="#1C1C1E" />
+              </View>
+              <Text style={styles.listSubtitle}>決断スコアの使い方を確認する</Text>
             </View>
-            <Text style={styles.listSubtitle}>決断スコアの使い方を確認する</Text>
-          </View>
-        </TouchableOpacity>
+          </TouchableOpacity>
 
-        <TouchableOpacity style={styles.listCardShadow} activeOpacity={0.7}>
-          <View style={styles.listCardInner}>
-            <View style={styles.listTitleRow}>
-              <Ionicons name="star-outline" size={22} color="#1C1C1E" style={styles.listIcon} />
-              <Text style={styles.listTitle}>プレミアムプラン</Text>
-              <Ionicons name="chevron-forward" size={16} color="#1C1C1E" />
+          <TouchableOpacity style={styles.listCardShadow} activeOpacity={0.7}>
+            <View style={styles.listCardInner}>
+              <View style={styles.listTitleRow}>
+                <Ionicons name="star-outline" size={22} color="#1C1C1E" style={styles.listIcon} />
+                <Text style={styles.listTitle}>プレミアムプラン</Text>
+                <Ionicons name="chevron-forward" size={16} color="#1C1C1E" />
+              </View>
+              <Text style={styles.listSubtitle}>無制限で決断を作成できます</Text>
             </View>
-            <Text style={styles.listSubtitle}>無制限で決断を作成できます</Text>
-          </View>
-        </TouchableOpacity>
+          </TouchableOpacity>
+        </ScrollView>
       </View>
     </View>
   );
@@ -415,7 +420,6 @@ const styles = StyleSheet.create({
   bottomSection: {
     backgroundColor: "#F2F2F7",
     marginTop: 24,
-    paddingTop: 20,
     flex: 1,
   },
   listCardShadow: {
