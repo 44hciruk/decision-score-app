@@ -128,16 +128,16 @@ export default function HomeScreen() {
                 </View>
               )}
 
-              {/* 完了済み（最大3件＋すべて見るボタン） */}
-              {completed.length > 0 && (
-                <View style={inProgress.length > 0 ? styles.cardSectionBorderTop : undefined}>
-                  <Text style={styles.cardSectionLabel}>完了した決断</Text>
-                  {completed.slice(0, 3).map((item, index) => {
-                    const sliced = completed.slice(0, 3);
+              {/* 完了済み（常に3枠表示・空枠はプレースホルダー） */}
+              <View style={inProgress.length > 0 ? styles.cardSectionBorderTop : undefined}>
+                <Text style={styles.cardSectionLabel}>完了した決断</Text>
+                {[0, 1, 2].map((i) => {
+                  const item = completed[i];
+                  if (item) {
                     return (
                       <TouchableOpacity
                         key={item.id}
-                        style={[styles.cardRow, index < sliced.length - 1 && styles.cardRowBorder]}
+                        style={[styles.cardRow, i < 2 && styles.cardRowBorder]}
                         onPress={() => handleOpenProject(item)}
                         activeOpacity={0.75}
                       >
@@ -151,19 +151,32 @@ export default function HomeScreen() {
                         <IconSymbol name="chevron.right" size={14} color="#1C1C1E" />
                       </TouchableOpacity>
                     );
-                  })}
-                  {completed.length > 3 && (
-                    <TouchableOpacity
-                      style={styles.seeAllBtn}
-                      onPress={() => router.push("/(tabs)/history")}
-                      activeOpacity={0.75}
+                  }
+                  return (
+                    <View
+                      key={`placeholder-${i}`}
+                      style={[styles.cardRow, i < 2 && styles.cardRowBorder]}
                     >
-                      <Text style={styles.seeAllText}>すべて見る（{completed.length}件）</Text>
-                      <IconSymbol name="chevron.right" size={13} color="#5B4EFF" />
-                    </TouchableOpacity>
-                  )}
-                </View>
-              )}
+                      <View style={[styles.cardRowIcon, styles.cardRowIconPlaceholder]}>
+                        <IconSymbol name="clock" size={16} color="#C7C7CC" />
+                      </View>
+                      <View style={styles.cardRowBody}>
+                        <Text style={styles.cardRowTitlePlaceholder}>決断を追加しよう</Text>
+                      </View>
+                    </View>
+                  );
+                })}
+                {completed.length > 3 && (
+                  <TouchableOpacity
+                    style={styles.seeAllBtn}
+                    onPress={() => router.push("/(tabs)/history")}
+                    activeOpacity={0.75}
+                  >
+                    <Text style={styles.seeAllText}>すべて見る（{completed.length}件）</Text>
+                    <IconSymbol name="chevron.right" size={13} color="#5B4EFF" />
+                  </TouchableOpacity>
+                )}
+              </View>
             </View>
           )}
         </View>
@@ -346,6 +359,14 @@ const styles = StyleSheet.create({
   cardRowIconDone: {
     backgroundColor: "rgba(52,199,89,0.1)",
   },
+  cardRowIconPlaceholder: {
+    backgroundColor: "rgba(0,0,0,0.04)",
+  },
+  cardRowTitlePlaceholder: {
+    fontSize: 15,
+    color: "#C7C7CC",
+    letterSpacing: -0.2,
+  },
   cardRowBody: {
     flex: 1,
     gap: 2,
@@ -393,7 +414,7 @@ const styles = StyleSheet.create({
   // 下部グレーセクション
   bottomSection: {
     backgroundColor: "#F2F2F7",
-    marginTop: 40,
+    marginTop: 24,
     paddingTop: 20,
     flex: 1,
   },
