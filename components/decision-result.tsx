@@ -166,33 +166,40 @@ export function DecisionResult({
       {/* 項目別の順位 */}
       {activeTab === 'criteria' && (
         <View>
-          <Text style={styles.rankingTitle}>項目別の順位</Text>
           {criteria.map(criterion => {
             const ordered = rankings[criterion] || [];
             const isExpanded = expanded[criterion] || false;
             const displayList = isExpanded ? ordered : ordered.slice(0, 5);
             return (
-              <View key={criterion} style={styles.criterionCard}>
-                <Text style={styles.criterionDetailTitle}>{criterion}</Text>
+              <View key={criterion} style={styles.criterionSection}>
+                {/* セクションヘッダー */}
+                <View style={styles.criterionHeader}>
+                  <View style={styles.criterionHeaderAccent} />
+                  <Text style={styles.criterionHeaderText}>{criterion}</Text>
+                </View>
+
+                {/* 候補リスト */}
                 {displayList.map((candidate, idx) => (
                   <View
                     key={`${candidate}-${idx}`}
-                    style={[
-                      styles.rankItem,
-                      {
-                        borderColor: '#E5E5EA',
-                        borderWidth: 1,
-                        marginBottom: 8,
-                      },
-                    ]}
+                    style={styles.criterionRow}
                   >
-                    <View style={styles.rankItemLeft}>
-                      <Text style={styles.criterionRankText}>{idx + 1}</Text>
-                      <Text style={styles.rankName}>{candidate}</Text>
-                    </View>
-                    <Text style={[styles.rankScore, { color: '#8E8E93' }]}>{idx + 1}位</Text>
+                    <Text style={[
+                      styles.criterionName,
+                      idx === 0 && styles.criterionNameFirst,
+                    ]}>
+                      {candidate}
+                    </Text>
+                    <Text style={[
+                      styles.criterionRankLabel,
+                      idx === 0 && styles.criterionRankLabelFirst,
+                    ]}>
+                      {idx + 1}位
+                    </Text>
                   </View>
                 ))}
+
+                {/* 展開ボタン */}
                 {ordered.length > 5 && (
                   <TouchableOpacity
                     onPress={() => setExpanded(prev => ({ ...prev, [criterion]: !isExpanded }))}
@@ -487,6 +494,52 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     marginBottom: 20,
     marginTop: 8,
+  },
+  criterionSection: {
+    marginBottom: 28,
+  },
+  criterionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 8,
+  },
+  criterionHeaderAccent: {
+    width: 3,
+    height: 16,
+    borderRadius: 2,
+    backgroundColor: '#5B4EFF',
+  },
+  criterionHeaderText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#1C1C1E',
+  },
+  criterionRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+    paddingHorizontal: 4,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#E5E5EA',
+  },
+  criterionName: {
+    fontSize: 15,
+    color: '#8E8E93',
+    flex: 1,
+  },
+  criterionNameFirst: {
+    color: '#1C1C1E',
+    fontWeight: '600',
+  },
+  criterionRankLabel: {
+    fontSize: 14,
+    color: '#8E8E93',
+  },
+  criterionRankLabelFirst: {
+    color: '#1C1C1E',
+    fontWeight: '600',
   },
   tabItem: {
     flex: 1,
