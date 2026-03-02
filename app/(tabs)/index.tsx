@@ -103,11 +103,7 @@ export default function HomeScreen() {
 
           {/* リスト（カード内部のみスクロール） */}
           {projects.length > 0 && (
-            <ScrollView
-              style={styles.cardScroll}
-              showsVerticalScrollIndicator={false}
-              bounces={false}
-            >
+            <View style={styles.cardScroll}>
               {/* 進行中 */}
               {inProgress.length > 0 && (
                 <View>
@@ -168,7 +164,7 @@ export default function HomeScreen() {
                   )}
                 </View>
               )}
-            </ScrollView>
+            </View>
           )}
         </View>
       </View>
@@ -267,7 +263,7 @@ const styles = StyleSheet.create({
   mainCardOuter: {
     marginHorizontal: 32,
     marginTop: 40,
-    height: 220,
+    height: 280,
     borderRadius: 36,
     shadowColor: "#4A00B4",
     shadowOffset: { width: 0, height: 8 },
