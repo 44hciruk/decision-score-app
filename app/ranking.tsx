@@ -147,14 +147,22 @@ export default function RankingScreen() {
             onPress={() => handleMoveUp(index)}
             disabled={index === 0}
           >
-            <Text style={[styles.arrowText, index === 0 && styles.arrowTextDisabled]}>↑</Text>
+            <IconSymbol
+              name="chevron.up"
+              size={16}
+              color={index === 0 ? '#D1D1D6' : '#AEAEB2'}
+            />
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.arrowTextBtn}
             onPress={() => handleMoveDown(index)}
             disabled={index === candidates.length - 1}
           >
-            <Text style={[styles.arrowText, index === candidates.length - 1 && styles.arrowTextDisabled]}>↓</Text>
+            <IconSymbol
+              name="chevron.down"
+              size={16}
+              color={index === candidates.length - 1 ? '#D1D1D6' : '#AEAEB2'}
+            />
           </TouchableOpacity>
         </View>
       </TouchableOpacity>
