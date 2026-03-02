@@ -2,6 +2,7 @@ import {
   Text,
   View,
   TouchableOpacity,
+  ScrollView,
   StyleSheet,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
@@ -66,7 +67,7 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.root}>
-      {/* ── 全画面グラデーション背景 ── */}
+      {/* ── 全画面グラデーション背景（ScrollViewの外でabsoluteFill） ── */}
       <LinearGradient
         colors={["#FFD4A8", "#EDD5FF", "#C9A0FF"]}
         start={{ x: 0, y: 0 }}
@@ -74,31 +75,38 @@ export default function HomeScreen() {
         style={StyleSheet.absoluteFill}
       />
 
-      <View style={styles.inner}>
-        {/* ── ヘッダー ── */}
-        <View style={[styles.header, { paddingTop: insets.top + 4 }]}>
-          <View style={styles.logoRow}>
-            <View style={styles.logoIcon}>
-              <IconSymbol name="sparkles" size={18} color="#5B4EFF" />
-            </View>
-            <Text style={styles.logoText}>決断スコア</Text>
+      {/* ── ヘッダー（ScrollViewの外に固定） ── */}
+      <View style={[styles.header, { paddingTop: insets.top + 4 }]}>
+        <View style={styles.logoRow}>
+          <View style={styles.logoIcon}>
+            <IconSymbol name="sparkles" size={18} color="#5B4EFF" />
           </View>
-          <View style={styles.headerActions}>
-            <TouchableOpacity
-              style={styles.headerIconBtn}
-              activeOpacity={0.75}
-              onPress={() => router.push("/(tabs)/history")}
-            >
-              <IconSymbol name="clock.fill" size={17} color="#3C3C43" />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.headerIconBtn} activeOpacity={0.75}>
-              <IconSymbol name="person.fill" size={17} color="#3C3C43" />
-            </TouchableOpacity>
-          </View>
+          <Text style={styles.logoText}>決断スコア</Text>
         </View>
+        <View style={styles.headerActions}>
+          <TouchableOpacity
+            style={styles.headerIconBtn}
+            activeOpacity={0.75}
+            onPress={() => router.push("/(tabs)/history")}
+          >
+            <IconSymbol name="clock.fill" size={17} color="#3C3C43" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.headerIconBtn} activeOpacity={0.75}>
+            <IconSymbol name="person.fill" size={17} color="#3C3C43" />
+          </TouchableOpacity>
+        </View>
+      </View>
 
+      {/* ── スクロール可能エリア ── */}
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={[
+          styles.scrollContent,
+          { paddingBottom: insets.bottom + 32 },
+        ]}
+        showsVerticalScrollIndicator={false}
+      >
         {/* ── メインカード（グラスモーフィズム） ── */}
-        {/* 外側: shadow用ラッパー（iOS では overflow:hidden と shadow が共存不可のため分離） */}
         <View style={styles.mainCardOuter}>
           <View style={styles.mainCard}>
             {/* 空状態 */}
@@ -133,11 +141,7 @@ export default function HomeScreen() {
                     activeOpacity={0.75}
                   >
                     <View style={styles.cardRowIcon}>
-                      <IconSymbol
-                        name="doc.text.fill"
-                        size={16}
-                        color="#5B4EFF"
-                      />
+                      <IconSymbol name="doc.text.fill" size={16} color="#5B4EFF" />
                     </View>
                     <View style={styles.cardRowBody}>
                       <Text style={styles.cardRowTitle} numberOfLines={1}>
@@ -157,9 +161,7 @@ export default function HomeScreen() {
             {completed.length > 0 && (
               <View
                 style={
-                  inProgress.length > 0
-                    ? styles.cardSectionBorderTop
-                    : undefined
+                  inProgress.length > 0 ? styles.cardSectionBorderTop : undefined
                 }
               >
                 <Text style={styles.cardSectionLabel}>完了した決断</Text>
@@ -179,8 +181,12 @@ export default function HomeScreen() {
                         <IconSymbol name="checkmark.circle.fill" size={16} color="#34C759" />
                       </View>
                       <View style={styles.cardRowBody}>
-                        <Text style={styles.cardRowTitle} numberOfLines={1}>{item.title}</Text>
-                        <Text style={styles.cardRowMeta}>{formatDate(item.createdAt)}　完了</Text>
+                        <Text style={styles.cardRowTitle} numberOfLines={1}>
+                          {item.title}
+                        </Text>
+                        <Text style={styles.cardRowMeta}>
+                          {formatDate(item.createdAt)}　完了
+                        </Text>
                       </View>
                       <IconSymbol name="chevron.right" size={14} color="#1C1C1E" />
                     </TouchableOpacity>
@@ -214,7 +220,6 @@ export default function HomeScreen() {
 
         {/* ── 下部セクション（情報カード群） ── */}
         <View style={styles.bottomSection}>
-          {/* お知らせ */}
           <TouchableOpacity style={styles.listCardShadow} activeOpacity={0.7}>
             <View style={styles.listCardInner}>
               <View style={styles.listTitleRow}>
@@ -226,7 +231,6 @@ export default function HomeScreen() {
             </View>
           </TouchableOpacity>
 
-          {/* 使い方ガイド */}
           <TouchableOpacity style={styles.listCardShadow} activeOpacity={0.7}>
             <View style={styles.listCardInner}>
               <View style={styles.listTitleRow}>
@@ -238,7 +242,6 @@ export default function HomeScreen() {
             </View>
           </TouchableOpacity>
 
-          {/* プレミアムプラン */}
           <TouchableOpacity style={styles.listCardShadow} activeOpacity={0.7}>
             <View style={styles.listCardInner}>
               <View style={styles.listTitleRow}>
@@ -250,7 +253,7 @@ export default function HomeScreen() {
             </View>
           </TouchableOpacity>
         </View>
-      </View>
+      </ScrollView>
     </View>
   );
 }
@@ -258,10 +261,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: "#FFD4A8", // グラデーション読み込み前のフォールバック
-  },
-  inner: {
-    flex: 1,
+    backgroundColor: "#FFD4A8",
   },
 
   // ── ヘッダー ──
@@ -270,9 +270,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 16,
-    paddingTop: 4,
     paddingBottom: 4,
-    marginBottom: 0,
   },
   logoRow: {
     flexDirection: "row",
@@ -306,10 +304,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 
-  // ── メインカード（グラスモーフィズム） ──
+  // ── スクロール ──
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingTop: 48,
+  },
+
+  // ── メインカード ──
   mainCardOuter: {
     marginHorizontal: 32,
-    marginTop: 48,
     borderRadius: 36,
     shadowColor: "#4A00B4",
     shadowOffset: { width: 0, height: 8 },
@@ -400,7 +405,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#8E8E93",
   },
-
   seeAllBtn: {
     flexDirection: "row",
     alignItems: "center",
@@ -436,8 +440,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F2F2F7",
     marginTop: 56,
     paddingTop: 20,
-    paddingBottom: 48,
-    flex: 1,
+    paddingBottom: 24,
   },
   listCardShadow: {
     backgroundColor: "#FFFFFF",
@@ -475,6 +478,5 @@ const styles = StyleSheet.create({
   listSubtitle: {
     fontSize: 12,
     color: "#8E8E93",
-    paddingLeft: 0,
   },
 });
