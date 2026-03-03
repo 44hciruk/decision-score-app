@@ -2,7 +2,6 @@ import {
   Text,
   View,
   TouchableOpacity,
-  ScrollView,
   StyleSheet,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
@@ -189,10 +188,7 @@ export default function HomeScreen() {
 
       {/* 下部グレーセクション（固定・内部スクロール） */}
       <View style={styles.bottomSection}>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingTop: 20, paddingBottom: insets.bottom + 100 }}
-        >
+        <View style={{ paddingTop: 16, paddingBottom: insets.bottom + 16 }}>
           <TouchableOpacity style={styles.listCardShadow} activeOpacity={0.7}>
             <View style={styles.listCardInner}>
               <View style={styles.listTitleRow}>
@@ -225,7 +221,7 @@ export default function HomeScreen() {
               <Text style={styles.listSubtitle}>無制限で決断を作成できます</Text>
             </View>
           </TouchableOpacity>
-        </ScrollView>
+        </View>
       </View>
     </View>
   );
@@ -280,7 +276,7 @@ const styles = StyleSheet.create({
   // メインカード（高さ固定）
   mainCardOuter: {
     marginHorizontal: 32,
-    marginTop: 40,
+    marginTop: 24,
     height: 280,
     borderRadius: 36,
     shadowColor: "#4A00B4",
@@ -390,7 +386,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 12,
+    paddingVertical: 10,
     gap: 4,
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: "rgba(0,0,0,0.08)",
@@ -406,9 +402,9 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     backgroundColor: "#5B4EFF",
     borderRadius: 20,
-    paddingVertical: 20,
+    paddingVertical: 14,
     paddingHorizontal: 56,
-    marginTop: 20,
+    marginTop: 16,
   },
   ctaBtnText: {
     fontSize: 17,
@@ -419,14 +415,14 @@ const styles = StyleSheet.create({
   // 下部グレーセクション
   bottomSection: {
     backgroundColor: "#F2F2F7",
-    marginTop: 24,
+    marginTop: 16,
     flex: 1,
   },
   listCardShadow: {
     backgroundColor: "#FFFFFF",
     borderRadius: 20,
     marginHorizontal: 24,
-    marginBottom: 12,
+    marginBottom: 8,
     shadowColor: "#000000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.08,
