@@ -13,23 +13,28 @@ export {
 
 // ─── フラットデザイン トークン ────────────────────────────
 export const COLORS = {
-  primary: '#5B5BD6',
-  primaryLight: '#EDEDFA',
-  background: '#F7F7FB',
+  primary: '#FF8C42',
+  primaryLight: '#FFF0E4',
+  secondary: '#FFD166',
+  accent: '#FF6B9D',
+  background: '#FFF8F0',
   surface: '#FFFFFF',
-  border: '#E8E8F0',
-  textPrimary: '#1A1A2E',
-  textSecondary: '#888899',
+  border: '#FFE4CC',
+  textPrimary: '#3D2B1F',
+  textSecondary: '#A0806A',
   success: '#4CAF82',
-  danger: '#FF5252',
-  warning: '#FFB74D',
+  danger: '#FF6B9D',
+  warning: '#FFD166',
 };
 
-export const FLAT_FONTS = {
+export const FONTS = {
   regular: 'ZenMaruGothic_400Regular',
   medium: 'ZenMaruGothic_500Medium',
   bold: 'ZenMaruGothic_700Bold',
 };
+
+/** @deprecated Use FONTS instead */
+export const FLAT_FONTS = FONTS;
 
 export const RADIUS = {
   sm: 8,
@@ -37,4 +42,12 @@ export const RADIUS = {
   lg: 16,
   xl: 24,
   full: 999,
+};
+
+export const SHADOW_NONE = {
+  shadowColor: 'transparent',
+  shadowOffset: { width: 0, height: 0 },
+  shadowOpacity: 0,
+  shadowRadius: 0,
+  elevation: 0,
 };

@@ -16,7 +16,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { ScreenContainer } from "@/components/screen-container";
 import { IconSymbol } from "@/components/ui/icon-symbol";
-import { COLORS, FLAT_FONTS, RADIUS } from "@/constants/theme";
+import { COLORS, FONTS, RADIUS } from "@/constants/theme";
 
 type LocalTemplate = { id: string; label: string; icon: string };
 const LOCAL_TEMPLATES: LocalTemplate[] = [
@@ -89,7 +89,7 @@ export default function NewProjectScreen() {
 
         {/* ステップインジケーター */}
         <View style={{ alignItems: 'center', marginTop: 16, marginBottom: 8 }}>
-          <Text style={{ fontSize: 13, fontFamily: FLAT_FONTS.regular, color: COLORS.textSecondary }}>ステップ 1 / 3</Text>
+          <Text style={{ fontSize: 13, fontFamily: FONTS.regular, color: COLORS.textSecondary }}>ステップ 1 / 3</Text>
         </View>
         <View style={{ marginTop: 4, marginBottom: 20, marginHorizontal: 32 }}>
           <View style={{ height: 4, backgroundColor: COLORS.border, borderRadius: 2 }}>
@@ -101,7 +101,7 @@ export default function NewProjectScreen() {
           {/* タイトル入力 */}
           <Animated.View entering={FadeInDown.delay(100).duration(300)}>
             <Text style={styles.sectionTitle}>何を比較しますか？</Text>
-            <Text style={{ fontSize: 13, fontFamily: FLAT_FONTS.regular, color: COLORS.textSecondary, marginBottom: 8 }}>比較したいテーマを入力してください</Text>
+            <Text style={{ fontSize: 13, fontFamily: FONTS.regular, color: COLORS.textSecondary, marginBottom: 8 }}>比較したいテーマを入力してください</Text>
             <View style={styles.inputCard}>
               <TextInput
                 style={styles.input}
@@ -193,13 +193,13 @@ const styles = StyleSheet.create({
   },
   navBackText: {
     fontSize: 16,
-    fontFamily: FLAT_FONTS.regular,
+    fontFamily: FONTS.regular,
     color: COLORS.primary,
   },
   navTitle: {
     flex: 1,
     fontSize: 17,
-    fontFamily: FLAT_FONTS.bold,
+    fontFamily: FONTS.bold,
     color: COLORS.textPrimary,
     textAlign: "center",
   },
@@ -213,14 +213,14 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 20,
-    fontFamily: FLAT_FONTS.bold,
+    fontFamily: FONTS.bold,
     color: COLORS.textPrimary,
     marginBottom: 12,
     letterSpacing: -0.3,
   },
   sectionHint: {
     fontSize: 13,
-    fontFamily: FLAT_FONTS.regular,
+    fontFamily: FONTS.regular,
     color: COLORS.textSecondary,
     marginBottom: 12,
     marginTop: -8,
@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 14,
     fontSize: 15,
-    fontFamily: FLAT_FONTS.regular,
+    fontFamily: FONTS.regular,
     color: COLORS.textPrimary,
     backgroundColor: COLORS.surface,
   },
@@ -287,7 +287,7 @@ const styles = StyleSheet.create({
   },
   templateName: {
     fontSize: 13,
-    fontFamily: FLAT_FONTS.medium,
+    fontFamily: FONTS.medium,
     color: COLORS.textPrimary,
     textAlign: "center",
   },
@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
   },
   nextBtnText: {
     fontSize: 16,
-    fontFamily: FLAT_FONTS.bold,
+    fontFamily: FONTS.bold,
     color: "#FFFFFF",
   },
   nextBtnTextDisabled: {

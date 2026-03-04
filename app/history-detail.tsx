@@ -15,7 +15,7 @@ import { ScreenContainer } from "@/components/screen-container";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { DecisionResult } from "@/components/decision-result";
 import { useProjectContext } from "@/lib/project-context";
-import { COLORS, FLAT_FONTS, RADIUS } from "@/constants/theme";
+import { COLORS, FONTS, RADIUS } from "@/constants/theme";
 
 export default function HistoryDetailScreen() {
   const router = useRouter();
@@ -137,19 +137,19 @@ const styles = StyleSheet.create({
   },
   navBackText: {
     fontSize: 16,
-    fontFamily: FLAT_FONTS.medium,
+    fontFamily: FONTS.medium,
     color: COLORS.primary,
   },
   navTitle: {
     fontSize: 17,
-    fontFamily: FLAT_FONTS.medium,
+    fontFamily: FONTS.medium,
     color: COLORS.textPrimary,
     flex: 1,
     textAlign: "center",
   },
   dateText: {
     fontSize: 13,
-    fontFamily: FLAT_FONTS.regular,
+    fontFamily: FONTS.regular,
     color: COLORS.textSecondary,
     textAlign: "center",
     paddingTop: 12,
@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: 16,
-    fontFamily: FLAT_FONTS.regular,
+    fontFamily: FONTS.regular,
     color: COLORS.textSecondary,
   },
   backBtn: {
@@ -177,6 +177,6 @@ const styles = StyleSheet.create({
   backBtnText: {
     color: "#FFFFFF",
     fontSize: 16,
-    fontFamily: FLAT_FONTS.medium,
+    fontFamily: FONTS.medium,
   },
 });

@@ -17,7 +17,7 @@ import { ScreenContainer } from "@/components/screen-container";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useProjectContext } from "@/lib/project-context";
 import { PremiumModal } from "@/components/premium-modal";
-import { COLORS, FLAT_FONTS, RADIUS } from "@/constants/theme";
+import { COLORS, FONTS, RADIUS } from "@/constants/theme";
 
 const TEMPLATE_CRITERIA: Record<string, string[]> = {
   restaurant:    ["価格", "味", "雰囲気", "アクセス", "接客"],
@@ -122,7 +122,7 @@ export default function CriteriaScreen() {
           </Animated.View>
 
           <View style={{ alignItems: 'center', marginTop: 16, marginBottom: 4 }}>
-            <Text style={{ fontSize: 13, fontFamily: FLAT_FONTS.regular, color: COLORS.textSecondary }}>ステップ 3 / 3</Text>
+            <Text style={{ fontSize: 13, fontFamily: FONTS.regular, color: COLORS.textSecondary }}>ステップ 3 / 3</Text>
           </View>
           <View style={{ marginTop: 4, marginBottom: 16, marginHorizontal: 32 }}>
             <View style={{ height: 4, backgroundColor: COLORS.border, borderRadius: 2 }}>
@@ -137,7 +137,7 @@ export default function CriteriaScreen() {
           >
             <Animated.View entering={FadeInDown.delay(100).duration(300)}>
               <Text style={styles.sectionTitle}>何を基準に比較しますか？</Text>
-              <Text style={{ fontSize: 13, fontFamily: FLAT_FONTS.regular, color: COLORS.textSecondary, marginBottom: 12 }}>
+              <Text style={{ fontSize: 13, fontFamily: FONTS.regular, color: COLORS.textSecondary, marginBottom: 12 }}>
                 大事にしたいポイントを入力してください（例：価格、立地）
               </Text>
               {limits.criteria < Infinity && (
@@ -211,7 +211,7 @@ export default function CriteriaScreen() {
                 alignSelf: 'stretch',
               }}
             >
-              <Text style={{ color: isValid ? '#FFFFFF' : COLORS.primary, fontSize: 17, fontFamily: FLAT_FONTS.medium }}>
+              <Text style={{ color: isValid ? '#FFFFFF' : COLORS.primary, fontSize: 17, fontFamily: FONTS.medium }}>
                 スコアリング開始
               </Text>
             </TouchableOpacity>
@@ -254,13 +254,13 @@ const styles = StyleSheet.create({
   },
   navBackText: {
     fontSize: 16,
-    fontFamily: FLAT_FONTS.medium,
+    fontFamily: FONTS.medium,
     color: COLORS.primary,
   },
   navTitle: {
     flex: 1,
     fontSize: 17,
-    fontFamily: FLAT_FONTS.bold,
+    fontFamily: FONTS.bold,
     color: COLORS.textPrimary,
     textAlign: "center",
   },
@@ -273,7 +273,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 20,
-    fontFamily: FLAT_FONTS.bold,
+    fontFamily: FONTS.bold,
     color: COLORS.textPrimary,
     marginBottom: 8,
     letterSpacing: -0.3,
@@ -283,7 +283,7 @@ const styles = StyleSheet.create({
   },
   limitText: {
     fontSize: 12,
-    fontFamily: FLAT_FONTS.regular,
+    fontFamily: FONTS.regular,
     color: COLORS.textSecondary,
     marginBottom: 6,
   },
@@ -323,13 +323,13 @@ const styles = StyleSheet.create({
   },
   indexText: {
     fontSize: 15,
-    fontFamily: FLAT_FONTS.bold,
+    fontFamily: FONTS.bold,
     color: "#FFFFFF",
   },
   input: {
     flex: 1,
     fontSize: 16,
-    fontFamily: FLAT_FONTS.medium,
+    fontFamily: FONTS.medium,
     color: COLORS.textPrimary,
     paddingVertical: 4,
   },
@@ -343,7 +343,7 @@ const styles = StyleSheet.create({
   },
   addBtnText: {
     fontSize: 15,
-    fontFamily: FLAT_FONTS.medium,
+    fontFamily: FONTS.medium,
     color: COLORS.primary,
   },
   bottomBar: {

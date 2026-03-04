@@ -15,7 +15,7 @@ import { ScreenContainer } from "@/components/screen-container";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useProjectContext } from "@/lib/project-context";
 import { FREE_LIMITS, PREMIUM_LIMITS } from "@/lib/storage";
-import { COLORS, FLAT_FONTS, RADIUS } from "@/constants/theme";
+import { COLORS, FONTS, RADIUS } from "@/constants/theme";
 
 export default function SettingsScreen() {
   const { state, updateSettings } = useProjectContext();
@@ -206,13 +206,13 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 28,
-    fontFamily: FLAT_FONTS.bold,
+    fontFamily: FONTS.bold,
     letterSpacing: -1,
     color: COLORS.textPrimary,
   },
   headerSubtitle: {
     fontSize: 14,
-    fontFamily: FLAT_FONTS.regular,
+    fontFamily: FONTS.regular,
     marginTop: 4,
     color: COLORS.textSecondary,
   },
@@ -248,12 +248,12 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontSize: 17,
-    fontFamily: FLAT_FONTS.bold,
+    fontFamily: FONTS.bold,
     color: COLORS.textPrimary,
   },
   cardSubtitle: {
     fontSize: 13,
-    fontFamily: FLAT_FONTS.regular,
+    fontFamily: FONTS.regular,
     marginTop: 2,
     color: COLORS.textSecondary,
   },
@@ -277,12 +277,12 @@ const styles = StyleSheet.create({
   },
   limitLabel: {
     fontSize: 14,
-    fontFamily: FLAT_FONTS.regular,
+    fontFamily: FONTS.regular,
     color: COLORS.textSecondary,
   },
   limitValue: {
     fontSize: 14,
-    fontFamily: FLAT_FONTS.bold,
+    fontFamily: FONTS.bold,
     color: COLORS.primary,
   },
   upgradeBtn: {
@@ -299,7 +299,7 @@ const styles = StyleSheet.create({
   upgradeBtnText: {
     color: "#FFFFFF",
     fontSize: 15,
-    fontFamily: FLAT_FONTS.bold,
+    fontFamily: FONTS.bold,
   },
   infoCardHeader: {
     flexDirection: "row",
@@ -325,17 +325,17 @@ const styles = StyleSheet.create({
   },
   infoLabel: {
     fontSize: 14,
-    fontFamily: FLAT_FONTS.regular,
+    fontFamily: FONTS.regular,
     color: COLORS.textSecondary,
   },
   infoValue: {
     fontSize: 14,
-    fontFamily: FLAT_FONTS.medium,
+    fontFamily: FONTS.medium,
     color: COLORS.textPrimary,
   },
   noteText: {
     fontSize: 12,
-    fontFamily: FLAT_FONTS.regular,
+    fontFamily: FONTS.regular,
     textAlign: "center",
     lineHeight: 18,
     paddingHorizontal: 10,
@@ -360,7 +360,7 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     fontSize: 17,
-    fontFamily: FLAT_FONTS.bold,
+    fontFamily: FONTS.bold,
     color: COLORS.textPrimary,
   },
   modalContent: {
@@ -381,7 +381,7 @@ const styles = StyleSheet.create({
   },
   modalHeading: {
     fontSize: 24,
-    fontFamily: FLAT_FONTS.bold,
+    fontFamily: FONTS.bold,
     marginBottom: 24,
     textAlign: "center",
     color: COLORS.textPrimary,
@@ -395,7 +395,7 @@ const styles = StyleSheet.create({
   },
   featureText: {
     fontSize: 16,
-    fontFamily: FLAT_FONTS.medium,
+    fontFamily: FONTS.medium,
     color: COLORS.textPrimary,
   },
   pricingContainer: {
@@ -431,22 +431,22 @@ const styles = StyleSheet.create({
   bestValueText: {
     color: "#FFFFFF",
     fontSize: 11,
-    fontFamily: FLAT_FONTS.bold,
+    fontFamily: FONTS.bold,
   },
   pricingLabel: {
     fontSize: 13,
-    fontFamily: FLAT_FONTS.regular,
+    fontFamily: FONTS.regular,
     marginBottom: 4,
     color: COLORS.textSecondary,
   },
   pricingPrice: {
     fontSize: 28,
-    fontFamily: FLAT_FONTS.bold,
+    fontFamily: FONTS.bold,
     color: COLORS.textPrimary,
   },
   pricingPeriod: {
     fontSize: 13,
-    fontFamily: FLAT_FONTS.regular,
+    fontFamily: FONTS.regular,
     marginTop: 2,
     color: COLORS.textSecondary,
   },
@@ -465,11 +465,11 @@ const styles = StyleSheet.create({
   modalUpgradeBtnText: {
     color: "#FFFFFF",
     fontSize: 16,
-    fontFamily: FLAT_FONTS.bold,
+    fontFamily: FONTS.bold,
   },
   laterText: {
     fontSize: 15,
-    fontFamily: FLAT_FONTS.medium,
+    fontFamily: FONTS.medium,
     paddingVertical: 8,
     color: COLORS.textSecondary,
   },

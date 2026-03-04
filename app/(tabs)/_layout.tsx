@@ -3,7 +3,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { View, Text, StyleSheet, Platform } from "react-native";
 import { HapticTab } from "@/components/haptic-tab";
 import { IconSymbol } from "@/components/ui/icon-symbol";
-import { COLORS, FLAT_FONTS } from "@/constants/theme";
+import { COLORS, FONTS } from "@/constants/theme";
 
 type TabIconProps = {
   focused: boolean;
@@ -35,12 +35,12 @@ const tabStyles = StyleSheet.create({
   },
   label: {
     fontSize: 10,
-    fontFamily: FLAT_FONTS.medium,
+    fontFamily: FONTS.medium,
     color: COLORS.textSecondary,
   },
   labelActive: {
     color: COLORS.primary,
-    fontFamily: FLAT_FONTS.bold,
+    fontFamily: FONTS.bold,
   },
 });
 

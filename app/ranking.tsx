@@ -17,7 +17,7 @@ import DraggableFlatList, { RenderItemParams } from "react-native-draggable-flat
 
 import { ScreenContainer } from "@/components/screen-container";
 import { IconSymbol } from "@/components/ui/icon-symbol";
-import { COLORS, FLAT_FONTS, RADIUS } from "@/constants/theme";
+import { COLORS, FONTS, RADIUS } from "@/constants/theme";
 
 export default function RankingScreen() {
   const router = useRouter();
@@ -186,14 +186,14 @@ export default function RankingScreen() {
 
         <Animated.View key={currentCriterionIndex} entering={FadeIn.duration(300)}>
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginHorizontal: 16, marginTop: 16, marginBottom: 4 }}>
-            <Text style={{ fontSize: 22, fontFamily: FLAT_FONTS.bold, color: COLORS.textPrimary }}>
+            <Text style={{ fontSize: 22, fontFamily: FONTS.bold, color: COLORS.textPrimary }}>
               {currentCriterion}
             </Text>
-            <Text style={{ fontSize: 15, fontFamily: FLAT_FONTS.medium, color: COLORS.textSecondary }}>
+            <Text style={{ fontSize: 15, fontFamily: FONTS.medium, color: COLORS.textSecondary }}>
               {currentCriterionIndex + 1} / {criteria.length}
             </Text>
           </View>
-          <Text style={{ fontSize: 13, fontFamily: FLAT_FONTS.regular, color: COLORS.textSecondary, marginHorizontal: 16, marginBottom: 16 }}>
+          <Text style={{ fontSize: 13, fontFamily: FONTS.regular, color: COLORS.textSecondary, marginHorizontal: 16, marginBottom: 16 }}>
             「{currentCriterion}」が優れていると思う順に並べてください。{'\n'}長押しでドラッグ、またはボタンで並び替えできます。
           </Text>
         </Animated.View>
@@ -215,7 +215,7 @@ export default function RankingScreen() {
               onPress={handleBack}
               style={{ alignItems: 'center', paddingVertical: 12 }}
             >
-              <Text style={{ fontSize: 14, fontFamily: FLAT_FONTS.medium, color: COLORS.primary }}>← 前の項目に戻る</Text>
+              <Text style={{ fontSize: 14, fontFamily: FONTS.medium, color: COLORS.primary }}>← 前の項目に戻る</Text>
             </TouchableOpacity>
           )}
           <TouchableOpacity
@@ -228,7 +228,7 @@ export default function RankingScreen() {
               alignItems: 'center',
             }}
           >
-            <Text style={{ color: '#FFFFFF', fontSize: 17, fontFamily: FLAT_FONTS.medium }}>
+            <Text style={{ color: '#FFFFFF', fontSize: 17, fontFamily: FONTS.medium }}>
               {isLast ? '結果を見る' : '次の評価項目へ'}
             </Text>
           </TouchableOpacity>
@@ -258,13 +258,13 @@ const styles = StyleSheet.create({
   },
   navBackText: {
     fontSize: 16,
-    fontFamily: FLAT_FONTS.medium,
+    fontFamily: FONTS.medium,
     color: COLORS.primary,
   },
   navTitle: {
     flex: 1,
     fontSize: 17,
-    fontFamily: FLAT_FONTS.bold,
+    fontFamily: FONTS.bold,
     color: COLORS.textPrimary,
     textAlign: "center",
   },
@@ -287,13 +287,13 @@ const styles = StyleSheet.create({
   },
   rankText: {
     fontSize: 15,
-    fontFamily: FLAT_FONTS.bold,
+    fontFamily: FONTS.bold,
     color: '#FFFFFF',
   },
   itemName: {
     flex: 1,
     fontSize: 16,
-    fontFamily: FLAT_FONTS.medium,
+    fontFamily: FONTS.medium,
     color: COLORS.textPrimary,
     paddingLeft: 4,
   },

@@ -18,7 +18,7 @@ import { ScreenContainer } from "@/components/screen-container";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useProjectContext } from "@/lib/project-context";
 import { PremiumModal } from "@/components/premium-modal";
-import { COLORS, FLAT_FONTS, RADIUS } from "@/constants/theme";
+import { COLORS, FONTS, RADIUS } from "@/constants/theme";
 
 export default function CandidatesScreen() {
   const router = useRouter();
@@ -113,7 +113,7 @@ export default function CandidatesScreen() {
           </Animated.View>
 
           <View style={{ alignItems: 'center', marginTop: 16, marginBottom: 8 }}>
-            <Text style={{ fontSize: 13, fontFamily: FLAT_FONTS.regular, color: COLORS.textSecondary }}>ステップ 2 / 3</Text>
+            <Text style={{ fontSize: 13, fontFamily: FONTS.regular, color: COLORS.textSecondary }}>ステップ 2 / 3</Text>
           </View>
           <View style={{ marginTop: 4, marginBottom: 20, marginHorizontal: 32 }}>
             <View style={{ height: 4, backgroundColor: COLORS.border, borderRadius: 2 }}>
@@ -129,7 +129,7 @@ export default function CandidatesScreen() {
             <Animated.View entering={FadeInDown.delay(100).duration(300)}>
               <Text style={styles.sectionTitle}>比較する候補を入力</Text>
               <View style={styles.limitRow}>
-                <Text style={{ fontSize: 13, fontFamily: FLAT_FONTS.regular, color: COLORS.textSecondary }}>
+                <Text style={{ fontSize: 13, fontFamily: FONTS.regular, color: COLORS.textSecondary }}>
                   最大{limits.candidates === Infinity ? '無制限' : `${limits.candidates}候補`}まで追加できます
                 </Text>
               </View>
@@ -196,7 +196,7 @@ export default function CandidatesScreen() {
                 alignSelf: 'stretch',
               }}
             >
-              <Text style={{ color: isValid ? '#FFFFFF' : COLORS.primary, fontSize: 17, fontFamily: FLAT_FONTS.medium }}>
+              <Text style={{ color: isValid ? '#FFFFFF' : COLORS.primary, fontSize: 17, fontFamily: FONTS.medium }}>
                 次へ
               </Text>
             </TouchableOpacity>
@@ -239,13 +239,13 @@ const styles = StyleSheet.create({
   },
   navBackText: {
     fontSize: 16,
-    fontFamily: FLAT_FONTS.medium,
+    fontFamily: FONTS.medium,
     color: COLORS.primary,
   },
   navTitle: {
     flex: 1,
     fontSize: 17,
-    fontFamily: FLAT_FONTS.bold,
+    fontFamily: FONTS.bold,
     color: COLORS.textPrimary,
     textAlign: "center",
   },
@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 20,
-    fontFamily: FLAT_FONTS.bold,
+    fontFamily: FONTS.bold,
     color: COLORS.textPrimary,
     marginBottom: 8,
     letterSpacing: -0.3,
@@ -292,13 +292,13 @@ const styles = StyleSheet.create({
   },
   indexText: {
     fontSize: 15,
-    fontFamily: FLAT_FONTS.bold,
+    fontFamily: FONTS.bold,
     color: "#FFFFFF",
   },
   input: {
     flex: 1,
     fontSize: 16,
-    fontFamily: FLAT_FONTS.medium,
+    fontFamily: FONTS.medium,
     color: COLORS.textPrimary,
     paddingVertical: 4,
   },
@@ -312,7 +312,7 @@ const styles = StyleSheet.create({
   },
   addBtnText: {
     fontSize: 15,
-    fontFamily: FLAT_FONTS.medium,
+    fontFamily: FONTS.medium,
     color: COLORS.primary,
   },
   bottomBar: {

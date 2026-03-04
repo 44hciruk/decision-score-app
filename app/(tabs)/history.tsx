@@ -15,7 +15,7 @@ import * as Haptics from "expo-haptics";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useProjectContext } from "@/lib/project-context";
 import type { Project } from "@/lib/storage";
-import { COLORS, FLAT_FONTS, RADIUS } from "@/constants/theme";
+import { COLORS, FONTS, RADIUS } from "@/constants/theme";
 
 export default function HistoryScreen() {
   const insets = useSafeAreaInsets();
@@ -193,13 +193,13 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 28,
-    fontFamily: FLAT_FONTS.bold,
+    fontFamily: FONTS.bold,
     color: COLORS.textPrimary,
     letterSpacing: -0.5,
   },
   headerSubtitle: {
     fontSize: 13,
-    fontFamily: FLAT_FONTS.regular,
+    fontFamily: FONTS.regular,
     color: COLORS.textSecondary,
     marginTop: 2,
   },
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
   },
   deleteAllText: {
     fontSize: 13,
-    fontFamily: FLAT_FONTS.medium,
+    fontFamily: FONTS.medium,
     color: COLORS.danger,
   },
   scrollContent: {
@@ -236,12 +236,12 @@ const styles = StyleSheet.create({
   },
   emptyTitle: {
     fontSize: 16,
-    fontFamily: FLAT_FONTS.medium,
+    fontFamily: FONTS.medium,
     color: COLORS.textPrimary,
   },
   emptySubtitle: {
     fontSize: 13,
-    fontFamily: FLAT_FONTS.regular,
+    fontFamily: FONTS.regular,
     color: COLORS.textSecondary,
     textAlign: "center",
     lineHeight: 20,
@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
   },
   sectionLabel: {
     fontSize: 12,
-    fontFamily: FLAT_FONTS.medium,
+    fontFamily: FONTS.medium,
     color: COLORS.textSecondary,
     textTransform: "uppercase",
     letterSpacing: 0.5,
@@ -294,13 +294,13 @@ const styles = StyleSheet.create({
   },
   rowTitle: {
     fontSize: 15,
-    fontFamily: FLAT_FONTS.medium,
+    fontFamily: FONTS.medium,
     color: COLORS.textPrimary,
     letterSpacing: -0.2,
   },
   rowMeta: {
     fontSize: 12,
-    fontFamily: FLAT_FONTS.regular,
+    fontFamily: FONTS.regular,
     color: COLORS.textSecondary,
   },
   deleteBtn: {

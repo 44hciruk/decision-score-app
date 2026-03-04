@@ -15,7 +15,7 @@ import Animated, {
 import Svg, { Circle } from "react-native-svg";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { getConfidenceMessage } from "@/lib/storage";
-import { COLORS, FLAT_FONTS, RADIUS } from "@/constants/theme";
+import { COLORS, FONTS, RADIUS } from "@/constants/theme";
 
 // ─── 型定義 ──────────────────────────────────────────
 export type DecisionResultProps = {
@@ -147,7 +147,7 @@ export function DecisionResult({
                   <Text
                     style={[
                       styles.rankName,
-                      index === 0 && { color: COLORS.textPrimary, fontFamily: FLAT_FONTS.bold },
+                      index === 0 && { color: COLORS.textPrimary, fontFamily: FONTS.bold },
                     ]}
                   >
                     {candidate}
@@ -297,7 +297,7 @@ const styles = StyleSheet.create({
   },
   winnerName: {
     fontSize: 28,
-    fontFamily: FLAT_FONTS.bold,
+    fontFamily: FONTS.bold,
     color: COLORS.textPrimary,
     textAlign: 'center',
   },
@@ -316,13 +316,13 @@ const styles = StyleSheet.create({
   },
   scoreValue: {
     fontSize: 40,
-    fontFamily: FLAT_FONTS.bold,
+    fontFamily: FONTS.bold,
     color: COLORS.textPrimary,
     letterSpacing: -2,
   },
   scoreUnit: {
     fontSize: 12,
-    fontFamily: FLAT_FONTS.regular,
+    fontFamily: FONTS.regular,
     marginTop: -2,
     color: COLORS.textSecondary,
   },
@@ -341,7 +341,7 @@ const styles = StyleSheet.create({
   },
   confidenceText: {
     fontSize: 15,
-    fontFamily: FLAT_FONTS.medium,
+    fontFamily: FONTS.medium,
     textAlign: "center",
     color: COLORS.success,
   },
@@ -365,16 +365,16 @@ const styles = StyleSheet.create({
   },
   tabText: {
     fontSize: 14,
-    fontFamily: FLAT_FONTS.medium,
+    fontFamily: FONTS.medium,
     color: COLORS.textSecondary,
   },
   tabTextActive: {
     color: COLORS.textPrimary,
-    fontFamily: FLAT_FONTS.bold,
+    fontFamily: FONTS.bold,
   },
   rankingTitle: {
     fontSize: 20,
-    fontFamily: FLAT_FONTS.bold,
+    fontFamily: FONTS.bold,
     color: COLORS.textPrimary,
     marginBottom: 14,
     letterSpacing: -0.3,
@@ -411,7 +411,7 @@ const styles = StyleSheet.create({
   },
   rankNumberText: {
     fontSize: 15,
-    fontFamily: FLAT_FONTS.bold,
+    fontFamily: FONTS.bold,
   },
   rankNumber1: {
     width: 36,
@@ -425,16 +425,16 @@ const styles = StyleSheet.create({
   },
   rankName: {
     fontSize: 16,
-    fontFamily: FLAT_FONTS.regular,
+    fontFamily: FONTS.regular,
     flex: 1,
   },
   rankScore: {
     fontSize: 14,
-    fontFamily: FLAT_FONTS.medium,
+    fontFamily: FONTS.medium,
   },
   rankScoreUnit: {
     fontSize: 13,
-    fontFamily: FLAT_FONTS.regular,
+    fontFamily: FONTS.regular,
     color: COLORS.textSecondary,
   },
   criterionCard: {
@@ -461,7 +461,7 @@ const styles = StyleSheet.create({
   },
   criterionHeaderText: {
     fontSize: 15,
-    fontFamily: FLAT_FONTS.medium,
+    fontFamily: FONTS.medium,
     color: COLORS.textPrimary,
   },
   criterionRow: {
@@ -474,22 +474,22 @@ const styles = StyleSheet.create({
   },
   criterionName: {
     fontSize: 15,
-    fontFamily: FLAT_FONTS.regular,
+    fontFamily: FONTS.regular,
     color: COLORS.textSecondary,
     flex: 1,
   },
   criterionNameFirst: {
     color: COLORS.textPrimary,
-    fontFamily: FLAT_FONTS.medium,
+    fontFamily: FONTS.medium,
   },
   criterionRankLabel: {
     fontSize: 14,
-    fontFamily: FLAT_FONTS.regular,
+    fontFamily: FONTS.regular,
     color: COLORS.textSecondary,
   },
   criterionRankLabelFirst: {
     color: COLORS.textPrimary,
-    fontFamily: FLAT_FONTS.medium,
+    fontFamily: FONTS.medium,
   },
   expandButton: {
     flexDirection: 'row',
@@ -501,7 +501,7 @@ const styles = StyleSheet.create({
   },
   expandButtonText: {
     fontSize: 14,
-    fontFamily: FLAT_FONTS.medium,
+    fontFamily: FONTS.medium,
     color: COLORS.primary,
   },
 });

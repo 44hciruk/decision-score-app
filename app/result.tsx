@@ -20,7 +20,7 @@ import {
   generateId,
   type Project,
 } from "@/lib/storage";
-import { COLORS, FLAT_FONTS, RADIUS } from "@/constants/theme";
+import { COLORS, FONTS, RADIUS } from "@/constants/theme";
 
 export default function ResultScreen() {
   const router = useRouter();
@@ -160,13 +160,13 @@ const styles = StyleSheet.create({
   },
   navBackText: {
     fontSize: 16,
-    fontFamily: FLAT_FONTS.medium,
+    fontFamily: FONTS.medium,
     color: COLORS.primary,
   },
   navSpacer: { minWidth: 80 },
   navTitle: {
     fontSize: 17,
-    fontFamily: FLAT_FONTS.bold,
+    fontFamily: FONTS.bold,
     color: COLORS.textPrimary,
     letterSpacing: -0.3,
   },
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
   primaryBtnText: {
     color: "#FFFFFF",
     fontSize: 17,
-    fontFamily: FLAT_FONTS.medium,
+    fontFamily: FONTS.medium,
   },
   secondaryBtn: {
     alignItems: "center",
@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
   },
   secondaryBtnText: {
     fontSize: 14,
-    fontFamily: FLAT_FONTS.medium,
+    fontFamily: FONTS.medium,
     color: COLORS.primary,
   },
 });
