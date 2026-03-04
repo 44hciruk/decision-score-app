@@ -15,8 +15,8 @@ import Animated, { FadeInDown, FadeIn } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
 
 import { ScreenContainer } from "@/components/screen-container";
-import { GlassCard } from "@/components/glass-card";
 import { IconSymbol } from "@/components/ui/icon-symbol";
+import { COLORS, FLAT_FONTS, RADIUS } from "@/constants/theme";
 
 type LocalTemplate = { id: string; label: string; icon: string };
 const LOCAL_TEMPLATES: LocalTemplate[] = [
@@ -80,7 +80,7 @@ export default function NewProjectScreen() {
             style={styles.navBackBtn}
             activeOpacity={0.7}
           >
-            <IconSymbol name="chevron.left" size={20} color="#5B4EFF" />
+            <IconSymbol name="chevron.left" size={20} color={COLORS.primary} />
             <Text style={styles.navBackText}>戻る</Text>
           </TouchableOpacity>
           <Text style={styles.navTitle}>テーマを決める</Text>
@@ -89,11 +89,11 @@ export default function NewProjectScreen() {
 
         {/* ステップインジケーター */}
         <View style={{ alignItems: 'center', marginTop: 16, marginBottom: 8 }}>
-          <Text style={{ fontSize: 13, color: '#8E8E93' }}>ステップ 1 / 3</Text>
+          <Text style={{ fontSize: 13, fontFamily: FLAT_FONTS.regular, color: COLORS.textSecondary }}>ステップ 1 / 3</Text>
         </View>
         <View style={{ marginTop: 4, marginBottom: 20, marginHorizontal: 32 }}>
-          <View style={{ height: 4, backgroundColor: '#E5E5EA', borderRadius: 2 }}>
-            <View style={{ width: '33%', height: 4, backgroundColor: '#5B4EFF', borderRadius: 2 }} />
+          <View style={{ height: 4, backgroundColor: COLORS.border, borderRadius: 2 }}>
+            <View style={{ width: '33%', height: 4, backgroundColor: COLORS.primary, borderRadius: 2 }} />
           </View>
         </View>
 
@@ -101,8 +101,8 @@ export default function NewProjectScreen() {
           {/* タイトル入力 */}
           <Animated.View entering={FadeInDown.delay(100).duration(300)}>
             <Text style={styles.sectionTitle}>何を比較しますか？</Text>
-            <Text style={{ fontSize: 13, color: '#8E8E93', marginBottom: 8 }}>比較したいテーマを入力してください</Text>
-            <GlassCard style={styles.inputCard}>
+            <Text style={{ fontSize: 13, fontFamily: FLAT_FONTS.regular, color: COLORS.textSecondary, marginBottom: 8 }}>比較したいテーマを入力してください</Text>
+            <View style={styles.inputCard}>
               <TextInput
                 style={styles.input}
                 placeholder="例：ランチのお店、新しい服"
@@ -111,7 +111,7 @@ export default function NewProjectScreen() {
                 onChangeText={setTitle}
                 returnKeyType="done"
               />
-            </GlassCard>
+            </View>
           </Animated.View>
 
           {/* テンプレート選択 */}
@@ -140,7 +140,7 @@ export default function NewProjectScreen() {
                           </View>
                         )}
                         <View style={[styles.templateIconWrap, isSelected && styles.templateIconWrapSelected]}>
-                          <Ionicons name={template.icon as any} size={24} color={isSelected ? "#FFFFFF" : "#5B4EFF"} />
+                          <Ionicons name={template.icon as any} size={24} color={isSelected ? "#FFFFFF" : COLORS.primary} />
                         </View>
                         <Text style={[styles.templateName, isSelected && styles.templateNameSelected]}>
                           {template.label}
@@ -173,15 +173,15 @@ export default function NewProjectScreen() {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: "#F2F2F7" },
+  flex: { flex: 1, backgroundColor: COLORS.background },
   navHeader: {
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 12,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "#E5E5EA",
-    backgroundColor: "#FFFFFF",
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.border,
+    backgroundColor: COLORS.surface,
   },
   navBackBtn: {
     flexDirection: "row",
@@ -193,80 +193,35 @@ const styles = StyleSheet.create({
   },
   navBackText: {
     fontSize: 16,
-    color: "#5B4EFF",
-    fontWeight: "400",
+    fontFamily: FLAT_FONTS.regular,
+    color: COLORS.primary,
   },
   navTitle: {
     flex: 1,
     fontSize: 17,
-    fontWeight: "600",
-    color: "#1C1C1E",
+    fontFamily: FLAT_FONTS.bold,
+    color: COLORS.textPrimary,
     textAlign: "center",
   },
   navSpacer: {
     minWidth: 80,
   },
-  stepRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 20,
-    marginTop: 16,
-    marginBottom: 8,
-  },
-  stepItem: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  stepDot: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: "#F2F2F7",
-    justifyContent: "center",
-    alignItems: "center",
-    borderWidth: 1.5,
-    borderColor: "#D1D1D6",
-  },
-  stepDotActive: {
-    backgroundColor: "#5B4EFF",
-    borderColor: "#5B4EFF",
-  },
-  stepNum: {
-    fontSize: 12,
-    fontWeight: "700",
-    color: "#9CA3AF",
-  },
-  stepLine: {
-    width: 40,
-    height: 2,
-    backgroundColor: "#D1D1D6",
-    marginHorizontal: 4,
-  },
-  stepLineActive: {
-    backgroundColor: "#5B4EFF",
-  },
-  stepLabel: {
-    textAlign: "center",
-    fontSize: 13,
-    color: "#9CA3AF",
-    marginBottom: 24,
-  },
   scrollContent: {
     paddingHorizontal: 20,
     paddingBottom: 20,
-    backgroundColor: "#F2F2F7",
+    backgroundColor: COLORS.background,
   },
   sectionTitle: {
     fontSize: 20,
-    fontWeight: "700",
-    color: "#1C1C1E",
+    fontFamily: FLAT_FONTS.bold,
+    color: COLORS.textPrimary,
     marginBottom: 12,
     letterSpacing: -0.3,
   },
   sectionHint: {
     fontSize: 13,
-    color: "#8E8E93",
+    fontFamily: FLAT_FONTS.regular,
+    color: COLORS.textSecondary,
     marginBottom: 12,
     marginTop: -8,
   },
@@ -274,14 +229,15 @@ const styles = StyleSheet.create({
     marginBottom: 28,
   },
   input: {
-    borderWidth: 1.5,
-    borderColor: "#D1D1D6",
-    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    borderRadius: RADIUS.md,
     paddingHorizontal: 16,
     paddingVertical: 14,
     fontSize: 15,
-    color: "#1C1C1E",
-    backgroundColor: "#FFFFFF",
+    fontFamily: FLAT_FONTS.regular,
+    color: COLORS.textPrimary,
+    backgroundColor: COLORS.surface,
   },
   templateGrid: {
     flexDirection: "row",
@@ -296,21 +252,16 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     alignItems: "center",
     gap: 10,
-    borderRadius: 12,
-    backgroundColor: "#FFFFFF",
+    borderRadius: RADIUS.md,
+    backgroundColor: COLORS.surface,
     borderWidth: 2,
-    borderColor: "transparent",
+    borderColor: COLORS.border,
     position: "relative",
-    shadowColor: "#000000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    elevation: 2,
   },
   templateCardSelected: {
-    borderColor: "#5B4EFF",
+    borderColor: COLORS.primary,
     borderWidth: 2,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: COLORS.surface,
   },
   checkBadge: {
     position: "absolute",
@@ -319,7 +270,7 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     borderRadius: 10,
-    backgroundColor: "#5B4EFF",
+    backgroundColor: COLORS.primary,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -327,21 +278,21 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 14,
-    backgroundColor: "#EDEDFF",
+    backgroundColor: COLORS.primaryLight,
     alignItems: "center",
     justifyContent: "center",
   },
   templateIconWrapSelected: {
-    backgroundColor: "#5B4EFF",
+    backgroundColor: COLORS.primary,
   },
   templateName: {
     fontSize: 13,
-    fontWeight: "600",
-    color: "#1C1C1E",
+    fontFamily: FLAT_FONTS.medium,
+    color: COLORS.textPrimary,
     textAlign: "center",
   },
   templateNameSelected: {
-    color: "#1C1C1E",
+    color: COLORS.textPrimary,
   },
   bottomBar: {
     paddingHorizontal: 20,
@@ -353,22 +304,20 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: 16,
-    borderRadius: 20,
-    backgroundColor: "#5B4EFF",
+    borderRadius: RADIUS.full,
+    backgroundColor: COLORS.primary,
     gap: 8,
     minHeight: 54,
   },
   nextBtnDisabled: {
-    backgroundColor: "rgba(91, 78, 255, 0.45)",
-    shadowOpacity: 0,
-    elevation: 0,
+    backgroundColor: COLORS.primaryLight,
   },
   nextBtnText: {
     fontSize: 16,
-    fontWeight: "700",
+    fontFamily: FLAT_FONTS.bold,
     color: "#FFFFFF",
   },
   nextBtnTextDisabled: {
-    color: "#FFFFFF",
+    color: COLORS.primary,
   },
 });

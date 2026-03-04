@@ -12,14 +12,12 @@ import {
 import * as Haptics from "expo-haptics";
 
 import { ScreenContainer } from "@/components/screen-container";
-import { GlassCard } from "@/components/glass-card";
 import { IconSymbol } from "@/components/ui/icon-symbol";
-import { useColors } from "@/hooks/use-colors";
 import { useProjectContext } from "@/lib/project-context";
 import { FREE_LIMITS, PREMIUM_LIMITS } from "@/lib/storage";
+import { COLORS, FLAT_FONTS, RADIUS } from "@/constants/theme";
 
 export default function SettingsScreen() {
-  const colors = useColors();
   const { state, updateSettings } = useProjectContext();
   const [showPremiumModal, setShowPremiumModal] = useState(false);
 
@@ -38,12 +36,8 @@ export default function SettingsScreen() {
   return (
     <ScreenContainer containerClassName="bg-background">
       <View style={styles.header}>
-        <Text style={[styles.headerTitle, { color: colors.foreground }]}>
-          設定
-        </Text>
-        <Text style={[styles.headerSubtitle, { color: colors.muted }]}>
-          アプリの設定を管理します
-        </Text>
+        <Text style={styles.headerTitle}>設定</Text>
+        <Text style={styles.headerSubtitle}>アプリの設定を管理します</Text>
       </View>
 
       <ScrollView
@@ -51,16 +45,14 @@ export default function SettingsScreen() {
         showsVerticalScrollIndicator={false}
       >
         {/* Premium section */}
-        <GlassCard style={styles.card}>
+        <View style={styles.card}>
           <View style={styles.cardHeader}>
             <View style={styles.premiumIconWrap}>
-              <IconSymbol name="star.fill" size={22} color="#7C3AED" />
+              <IconSymbol name="star.fill" size={22} color={COLORS.primary} />
             </View>
             <View style={styles.cardHeaderText}>
-              <Text style={[styles.cardTitle, { color: colors.foreground }]}>
-                プレミアム
-              </Text>
-              <Text style={[styles.cardSubtitle, { color: colors.muted }]}>
+              <Text style={styles.cardTitle}>プレミアム</Text>
+              <Text style={styles.cardSubtitle}>
                 {state.settings.isPremium
                   ? "すべての機能が使えます"
                   : "機能制限があります"}
@@ -69,33 +61,17 @@ export default function SettingsScreen() {
             <Switch
               value={state.settings.isPremium}
               onValueChange={handleTogglePremium}
-              trackColor={{ false: "#E5E1FF", true: "#7C3AED" }}
+              trackColor={{ false: COLORS.primaryLight, true: COLORS.primary }}
               thumbColor="#FFFFFF"
             />
           </View>
 
           <View style={styles.divider} />
 
-          {/* Current limits */}
           <View style={styles.limitsContainer}>
-            <LimitRow
-              icon="person.2.fill"
-              label="比較候補"
-              value={`${limits.candidates === Infinity ? "無制限" : limits.candidates + "個"}`}
-              colors={colors}
-            />
-            <LimitRow
-              icon="list.bullet"
-              label="評価項目"
-              value={`${limits.criteria === Infinity ? "無制限" : limits.criteria + "個"}`}
-              colors={colors}
-            />
-            <LimitRow
-              icon="bookmark.fill"
-              label="プロジェクト保存"
-              value={`${limits.projects === Infinity ? "無制限" : limits.projects + "個"}`}
-              colors={colors}
-            />
+            <LimitRow icon="person.2.fill" label="比較候補" value={`${limits.candidates === Infinity ? "無制限" : limits.candidates + "個"}`} />
+            <LimitRow icon="list.bullet" label="評価項目" value={`${limits.criteria === Infinity ? "無制限" : limits.criteria + "個"}`} />
+            <LimitRow icon="bookmark.fill" label="プロジェクト保存" value={`${limits.projects === Infinity ? "無制限" : limits.projects + "個"}`} />
           </View>
 
           {!state.settings.isPremium && (
@@ -105,35 +81,29 @@ export default function SettingsScreen() {
               style={styles.upgradeBtn}
             >
               <IconSymbol name="sparkles" size={18} color="#FFFFFF" />
-              <Text style={styles.upgradeBtnText}>
-                プレミアムにアップグレード
-              </Text>
+              <Text style={styles.upgradeBtnText}>プレミアムにアップグレード</Text>
             </TouchableOpacity>
           )}
-        </GlassCard>
+        </View>
 
         {/* App info */}
-        <GlassCard style={styles.card}>
+        <View style={styles.card}>
           <View style={styles.infoCardHeader}>
             <View style={styles.infoIconWrap}>
-              <IconSymbol name="info.circle" size={22} color="#7C3AED" />
+              <IconSymbol name="info.circle" size={22} color={COLORS.primary} />
             </View>
-            <Text style={[styles.cardTitle, { color: colors.foreground }]}>
-              アプリ情報
-            </Text>
+            <Text style={styles.cardTitle}>アプリ情報</Text>
           </View>
           <View style={styles.divider} />
-          <InfoRow label="バージョン" value="1.0.0" colors={colors} />
-          <InfoRow label="開発" value="決断スコア" colors={colors} />
-        </GlassCard>
+          <InfoRow label="バージョン" value="1.0.0" />
+          <InfoRow label="開発" value="決断スコア" />
+        </View>
 
-        {/* Note about premium */}
-        <Text style={[styles.noteText, { color: colors.muted }]}>
+        <Text style={styles.noteText}>
           ※ プレミアム機能のトグルはデモ用です。実際のアプリストア公開時にはStoreKit / Google Play Billingと連携します。
         </Text>
       </ScrollView>
 
-      {/* Premium Modal */}
       <PremiumModal
         visible={showPremiumModal}
         onClose={() => setShowPremiumModal(false)}
@@ -141,99 +111,50 @@ export default function SettingsScreen() {
           handleTogglePremium(true);
           setShowPremiumModal(false);
         }}
-        colors={colors}
       />
     </ScreenContainer>
   );
 }
 
-function LimitRow({
-  icon,
-  label,
-  value,
-  colors,
-}: {
-  icon: string;
-  label: string;
-  value: string;
-  colors: ReturnType<typeof useColors>;
-}) {
+function LimitRow({ icon, label, value }: { icon: string; label: string; value: string }) {
   return (
     <View style={styles.limitRow}>
       <View style={styles.limitLabelRow}>
-        <IconSymbol name={icon as any} size={16} color="#7C3AED" />
-        <Text style={[styles.limitLabel, { color: colors.muted }]}>{label}</Text>
+        <IconSymbol name={icon as any} size={16} color={COLORS.primary} />
+        <Text style={styles.limitLabel}>{label}</Text>
       </View>
-      <Text style={[styles.limitValue, { color: colors.foreground }]}>
-        {value}
-      </Text>
+      <Text style={styles.limitValue}>{value}</Text>
     </View>
   );
 }
 
-function InfoRow({
-  label,
-  value,
-  colors,
-}: {
-  label: string;
-  value: string;
-  colors: ReturnType<typeof useColors>;
-}) {
+function InfoRow({ label, value }: { label: string; value: string }) {
   return (
     <View style={styles.infoRow}>
-      <Text style={[styles.infoLabel, { color: colors.muted }]}>{label}</Text>
-      <Text style={[styles.infoValue, { color: colors.foreground }]}>
-        {value}
-      </Text>
+      <Text style={styles.infoLabel}>{label}</Text>
+      <Text style={styles.infoValue}>{value}</Text>
     </View>
   );
 }
 
-function PremiumModal({
-  visible,
-  onClose,
-  onUpgrade,
-  colors,
-}: {
-  visible: boolean;
-  onClose: () => void;
-  onUpgrade: () => void;
-  colors: ReturnType<typeof useColors>;
-}) {
+function PremiumModal({ visible, onClose, onUpgrade }: { visible: boolean; onClose: () => void; onUpgrade: () => void }) {
   return (
-    <Modal
-      visible={visible}
-      animationType="slide"
-      presentationStyle="pageSheet"
-      onRequestClose={onClose}
-    >
-      <View
-        style={[styles.modalContainer, { backgroundColor: colors.background }]}
-      >
+    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
+      <View style={styles.modalContainer}>
         <View style={styles.modalHeader}>
           <View style={styles.navBtn} />
-          <Text style={[styles.modalTitle, { color: colors.foreground }]}>
-            プレミアムプラン
-          </Text>
-          <TouchableOpacity
-            onPress={onClose}
-            style={styles.navBtn}
-            activeOpacity={0.7}
-          >
-            <IconSymbol name="xmark" size={22} color={colors.foreground} />
+          <Text style={styles.modalTitle}>プレミアムプラン</Text>
+          <TouchableOpacity onPress={onClose} style={styles.navBtn} activeOpacity={0.7}>
+            <IconSymbol name="xmark" size={22} color={COLORS.textPrimary} />
           </TouchableOpacity>
         </View>
 
         <ScrollView contentContainerStyle={styles.modalContent}>
           <View style={styles.modalIconWrap}>
-            <IconSymbol name="star.fill" size={40} color="#7C3AED" />
+            <IconSymbol name="star.fill" size={40} color={COLORS.primary} />
           </View>
-          <Text style={[styles.modalHeading, { color: colors.foreground }]}>
-            すべての機能を解放
-          </Text>
+          <Text style={styles.modalHeading}>すべての機能を解放</Text>
 
-          {/* Features */}
           {[
             { icon: "checkmark.circle.fill", text: "比較候補：最大10個" },
             { icon: "checkmark.circle.fill", text: "評価項目：無制限" },
@@ -242,85 +163,34 @@ function PremiumModal({
             { icon: "checkmark.circle.fill", text: "レーダーチャート表示（今後追加予定）" },
           ].map((feature, i) => (
             <View key={i} style={styles.featureRow}>
-              <IconSymbol name={feature.icon as any} size={20} color="#7C3AED" />
-              <Text
-                style={[styles.featureText, { color: colors.foreground }]}
-              >
-                {feature.text}
-              </Text>
+              <IconSymbol name={feature.icon as any} size={20} color={COLORS.primary} />
+              <Text style={styles.featureText}>{feature.text}</Text>
             </View>
           ))}
 
-          {/* Pricing */}
           <View style={styles.pricingContainer}>
-            <View
-              style={[
-                styles.pricingCard,
-                {
-                  backgroundColor: colors.surface,
-                  borderColor: "#E5E1FF",
-                },
-              ]}
-            >
-              <Text
-                style={[styles.pricingLabel, { color: colors.muted }]}
-              >
-                月額プラン
-              </Text>
-              <Text
-                style={[styles.pricingPrice, { color: colors.foreground }]}
-              >
-                ¥300
-              </Text>
-              <Text style={[styles.pricingPeriod, { color: colors.muted }]}>
-                /月
-              </Text>
+            <View style={styles.pricingCard}>
+              <Text style={styles.pricingLabel}>月額プラン</Text>
+              <Text style={styles.pricingPrice}>¥300</Text>
+              <Text style={styles.pricingPeriod}>/月</Text>
             </View>
-            <View
-              style={[
-                styles.pricingCard,
-                styles.pricingCardHighlight,
-                {
-                  backgroundColor: "#EDE9FF",
-                  borderColor: "#7C3AED",
-                },
-              ]}
-            >
+            <View style={[styles.pricingCard, styles.pricingCardHighlight]}>
               <View style={styles.bestValueBadge}>
                 <Text style={styles.bestValueText}>おすすめ</Text>
               </View>
-              <Text
-                style={[styles.pricingLabel, { color: colors.muted }]}
-              >
-                買い切り
-              </Text>
-              <Text
-                style={[styles.pricingPrice, { color: "#7C3AED" }]}
-              >
-                ¥980
-              </Text>
-              <Text style={[styles.pricingPeriod, { color: colors.muted }]}>
-                永久利用
-              </Text>
+              <Text style={styles.pricingLabel}>買い切り</Text>
+              <Text style={[styles.pricingPrice, { color: COLORS.primary }]}>¥980</Text>
+              <Text style={styles.pricingPeriod}>永久利用</Text>
             </View>
           </View>
 
-          {/* Upgrade button (demo) */}
-          <TouchableOpacity
-            onPress={onUpgrade}
-            activeOpacity={0.85}
-            style={styles.modalUpgradeBtn}
-          >
+          <TouchableOpacity onPress={onUpgrade} activeOpacity={0.85} style={styles.modalUpgradeBtn}>
             <IconSymbol name="sparkles" size={18} color="#FFFFFF" />
-            <Text style={styles.modalUpgradeBtnText}>
-              プレミアムを有効にする（デモ）
-            </Text>
+            <Text style={styles.modalUpgradeBtnText}>プレミアムを有効にする（デモ）</Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={onClose} activeOpacity={0.7}>
-            <Text style={[styles.laterText, { color: colors.muted }]}>
-              後で
-            </Text>
+            <Text style={styles.laterText}>後で</Text>
           </TouchableOpacity>
         </ScrollView>
       </View>
@@ -336,13 +206,15 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 28,
-    fontWeight: "700",
+    fontFamily: FLAT_FONTS.bold,
     letterSpacing: -1,
-    color: "#1C1C1E",
+    color: COLORS.textPrimary,
   },
   headerSubtitle: {
     fontSize: 14,
+    fontFamily: FLAT_FONTS.regular,
     marginTop: 4,
+    color: COLORS.textSecondary,
   },
   scrollContent: {
     paddingHorizontal: 20,
@@ -351,6 +223,10 @@ const styles = StyleSheet.create({
   card: {
     padding: 16,
     marginBottom: 16,
+    backgroundColor: COLORS.surface,
+    borderRadius: RADIUS.lg,
+    borderWidth: 1,
+    borderColor: COLORS.border,
   },
   cardHeader: {
     flexDirection: "row",
@@ -360,28 +236,31 @@ const styles = StyleSheet.create({
   premiumIconWrap: {
     width: 44,
     height: 44,
-    borderRadius: 12,
-    backgroundColor: "#EDE9FF",
+    borderRadius: RADIUS.md,
+    backgroundColor: COLORS.primaryLight,
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
-    borderColor: "#DDD6FE",
+    borderColor: COLORS.border,
   },
   cardHeaderText: {
     flex: 1,
   },
   cardTitle: {
     fontSize: 17,
-    fontWeight: "700",
+    fontFamily: FLAT_FONTS.bold,
+    color: COLORS.textPrimary,
   },
   cardSubtitle: {
     fontSize: 13,
+    fontFamily: FLAT_FONTS.regular,
     marginTop: 2,
+    color: COLORS.textSecondary,
   },
   divider: {
     height: 1,
     marginVertical: 14,
-    backgroundColor: "rgba(109, 40, 217, 0.08)",
+    backgroundColor: COLORS.border,
   },
   limitsContainer: {
     gap: 12,
@@ -398,18 +277,20 @@ const styles = StyleSheet.create({
   },
   limitLabel: {
     fontSize: 14,
+    fontFamily: FLAT_FONTS.regular,
+    color: COLORS.textSecondary,
   },
   limitValue: {
     fontSize: 14,
-    fontWeight: "700",
-    color: "#6D28D9",
+    fontFamily: FLAT_FONTS.bold,
+    color: COLORS.primary,
   },
   upgradeBtn: {
     marginTop: 16,
     paddingVertical: 16,
-    borderRadius: 12,
+    borderRadius: RADIUS.full,
     alignItems: "center",
-    backgroundColor: "#6D28D9",
+    backgroundColor: COLORS.primary,
     flexDirection: "row",
     justifyContent: "center",
     gap: 8,
@@ -418,7 +299,7 @@ const styles = StyleSheet.create({
   upgradeBtnText: {
     color: "#FFFFFF",
     fontSize: 15,
-    fontWeight: "700",
+    fontFamily: FLAT_FONTS.bold,
   },
   infoCardHeader: {
     flexDirection: "row",
@@ -429,12 +310,12 @@ const styles = StyleSheet.create({
   infoIconWrap: {
     width: 44,
     height: 44,
-    borderRadius: 12,
-    backgroundColor: "#EDE9FF",
+    borderRadius: RADIUS.md,
+    backgroundColor: COLORS.primaryLight,
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
-    borderColor: "#DDD6FE",
+    borderColor: COLORS.border,
   },
   infoRow: {
     flexDirection: "row",
@@ -444,20 +325,25 @@ const styles = StyleSheet.create({
   },
   infoLabel: {
     fontSize: 14,
+    fontFamily: FLAT_FONTS.regular,
+    color: COLORS.textSecondary,
   },
   infoValue: {
     fontSize: 14,
-    fontWeight: "600",
+    fontFamily: FLAT_FONTS.medium,
+    color: COLORS.textPrimary,
   },
   noteText: {
     fontSize: 12,
+    fontFamily: FLAT_FONTS.regular,
     textAlign: "center",
     lineHeight: 18,
     paddingHorizontal: 10,
+    color: COLORS.textSecondary,
   },
-  // Modal styles
   modalContainer: {
     flex: 1,
+    backgroundColor: COLORS.background,
   },
   modalHeader: {
     flexDirection: "row",
@@ -474,7 +360,8 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     fontSize: 17,
-    fontWeight: "700",
+    fontFamily: FLAT_FONTS.bold,
+    color: COLORS.textPrimary,
   },
   modalContent: {
     paddingHorizontal: 24,
@@ -484,19 +371,20 @@ const styles = StyleSheet.create({
   modalIconWrap: {
     width: 80,
     height: 80,
-    borderRadius: 12,
-    backgroundColor: "#EDE9FF",
+    borderRadius: RADIUS.md,
+    backgroundColor: COLORS.primaryLight,
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 16,
-    borderWidth: 1.5,
-    borderColor: "#DDD6FE",
+    borderWidth: 1,
+    borderColor: COLORS.border,
   },
   modalHeading: {
     fontSize: 24,
-    fontWeight: "700",
+    fontFamily: FLAT_FONTS.bold,
     marginBottom: 24,
     textAlign: "center",
+    color: COLORS.textPrimary,
   },
   featureRow: {
     flexDirection: "row",
@@ -507,7 +395,8 @@ const styles = StyleSheet.create({
   },
   featureText: {
     fontSize: 16,
-    fontWeight: "500",
+    fontFamily: FLAT_FONTS.medium,
+    color: COLORS.textPrimary,
   },
   pricingContainer: {
     flexDirection: "row",
@@ -518,14 +407,18 @@ const styles = StyleSheet.create({
   },
   pricingCard: {
     flex: 1,
-    borderRadius: 12,
-    borderWidth: 1.5,
+    borderRadius: RADIUS.md,
+    borderWidth: 1,
+    borderColor: COLORS.border,
     padding: 16,
     alignItems: "center",
+    backgroundColor: COLORS.surface,
   },
   pricingCardHighlight: {
     borderWidth: 2,
+    borderColor: COLORS.primary,
     position: "relative",
+    backgroundColor: COLORS.primaryLight,
   },
   bestValueBadge: {
     position: "absolute",
@@ -533,32 +426,37 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 3,
     borderRadius: 10,
-    backgroundColor: "#7C3AED",
+    backgroundColor: COLORS.primary,
   },
   bestValueText: {
     color: "#FFFFFF",
     fontSize: 11,
-    fontWeight: "700",
+    fontFamily: FLAT_FONTS.bold,
   },
   pricingLabel: {
     fontSize: 13,
+    fontFamily: FLAT_FONTS.regular,
     marginBottom: 4,
+    color: COLORS.textSecondary,
   },
   pricingPrice: {
     fontSize: 28,
-    fontWeight: "700",
+    fontFamily: FLAT_FONTS.bold,
+    color: COLORS.textPrimary,
   },
   pricingPeriod: {
     fontSize: 13,
+    fontFamily: FLAT_FONTS.regular,
     marginTop: 2,
+    color: COLORS.textSecondary,
   },
   modalUpgradeBtn: {
     width: "100%",
     paddingVertical: 16,
-    borderRadius: 12,
+    borderRadius: RADIUS.full,
     alignItems: "center",
     marginBottom: 12,
-    backgroundColor: "#7C3AED",
+    backgroundColor: COLORS.primary,
     flexDirection: "row",
     justifyContent: "center",
     gap: 8,
@@ -567,11 +465,12 @@ const styles = StyleSheet.create({
   modalUpgradeBtnText: {
     color: "#FFFFFF",
     fontSize: 16,
-    fontWeight: "700",
+    fontFamily: FLAT_FONTS.bold,
   },
   laterText: {
     fontSize: 15,
+    fontFamily: FLAT_FONTS.medium,
     paddingVertical: 8,
-    fontWeight: "600",
+    color: COLORS.textSecondary,
   },
 });

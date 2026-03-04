@@ -15,12 +15,10 @@ import * as Haptics from "expo-haptics";
 import Animated, { FadeInDown, FadeIn } from "react-native-reanimated";
 
 import { ScreenContainer } from "@/components/screen-container";
-import { GlassCard } from "@/components/glass-card";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useProjectContext } from "@/lib/project-context";
 import { PremiumModal } from "@/components/premium-modal";
-
-const BADGE_COLORS = ["#5B4EFF", "#0EA5E9", "#10B981", "#F59E0B", "#EF4444", "#EC4899"];
+import { COLORS, FLAT_FONTS, RADIUS } from "@/constants/theme";
 
 export default function CandidatesScreen() {
   const router = useRouter();
@@ -71,7 +69,6 @@ export default function CandidatesScreen() {
     if (Platform.OS !== "web") {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     }
-    // 同名候補を「名前 1」「名前 2」に自動リネーム
     const nameCount: Record<string, number> = {};
     const nameIndex: Record<string, number> = {};
     for (const c of filledCandidates) {
@@ -95,8 +92,6 @@ export default function CandidatesScreen() {
     });
   }, [canProceed, filledCandidates, params, router]);
 
-  const fillPercent = Math.min((candidates.length / limits.candidates) * 100, 100);
-
   return (
     <>
       <ScreenContainer edges={["top", "left", "right"]} containerClassName="bg-background">
@@ -110,7 +105,7 @@ export default function CandidatesScreen() {
               style={styles.navBackBtn}
               activeOpacity={0.7}
             >
-              <IconSymbol name="chevron.left" size={20} color="#5B4EFF" />
+              <IconSymbol name="chevron.left" size={20} color={COLORS.primary} />
               <Text style={styles.navBackText}>戻る</Text>
             </TouchableOpacity>
             <Text style={styles.navTitle}>候補を入力</Text>
@@ -118,11 +113,11 @@ export default function CandidatesScreen() {
           </Animated.View>
 
           <View style={{ alignItems: 'center', marginTop: 16, marginBottom: 8 }}>
-            <Text style={{ fontSize: 13, color: '#8E8E93' }}>ステップ 2 / 3</Text>
+            <Text style={{ fontSize: 13, fontFamily: FLAT_FONTS.regular, color: COLORS.textSecondary }}>ステップ 2 / 3</Text>
           </View>
           <View style={{ marginTop: 4, marginBottom: 20, marginHorizontal: 32 }}>
-            <View style={{ height: 4, backgroundColor: '#E5E5EA', borderRadius: 2 }}>
-              <View style={{ width: '66%', height: 4, backgroundColor: '#5B4EFF', borderRadius: 2 }} />
+            <View style={{ height: 4, backgroundColor: COLORS.border, borderRadius: 2 }}>
+              <View style={{ width: '66%', height: 4, backgroundColor: COLORS.primary, borderRadius: 2 }} />
             </View>
           </View>
 
@@ -134,7 +129,7 @@ export default function CandidatesScreen() {
             <Animated.View entering={FadeInDown.delay(100).duration(300)}>
               <Text style={styles.sectionTitle}>比較する候補を入力</Text>
               <View style={styles.limitRow}>
-                <Text style={{ fontSize: 13, color: '#8E8E93' }}>
+                <Text style={{ fontSize: 13, fontFamily: FLAT_FONTS.regular, color: COLORS.textSecondary }}>
                   最大{limits.candidates === Infinity ? '無制限' : `${limits.candidates}候補`}まで追加できます
                 </Text>
               </View>
@@ -145,9 +140,9 @@ export default function CandidatesScreen() {
                 key={index}
                 entering={FadeInDown.delay(150 + index * 60).duration(300)}
               >
-                <GlassCard style={styles.inputCard}>
+                <View style={styles.inputCard}>
                   <View style={styles.inputRow}>
-                    <View style={[styles.indexBadge, { backgroundColor: '#5B4EFF' }]}>
+                    <View style={styles.indexBadge}>
                       <Text style={styles.indexText}>
                         {String.fromCharCode(65 + index)}
                       </Text>
@@ -168,11 +163,11 @@ export default function CandidatesScreen() {
                         activeOpacity={0.7}
                         hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
                       >
-                        <IconSymbol name="xmark" size={16} color="#DC2626" />
+                        <IconSymbol name="xmark" size={16} color={COLORS.danger} />
                       </TouchableOpacity>
                     )}
                   </View>
-                </GlassCard>
+                </View>
               </Animated.View>
             ))}
 
@@ -182,7 +177,7 @@ export default function CandidatesScreen() {
                 activeOpacity={0.75}
                 style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingVertical: 14 }}
               >
-                <IconSymbol name="plus" size={18} color="#5B4EFF" />
+                <IconSymbol name="plus" size={18} color={COLORS.primary} />
                 <Text style={styles.addBtnText}>候補を追加</Text>
               </TouchableOpacity>
             </Animated.View>
@@ -194,14 +189,14 @@ export default function CandidatesScreen() {
               disabled={!canProceed}
               activeOpacity={0.85}
               style={{
-                backgroundColor: isValid ? '#5B4EFF' : 'rgba(91, 78, 255, 0.45)',
-                borderRadius: 20,
+                backgroundColor: isValid ? COLORS.primary : COLORS.primaryLight,
+                borderRadius: RADIUS.full,
                 paddingVertical: 16,
                 alignItems: 'center',
                 alignSelf: 'stretch',
               }}
             >
-              <Text style={{ color: '#FFFFFF', fontSize: 17, fontWeight: '600' }}>
+              <Text style={{ color: isValid ? '#FFFFFF' : COLORS.primary, fontSize: 17, fontFamily: FLAT_FONTS.medium }}>
                 次へ
               </Text>
             </TouchableOpacity>
@@ -224,15 +219,15 @@ export default function CandidatesScreen() {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: "#F2F2F7" },
+  flex: { flex: 1, backgroundColor: COLORS.background },
   navHeader: {
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 12,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "#E5E5EA",
-    backgroundColor: "#FFFFFF",
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.border,
+    backgroundColor: COLORS.surface,
   },
   navBackBtn: {
     flexDirection: "row",
@@ -244,102 +239,40 @@ const styles = StyleSheet.create({
   },
   navBackText: {
     fontSize: 16,
-    color: "#5B4EFF",
-    fontWeight: "500",
+    fontFamily: FLAT_FONTS.medium,
+    color: COLORS.primary,
   },
   navTitle: {
     flex: 1,
     fontSize: 17,
-    fontWeight: "700",
-    color: "#1C1C1E",
+    fontFamily: FLAT_FONTS.bold,
+    color: COLORS.textPrimary,
     textAlign: "center",
   },
   navSpacer: {
     minWidth: 80,
   },
-  stepRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 20,
-    marginBottom: 8,
-  },
-  stepItem: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  stepDot: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: "rgba(109, 40, 217, 0.1)",
-    justifyContent: "center",
-    alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#EDEDFF",
-  },
-  stepDotActive: {
-    backgroundColor: "#5B4EFF",
-    borderColor: "#5B4EFF",
-  },
-  stepNum: {
-    fontSize: 12,
-    fontWeight: "700",
-    color: "#8E8E93",
-  },
-  stepNumActive: {
-    fontSize: 12,
-    fontWeight: "700",
-    color: "#FFFFFF",
-  },
-  stepLine: {
-    width: 40,
-    height: 2,
-    backgroundColor: "rgba(109, 40, 217, 0.1)",
-    marginHorizontal: 4,
-  },
-  stepLineActive: {
-    backgroundColor: "#5B4EFF",
-  },
-  stepLabel: {
-    textAlign: "center",
-    fontSize: 13,
-    color: "#8E8E93",
-    marginBottom: 24,
-  },
   scrollContent: {
     paddingHorizontal: 20,
     paddingBottom: 20,
-    backgroundColor: "#F2F2F7",
+    backgroundColor: COLORS.background,
   },
   sectionTitle: {
     fontSize: 20,
-    fontWeight: "700",
-    color: "#1C1C1E",
+    fontFamily: FLAT_FONTS.bold,
+    color: COLORS.textPrimary,
     marginBottom: 8,
     letterSpacing: -0.3,
   },
   limitRow: {
     marginBottom: 16,
   },
-  limitText: {
-    fontSize: 12,
-    color: "#8E8E93",
-    marginBottom: 6,
-  },
-  limitBarBg: {
-    height: 4,
-    borderRadius: 2,
-    overflow: "hidden",
-    backgroundColor: "#EDEDFF",
-  },
-  limitBarFill: {
-    height: "100%",
-    borderRadius: 2,
-    backgroundColor: "#5B4EFF",
-  },
   inputCard: {
     marginBottom: 10,
+    backgroundColor: COLORS.surface,
+    borderRadius: RADIUS.md,
+    borderWidth: 1,
+    borderColor: COLORS.border,
   },
   inputRow: {
     flexDirection: "row",
@@ -355,83 +288,36 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: COLORS.primary,
   },
   indexText: {
     fontSize: 15,
-    fontWeight: "700",
+    fontFamily: FLAT_FONTS.bold,
     color: "#FFFFFF",
   },
   input: {
     flex: 1,
     fontSize: 16,
-    color: "#1C1C1E",
-    fontWeight: "500",
+    fontFamily: FLAT_FONTS.medium,
+    color: COLORS.textPrimary,
     paddingVertical: 4,
   },
   removeBtn: {
     width: 32,
     height: 32,
-    borderRadius: 8,
-    backgroundColor: "#FEF2F2",
+    borderRadius: RADIUS.sm,
+    backgroundColor: "rgba(255,82,82,0.08)",
     justifyContent: "center",
     alignItems: "center",
-  },
-  addBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 10,
-    marginTop: 4,
-    backgroundColor: "#FFFFFF",
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: "#E5E5EA",
-    padding: 16,
-    shadowColor: "#000000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  addBtnIcon: {
-    width: 28,
-    height: 28,
-    borderRadius: 8,
-    backgroundColor: "#EDEDFF",
-    alignItems: "center",
-    justifyContent: "center",
   },
   addBtnText: {
     fontSize: 15,
-    fontWeight: "600",
-    color: "#5B4EFF",
+    fontFamily: FLAT_FONTS.medium,
+    color: COLORS.primary,
   },
   bottomBar: {
     paddingHorizontal: 20,
     paddingVertical: 12,
     paddingBottom: 32,
-  },
-  nextBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 18,
-    borderRadius: 20,
-    backgroundColor: "#5B4EFF",
-    gap: 8,
-    minHeight: 56,
-  },
-  nextBtnDisabled: {
-    backgroundColor: "#EDEDFF",
-    shadowOpacity: 0,
-    elevation: 0,
-  },
-  nextBtnText: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#FFFFFF",
-  },
-  nextBtnTextDisabled: {
-    color: "#A89EFF",
   },
 });

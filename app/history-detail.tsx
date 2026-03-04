@@ -15,6 +15,7 @@ import { ScreenContainer } from "@/components/screen-container";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { DecisionResult } from "@/components/decision-result";
 import { useProjectContext } from "@/lib/project-context";
+import { COLORS, FLAT_FONTS, RADIUS } from "@/constants/theme";
 
 export default function HistoryDetailScreen() {
   const router = useRouter();
@@ -74,23 +75,20 @@ export default function HistoryDetailScreen() {
 
   return (
     <ScreenContainer edges={["top", "bottom", "left", "right"]}>
-      <View style={{ flex: 1, backgroundColor: "#F2F2F7" }}>
-        {/* ヘッダー */}
+      <View style={{ flex: 1, backgroundColor: COLORS.background }}>
         <View style={styles.navHeader}>
           <TouchableOpacity onPress={() => router.back()} style={styles.navBackBtn} activeOpacity={0.7}>
-            <IconSymbol name="chevron.left" size={20} color="#5B4EFF" />
+            <IconSymbol name="chevron.left" size={20} color={COLORS.primary} />
             <Text style={styles.navBackText}>戻る</Text>
           </TouchableOpacity>
           <Text style={styles.navTitle} numberOfLines={1}>{project.title}</Text>
           <TouchableOpacity onPress={handleDelete} style={styles.navBtn} activeOpacity={0.7}>
-            <IconSymbol name="trash.fill" size={22} color="#EF4444" />
+            <IconSymbol name="trash.fill" size={22} color={COLORS.danger} />
           </TouchableOpacity>
         </View>
 
-        {/* 日付（ScrollViewの外に出せないためdateTextをDecisionResultのscrollPaddingTopで代替） */}
         <Text style={styles.dateText}>{dateStr}</Text>
 
-        {/* 共通コンポーネント */}
         <ScrollView
           contentContainerStyle={[styles.scrollContent, { paddingBottom: 24 }]}
           showsVerticalScrollIndicator={false}
@@ -119,9 +117,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 16,
     paddingVertical: 14,
-    backgroundColor: "#FFFFFF",
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "#E5E5EA",
+    backgroundColor: COLORS.surface,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.border,
   },
   navBtn: {
     width: 40,
@@ -139,23 +137,24 @@ const styles = StyleSheet.create({
   },
   navBackText: {
     fontSize: 16,
-    color: '#5B4EFF',
-    fontWeight: '500',
+    fontFamily: FLAT_FONTS.medium,
+    color: COLORS.primary,
   },
   navTitle: {
     fontSize: 17,
-    fontWeight: "600",
-    color: "#1C1C1E",
+    fontFamily: FLAT_FONTS.medium,
+    color: COLORS.textPrimary,
     flex: 1,
     textAlign: "center",
   },
   dateText: {
     fontSize: 13,
-    color: "#8E8E93",
+    fontFamily: FLAT_FONTS.regular,
+    color: COLORS.textSecondary,
     textAlign: "center",
     paddingTop: 12,
     paddingBottom: 0,
-    backgroundColor: "#F2F2F7",
+    backgroundColor: COLORS.background,
     marginBottom: 28,
   },
   center: {
@@ -166,17 +165,18 @@ const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: 16,
-    color: "#8E8E93",
+    fontFamily: FLAT_FONTS.regular,
+    color: COLORS.textSecondary,
   },
   backBtn: {
     paddingHorizontal: 24,
     paddingVertical: 12,
-    borderRadius: 12,
-    backgroundColor: "#5B4EFF",
+    borderRadius: RADIUS.full,
+    backgroundColor: COLORS.primary,
   },
   backBtnText: {
     color: "#FFFFFF",
     fontSize: 16,
-    fontWeight: "600",
+    fontFamily: FLAT_FONTS.medium,
   },
 });

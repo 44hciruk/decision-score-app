@@ -15,6 +15,7 @@ import Animated, {
 import Svg, { Circle } from "react-native-svg";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { getConfidenceMessage } from "@/lib/storage";
+import { COLORS, FLAT_FONTS, RADIUS } from "@/constants/theme";
 
 // ─── 型定義 ──────────────────────────────────────────
 export type DecisionResultProps = {
@@ -23,16 +24,15 @@ export type DecisionResultProps = {
   sortedCandidates: string[];
   criteria: string[];
   rankings: Record<string, string[]>;
-  /** result.tsx ではアニメあり、history-detail.tsx ではなし */
   animated?: boolean;
 };
 
 // ─── ランク色 ─────────────────────────────────────────
 function getRankColor(index: number, total: number): string {
-  if (index === 0) return "#22C55E";
-  if (index === total - 1) return "#EF4444";
-  if (index === 1) return "#F59E0B";
-  return "#3C3C43";
+  if (index === 0) return COLORS.success;
+  if (index === 1) return COLORS.warning;
+  if (index === total - 1) return COLORS.danger;
+  return COLORS.textSecondary;
 }
 
 // ─── メインコンポーネント ─────────────────────────────
@@ -76,11 +76,8 @@ export function DecisionResult({
         entering={animated ? FadeInDown.delay(800).duration(400) : undefined}
         style={styles.confidenceContainer}
       >
-        <View style={[
-          styles.confidenceBadge,
-          { backgroundColor: "#22C55E15", borderColor: "#22C55E30" }
-        ]}>
-          <Text style={[styles.confidenceText, { color: "#22C55E" }]}>
+        <View style={styles.confidenceBadge}>
+          <Text style={styles.confidenceText}>
             {scoreDiff}点差 — {confidenceMessage}
           </Text>
         </View>
@@ -124,7 +121,7 @@ export function DecisionResult({
                 <View style={styles.rankingRowLeft}>
                   {index === 0 ? (
                     <View style={styles.rankNumber1}>
-                      <IconSymbol name="trophy.fill" size={16} color="#22C55E" />
+                      <IconSymbol name="trophy.fill" size={16} color={COLORS.success} />
                     </View>
                   ) : (
                     <View
@@ -150,7 +147,7 @@ export function DecisionResult({
                   <Text
                     style={[
                       styles.rankName,
-                      index === 0 && { color: '#1C1C1E', fontWeight: '700' },
+                      index === 0 && { color: COLORS.textPrimary, fontFamily: FLAT_FONTS.bold },
                     ]}
                   >
                     {candidate}
@@ -159,7 +156,7 @@ export function DecisionResult({
                 <Text
                   style={[
                     styles.rankScore,
-                    { color: index === 0 ? '#22C55E' : getRankColor(index, sortedCandidates.length) },
+                    { color: index === 0 ? COLORS.success : getRankColor(index, sortedCandidates.length) },
                   ]}
                 >
                   {scores[candidate]}
@@ -180,13 +177,11 @@ export function DecisionResult({
             const displayList = isExpanded ? ordered : ordered.slice(0, 3);
             return (
               <View key={`${criterion}-${criterionIndex}`} style={styles.criterionCard}>
-                {/* セクションヘッダー */}
                 <View style={styles.criterionHeader}>
                   <View style={styles.criterionHeaderAccent} />
                   <Text style={styles.criterionHeaderText}>{criterion}</Text>
                 </View>
 
-                {/* 候補リスト */}
                 {displayList.map((candidate, idx) => (
                   <View
                     key={`${candidate}-${idx}`}
@@ -207,7 +202,6 @@ export function DecisionResult({
                   </View>
                 ))}
 
-                {/* 展開ボタン */}
                 {ordered.length > 5 && (
                   <TouchableOpacity
                     onPress={() => setExpanded(prev => ({ ...prev, [criterion]: !isExpanded }))}
@@ -220,7 +214,7 @@ export function DecisionResult({
                     <IconSymbol
                       name={isExpanded ? 'chevron.up' : 'chevron.down'}
                       size={14}
-                      color="#5B4EFF"
+                      color={COLORS.primary}
                     />
                   </TouchableOpacity>
                 )}
@@ -233,7 +227,7 @@ export function DecisionResult({
   );
 }
 
-// ─── アニメーションあり円グラフ（result.tsx用） ──────
+// ─── アニメーションあり円グラフ ──────────────────────
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 function CircularScoreAnimated({ score }: { score: number }) {
@@ -257,10 +251,10 @@ function CircularScoreAnimated({ score }: { score: number }) {
   return (
     <View style={styles.circularContainer}>
       <Svg width={size} height={size}>
-        <Circle cx={size / 2} cy={size / 2} r={radius} stroke="#DCFCE7" strokeWidth={strokeWidth} fill="none" />
+        <Circle cx={size / 2} cy={size / 2} r={radius} stroke={COLORS.primaryLight} strokeWidth={strokeWidth} fill="none" />
         <AnimatedCircle
           cx={size / 2} cy={size / 2} r={radius}
-          stroke="#22C55E" strokeWidth={strokeWidth} fill="none"
+          stroke={COLORS.success} strokeWidth={strokeWidth} fill="none"
           strokeLinecap="round" strokeDasharray={circumference}
           animatedProps={animatedCircleProps}
           transform={`rotate(-90 ${size / 2} ${size / 2})`}
@@ -291,34 +285,6 @@ function AnimatedScoreText({ score }: { score: number }) {
   return <Text style={styles.scoreValue}>{displayValue}</Text>;
 }
 
-// ─── アニメーションなし円グラフ（history-detail.tsx用） ─
-function CircularScoreStatic({ score }: { score: number }) {
-  const size = 160;
-  const strokeWidth = 14;
-  const radius = (size - strokeWidth) / 2;
-  const circumference = 2 * Math.PI * radius;
-  const strokeDashoffset = circumference * (1 - score / 100);
-
-  return (
-    <View style={styles.circularContainer}>
-      <Svg width={size} height={size}>
-        <Circle cx={size / 2} cy={size / 2} r={radius} stroke="#DCFCE7" strokeWidth={strokeWidth} fill="none" />
-        <Circle
-          cx={size / 2} cy={size / 2} r={radius}
-          stroke="#22C55E" strokeWidth={strokeWidth} fill="none"
-          strokeLinecap="round" strokeDasharray={circumference}
-          strokeDashoffset={strokeDashoffset}
-          transform={`rotate(-90 ${size / 2} ${size / 2})`}
-        />
-      </Svg>
-      <View style={styles.scoreTextContainer}>
-        <Text style={styles.scoreValue}>{score}</Text>
-        <Text style={styles.scoreUnit}>/ 100点</Text>
-      </View>
-    </View>
-  );
-}
-
 // ─── スタイル ─────────────────────────────────────────
 const styles = StyleSheet.create({
   scrollContent: {
@@ -331,15 +297,9 @@ const styles = StyleSheet.create({
   },
   winnerName: {
     fontSize: 28,
-    fontWeight: '700',
-    color: '#1C1C1E',
+    fontFamily: FLAT_FONTS.bold,
+    color: COLORS.textPrimary,
     textAlign: 'center',
-  },
-  winnerSubText: {
-    fontSize: 14,
-    color: "#8E8E93",
-    marginTop: 4,
-    fontWeight: "500",
   },
   scoreCircleContainer: {
     alignItems: "center",
@@ -356,14 +316,15 @@ const styles = StyleSheet.create({
   },
   scoreValue: {
     fontSize: 40,
-    fontWeight: "700",
-    color: "#1C1C1E",
+    fontFamily: FLAT_FONTS.bold,
+    color: COLORS.textPrimary,
     letterSpacing: -2,
   },
   scoreUnit: {
     fontSize: 12,
+    fontFamily: FLAT_FONTS.regular,
     marginTop: -2,
-    color: "#8E8E93",
+    color: COLORS.textSecondary,
   },
   confidenceContainer: {
     alignItems: "center",
@@ -373,72 +334,73 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     paddingHorizontal: 20,
     paddingVertical: 10,
-    borderRadius: 12,
+    borderRadius: RADIUS.md,
     borderWidth: 1,
+    backgroundColor: COLORS.success + '15',
+    borderColor: COLORS.success + '30',
   },
   confidenceText: {
     fontSize: 15,
-    fontWeight: "600",
+    fontFamily: FLAT_FONTS.medium,
     textAlign: "center",
+    color: COLORS.success,
   },
-  sectionTitle: {
+  tabContainer: {
+    flexDirection: 'row',
+    backgroundColor: COLORS.border,
+    borderRadius: 10,
+    padding: 3,
+    marginHorizontal: 16,
+    marginBottom: 20,
+    marginTop: 8,
+  },
+  tabItem: {
+    flex: 1,
+    paddingVertical: 8,
+    borderRadius: RADIUS.sm,
+    alignItems: 'center',
+  },
+  tabItemActive: {
+    backgroundColor: COLORS.surface,
+  },
+  tabText: {
+    fontSize: 14,
+    fontFamily: FLAT_FONTS.medium,
+    color: COLORS.textSecondary,
+  },
+  tabTextActive: {
+    color: COLORS.textPrimary,
+    fontFamily: FLAT_FONTS.bold,
+  },
+  rankingTitle: {
     fontSize: 20,
-    fontWeight: "700",
-    color: "#1C1C1E",
+    fontFamily: FLAT_FONTS.bold,
+    color: COLORS.textPrimary,
     marginBottom: 14,
     letterSpacing: -0.3,
   },
-  rankItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+  rankingCard: {
+    backgroundColor: COLORS.surface,
+    borderRadius: RADIUS.md,
     paddingHorizontal: 16,
+    paddingVertical: 4,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+  },
+  rankingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingVertical: 14,
-    marginBottom: 8,
-    backgroundColor: "#FFFFFF",
-    borderRadius: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.border,
   },
-  rankItemLeft: {
-    flexDirection: "row",
-    alignItems: "center",
-    flex: 1,
+  rankingRowLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 12,
-  },
-  rankBadge: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  rankBadgeText: {
-    fontSize: 15,
-    fontWeight: "700",
-  },
-  rankItemName: {
-    fontSize: 16,
     flex: 1,
-  },
-  rankItemRight: {
-    flexDirection: "row",
-    alignItems: "baseline",
-    gap: 2,
-  },
-  rankItemScore: {
-    fontWeight: "700",
-  },
-  rankItemUnit: {
-    fontSize: 13,
-    color: "#8E8E93",
-  },
-  criterionDetail: {
-    marginBottom: 20,
-  },
-  criterionDetailTitle: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#1C1C1E',
-    marginBottom: 10,
   },
   rankNumber: {
     width: 36,
@@ -449,95 +411,41 @@ const styles = StyleSheet.create({
   },
   rankNumberText: {
     fontSize: 15,
-    fontWeight: '700',
-  },
-  rankName: {
-    fontSize: 16,
-    flex: 1,
-  },
-  rankScore: {
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  criterionRankText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#8E8E93',
-    width: 20,
-    textAlign: 'center',
-  },
-  rankingTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#1C1C1E',
-    marginBottom: 14,
-    letterSpacing: -0.3,
-  },
-  rankingCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 4,
-    marginBottom: 16,
-  },
-  rankingRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 14,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#E5E5EA',
-  },
-  rankingRowLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    flex: 1,
+    fontFamily: FLAT_FONTS.bold,
   },
   rankNumber1: {
     width: 36,
     height: 36,
     borderRadius: 10,
-    backgroundColor: '#DCFCE7',
+    backgroundColor: COLORS.success + '20',
     borderWidth: 1,
-    borderColor: '#22C55E40',
+    borderColor: COLORS.success + '40',
     alignItems: 'center',
     justifyContent: 'center',
   },
+  rankName: {
+    fontSize: 16,
+    fontFamily: FLAT_FONTS.regular,
+    flex: 1,
+  },
+  rankScore: {
+    fontSize: 14,
+    fontFamily: FLAT_FONTS.medium,
+  },
   rankScoreUnit: {
     fontSize: 13,
-    color: '#8E8E93',
-    fontWeight: '400',
+    fontFamily: FLAT_FONTS.regular,
+    color: COLORS.textSecondary,
   },
   criterionCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
+    backgroundColor: COLORS.surface,
+    borderRadius: RADIUS.md,
     paddingHorizontal: 16,
     paddingTop: 14,
     paddingBottom: 4,
     marginBottom: 16,
-  },
-  expandButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 4,
-    paddingVertical: 8,
-    marginTop: 4,
-  },
-  expandButtonText: {
-    fontSize: 14,
-    color: '#5B4EFF',
-    fontWeight: '500',
-  },
-  tabContainer: {
-    flexDirection: 'row',
-    backgroundColor: '#E5E5EA',
-    borderRadius: 10,
-    padding: 3,
-    marginHorizontal: 16,
-    marginBottom: 20,
-    marginTop: 8,
+    borderWidth: 1,
+    borderColor: COLORS.border,
   },
   criterionHeader: {
     flexDirection: 'row',
@@ -549,59 +457,51 @@ const styles = StyleSheet.create({
     width: 3,
     height: 16,
     borderRadius: 2,
-    backgroundColor: '#5B4EFF',
+    backgroundColor: COLORS.primary,
   },
   criterionHeaderText: {
     fontSize: 15,
-    fontWeight: '600',
-    color: '#1C1C1E',
+    fontFamily: FLAT_FONTS.medium,
+    color: COLORS.textPrimary,
   },
   criterionRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingVertical: 12,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: '#E5E5EA',
+    borderTopWidth: 1,
+    borderTopColor: COLORS.border,
   },
   criterionName: {
     fontSize: 15,
-    color: '#8E8E93',
+    fontFamily: FLAT_FONTS.regular,
+    color: COLORS.textSecondary,
     flex: 1,
   },
   criterionNameFirst: {
-    color: '#1C1C1E',
-    fontWeight: '600',
+    color: COLORS.textPrimary,
+    fontFamily: FLAT_FONTS.medium,
   },
   criterionRankLabel: {
     fontSize: 14,
-    color: '#8E8E93',
+    fontFamily: FLAT_FONTS.regular,
+    color: COLORS.textSecondary,
   },
   criterionRankLabelFirst: {
-    color: '#1C1C1E',
-    fontWeight: '600',
+    color: COLORS.textPrimary,
+    fontFamily: FLAT_FONTS.medium,
   },
-  tabItem: {
-    flex: 1,
-    paddingVertical: 8,
-    borderRadius: 8,
+  expandButton: {
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
+    gap: 4,
+    paddingVertical: 8,
+    marginTop: 4,
   },
-  tabItemActive: {
-    backgroundColor: '#FFFFFF',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.08,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  tabText: {
+  expandButtonText: {
     fontSize: 14,
-    fontWeight: '500',
-    color: '#8E8E93',
-  },
-  tabTextActive: {
-    color: '#1C1C1E',
-    fontWeight: '600',
+    fontFamily: FLAT_FONTS.medium,
+    color: COLORS.primary,
   },
 });

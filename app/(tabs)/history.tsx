@@ -15,6 +15,7 @@ import * as Haptics from "expo-haptics";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useProjectContext } from "@/lib/project-context";
 import type { Project } from "@/lib/storage";
+import { COLORS, FLAT_FONTS, RADIUS } from "@/constants/theme";
 
 export default function HistoryScreen() {
   const insets = useSafeAreaInsets();
@@ -86,7 +87,6 @@ export default function HistoryScreen() {
 
   return (
     <View style={styles.root}>
-      {/* ヘッダー */}
       <View style={[styles.header, { paddingTop: insets.top + 4 }]}>
         <View style={styles.headerRow}>
           <View>
@@ -112,7 +112,6 @@ export default function HistoryScreen() {
         ]}
         showsVerticalScrollIndicator={false}
       >
-        {/* 空状態 */}
         {completed.length === 0 && (
           <View style={styles.emptyWrap}>
             <View style={styles.emptyIcon}>
@@ -125,7 +124,6 @@ export default function HistoryScreen() {
           </View>
         )}
 
-        {/* 完了済みリスト */}
         {completed.length > 0 && (
           <View style={styles.listCard}>
             <Text style={styles.sectionLabel}>
@@ -139,7 +137,6 @@ export default function HistoryScreen() {
                   index < completed.length - 1 && styles.rowBorder,
                 ]}
               >
-                {/* タップで詳細へ */}
                 <TouchableOpacity
                   style={styles.rowMain}
                   onPress={() => handleOpen(item)}
@@ -149,7 +146,7 @@ export default function HistoryScreen() {
                     <IconSymbol
                       name="checkmark.circle.fill"
                       size={16}
-                      color="#34C759"
+                      color={COLORS.success}
                     />
                   </View>
                   <View style={styles.rowBody}>
@@ -163,13 +160,12 @@ export default function HistoryScreen() {
                   <IconSymbol name="chevron.right" size={14} color="#C7C7CC" />
                 </TouchableOpacity>
 
-                {/* 削除ボタン */}
                 <TouchableOpacity
                   style={styles.deleteBtn}
                   onPress={() => handleDelete(item)}
                   activeOpacity={0.7}
                 >
-                  <IconSymbol name="trash.fill" size={16} color="#EF4444" />
+                  <IconSymbol name="trash.fill" size={16} color={COLORS.danger} />
                 </TouchableOpacity>
               </View>
             ))}
@@ -183,12 +179,12 @@ export default function HistoryScreen() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: "#F2F2F7",
+    backgroundColor: COLORS.background,
   },
   header: {
     paddingHorizontal: 20,
     paddingBottom: 12,
-    backgroundColor: "#F2F2F7",
+    backgroundColor: COLORS.background,
   },
   headerRow: {
     flexDirection: "row",
@@ -197,25 +193,26 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 28,
-    fontWeight: "700",
-    color: "#1C1C1E",
+    fontFamily: FLAT_FONTS.bold,
+    color: COLORS.textPrimary,
     letterSpacing: -0.5,
   },
   headerSubtitle: {
     fontSize: 13,
-    color: "#8E8E93",
+    fontFamily: FLAT_FONTS.regular,
+    color: COLORS.textSecondary,
     marginTop: 2,
   },
   deleteAllBtn: {
     paddingVertical: 6,
     paddingHorizontal: 12,
-    borderRadius: 8,
-    backgroundColor: "rgba(239,68,68,0.08)",
+    borderRadius: RADIUS.sm,
+    backgroundColor: "rgba(255,82,82,0.08)",
   },
   deleteAllText: {
     fontSize: 13,
-    fontWeight: "600",
-    color: "#EF4444",
+    fontFamily: FLAT_FONTS.medium,
+    color: COLORS.danger,
   },
   scrollContent: {
     paddingHorizontal: 20,
@@ -230,36 +227,36 @@ const styles = StyleSheet.create({
     width: 72,
     height: 72,
     borderRadius: 36,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: COLORS.surface,
+    borderWidth: 1,
+    borderColor: COLORS.border,
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 4,
   },
   emptyTitle: {
     fontSize: 16,
-    fontWeight: "600",
-    color: "#1C1C1E",
+    fontFamily: FLAT_FONTS.medium,
+    color: COLORS.textPrimary,
   },
   emptySubtitle: {
     fontSize: 13,
-    color: "#8E8E93",
+    fontFamily: FLAT_FONTS.regular,
+    color: COLORS.textSecondary,
     textAlign: "center",
     lineHeight: 20,
   },
   listCard: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 16,
+    backgroundColor: COLORS.surface,
+    borderRadius: RADIUS.lg,
     overflow: "hidden",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.06,
-    shadowRadius: 4,
-    elevation: 2,
+    borderWidth: 1,
+    borderColor: COLORS.border,
   },
   sectionLabel: {
     fontSize: 12,
-    fontWeight: "600",
-    color: "#8E8E93",
+    fontFamily: FLAT_FONTS.medium,
+    color: COLORS.textSecondary,
     textTransform: "uppercase",
     letterSpacing: 0.5,
     paddingHorizontal: 16,
@@ -271,8 +268,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   rowBorder: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "rgba(0,0,0,0.08)",
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.border,
   },
   rowMain: {
     flex: 1,
@@ -285,8 +282,8 @@ const styles = StyleSheet.create({
   rowIcon: {
     width: 34,
     height: 34,
-    borderRadius: 8,
-    backgroundColor: "rgba(52,199,89,0.1)",
+    borderRadius: RADIUS.sm,
+    backgroundColor: "rgba(76,175,130,0.12)",
     alignItems: "center",
     justifyContent: "center",
     flexShrink: 0,
@@ -297,13 +294,14 @@ const styles = StyleSheet.create({
   },
   rowTitle: {
     fontSize: 15,
-    fontWeight: "500",
-    color: "#1C1C1E",
+    fontFamily: FLAT_FONTS.medium,
+    color: COLORS.textPrimary,
     letterSpacing: -0.2,
   },
   rowMeta: {
     fontSize: 12,
-    color: "#8E8E93",
+    fontFamily: FLAT_FONTS.regular,
+    color: COLORS.textSecondary,
   },
   deleteBtn: {
     width: 44,

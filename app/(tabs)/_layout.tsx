@@ -3,6 +3,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { View, Text, StyleSheet, Platform } from "react-native";
 import { HapticTab } from "@/components/haptic-tab";
 import { IconSymbol } from "@/components/ui/icon-symbol";
+import { COLORS, FLAT_FONTS } from "@/constants/theme";
 
 type TabIconProps = {
   focused: boolean;
@@ -17,7 +18,7 @@ function TabIcon({ focused, iconName, label }: TabIconProps) {
       <IconSymbol
         name={iconName}
         size={24}
-        color={focused ? "#5B4EFF" : "#8E8E93"}
+        color={focused ? COLORS.primary : COLORS.textSecondary}
       />
       <Text style={[tabStyles.label, focused && tabStyles.labelActive]}>
         {label}
@@ -34,12 +35,12 @@ const tabStyles = StyleSheet.create({
   },
   label: {
     fontSize: 10,
-    fontWeight: "500",
-    color: "#8E8E93",
+    fontFamily: FLAT_FONTS.medium,
+    color: COLORS.textSecondary,
   },
   labelActive: {
-    color: "#5B4EFF",
-    fontWeight: "600",
+    color: COLORS.primary,
+    fontFamily: FLAT_FONTS.bold,
   },
 });
 
@@ -53,14 +54,14 @@ export default function TabLayout() {
         headerShown: false,
         tabBarButton: HapticTab,
         tabBarShowLabel: false,
-        tabBarActiveTintColor: "#5B4EFF",
+        tabBarActiveTintColor: COLORS.primary,
         tabBarStyle: {
-          backgroundColor: "#F0EFF1",
+          backgroundColor: COLORS.surface,
           paddingBottom: Platform.OS === "ios" ? 24 : 12,
           paddingTop: 8,
           height: Platform.OS === "ios" ? 80 : 64,
-          borderTopColor: "#E5E5EA",
-          borderTopWidth: StyleSheet.hairlineWidth,
+          borderTopColor: COLORS.border,
+          borderTopWidth: 1,
         },
       }}
     >

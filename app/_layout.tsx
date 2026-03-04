@@ -9,6 +9,13 @@ import { Platform } from "react-native";
 import "@/lib/_core/nativewind-pressable";
 import { ThemeProvider } from "@/lib/theme-provider";
 import {
+  useFonts,
+  ZenMaruGothic_400Regular,
+  ZenMaruGothic_500Medium,
+  ZenMaruGothic_700Bold,
+} from "@expo-google-fonts/zen-maru-gothic";
+import * as SplashScreen from "expo-splash-screen";
+import {
   SafeAreaFrameContext,
   SafeAreaInsetsContext,
   SafeAreaProvider,
@@ -27,7 +34,21 @@ export const unstable_settings = {
   anchor: "(tabs)",
 };
 
+SplashScreen.preventAutoHideAsync();
+
 export default function RootLayout() {
+  const [fontsLoaded] = useFonts({
+    ZenMaruGothic_400Regular,
+    ZenMaruGothic_500Medium,
+    ZenMaruGothic_700Bold,
+  });
+
+  useEffect(() => {
+    if (fontsLoaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
   const initialInsets = initialWindowMetrics?.insets ?? DEFAULT_WEB_INSETS;
   const initialFrame = initialWindowMetrics?.frame ?? DEFAULT_WEB_FRAME;
 
@@ -78,6 +99,10 @@ export default function RootLayout() {
       },
     };
   }, [initialInsets, initialFrame]);
+
+  if (!fontsLoaded) {
+    return null;
+  }
 
   const content = (
     <GestureHandlerRootView style={{ flex: 1 }}>

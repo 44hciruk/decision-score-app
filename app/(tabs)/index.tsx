@@ -4,7 +4,6 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -13,6 +12,7 @@ import { IconSymbol } from "@/components/ui/icon-symbol";
 import { loadProjects, type Project } from "@/lib/storage";
 import * as Haptics from "expo-haptics";
 import { Platform } from "react-native";
+import { COLORS, FLAT_FONTS, RADIUS } from "@/constants/theme";
 
 export default function HomeScreen() {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -53,20 +53,12 @@ export default function HomeScreen() {
   const completed = projects.filter((p) => !!p.winner);
 
   return (
-    <View style={styles.root}>
-      {/* 全画面グラデーション背景 */}
-      <LinearGradient
-        colors={["#FFD4A8", "#EDD5FF", "#C9A0FF"]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={StyleSheet.absoluteFill}
-      />
-
-      {/* ヘッダー（固定） */}
-      <View style={[styles.header, { paddingTop: insets.top + 4 }]}>
+    <View style={[styles.root, { paddingTop: insets.top }]}>
+      {/* ヘッダー */}
+      <View style={styles.header}>
         <View style={styles.logoRow}>
           <View style={styles.logoIcon}>
-            <IconSymbol name="sparkles" size={18} color="#5B4EFF" />
+            <IconSymbol name="sparkles" size={18} color={COLORS.primary} />
           </View>
           <Text style={styles.logoText}>決断スコア</Text>
         </View>
@@ -76,22 +68,21 @@ export default function HomeScreen() {
             activeOpacity={0.75}
             onPress={() => router.push("/(tabs)/history")}
           >
-            <IconSymbol name="clock.fill" size={17} color="#3C3C43" />
+            <IconSymbol name="clock.fill" size={17} color={COLORS.textPrimary} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.headerIconBtn} activeOpacity={0.75}>
-            <IconSymbol name="person.fill" size={17} color="#3C3C43" />
+            <IconSymbol name="person.fill" size={17} color={COLORS.textPrimary} />
           </TouchableOpacity>
         </View>
       </View>
 
-      {/* メインカード（高さ固定・内部スクロール） */}
+      {/* メインカード */}
       <View style={styles.mainCardOuter}>
         <View style={styles.mainCard}>
-          {/* 空状態 */}
           {projects.length === 0 && (
             <View style={styles.emptyWrap}>
               <View style={styles.mainCardIcon}>
-                <IconSymbol name="checkmark.circle.fill" size={28} color="#5B4EFF" />
+                <IconSymbol name="checkmark.circle.fill" size={28} color={COLORS.primary} />
               </View>
               <Text style={styles.mainCardTitle}>現在の決断はありません</Text>
               <Text style={styles.mainCardSubtitle}>
@@ -100,10 +91,8 @@ export default function HomeScreen() {
             </View>
           )}
 
-          {/* リスト（カード内部のみスクロール） */}
           {projects.length > 0 && (
             <View style={styles.cardScroll}>
-              {/* 進行中 */}
               {inProgress.length > 0 && (
                 <View>
                   <Text style={styles.cardSectionLabel}>進行中の決断</Text>
@@ -115,19 +104,18 @@ export default function HomeScreen() {
                       activeOpacity={0.75}
                     >
                       <View style={styles.cardRowIcon}>
-                        <IconSymbol name="doc.text.fill" size={16} color="#5B4EFF" />
+                        <IconSymbol name="doc.text.fill" size={16} color={COLORS.primary} />
                       </View>
                       <View style={styles.cardRowBody}>
                         <Text style={styles.cardRowTitle} numberOfLines={1}>{item.title}</Text>
                         <Text style={styles.cardRowMeta}>{item.candidates?.length ?? 0}つの選択肢</Text>
                       </View>
-                      <IconSymbol name="chevron.right" size={14} color="#1C1C1E" />
+                      <IconSymbol name="chevron.right" size={14} color={COLORS.textPrimary} />
                     </TouchableOpacity>
                   ))}
                 </View>
               )}
 
-              {/* 完了済み（常に3枠表示・空枠はプレースホルダー） */}
               <View style={inProgress.length > 0 ? styles.cardSectionBorderTop : undefined}>
                 <Text style={styles.cardSectionLabel}>完了した決断</Text>
                 {[0, 1, 2].map((i) => {
@@ -141,13 +129,13 @@ export default function HomeScreen() {
                         activeOpacity={0.75}
                       >
                         <View style={[styles.cardRowIcon, styles.cardRowIconDone]}>
-                          <IconSymbol name="checkmark.circle.fill" size={16} color="#34C759" />
+                          <IconSymbol name="checkmark.circle.fill" size={16} color={COLORS.success} />
                         </View>
                         <View style={styles.cardRowBody}>
                           <Text style={styles.cardRowTitle} numberOfLines={1}>{item.title}</Text>
                           <Text style={styles.cardRowMeta}>{formatDate(item.createdAt)}　完了</Text>
                         </View>
-                        <IconSymbol name="chevron.right" size={14} color="#1C1C1E" />
+                        <IconSymbol name="chevron.right" size={14} color={COLORS.textPrimary} />
                       </TouchableOpacity>
                     );
                   }
@@ -172,7 +160,7 @@ export default function HomeScreen() {
                     activeOpacity={0.75}
                   >
                     <Text style={styles.seeAllText}>すべて見る（{completed.length}件）</Text>
-                    <IconSymbol name="chevron.right" size={13} color="#5B4EFF" />
+                    <IconSymbol name="chevron.right" size={13} color={COLORS.primary} />
                   </TouchableOpacity>
                 )}
               </View>
@@ -181,42 +169,42 @@ export default function HomeScreen() {
         </View>
       </View>
 
-      {/* CTAボタン（固定） */}
+      {/* CTAボタン */}
       <TouchableOpacity style={styles.ctaBtn} onPress={handleNewProject} activeOpacity={0.88}>
         <Text style={styles.ctaBtnText}>＋ 決断を始める</Text>
       </TouchableOpacity>
 
-      {/* 下部グレーセクション（固定・内部スクロール） */}
+      {/* 下部セクション */}
       <View style={styles.bottomSection}>
         <View style={{ paddingTop: 16, paddingBottom: insets.bottom + 16 }}>
-          <TouchableOpacity style={styles.listCardShadow} activeOpacity={0.7}>
+          <TouchableOpacity style={styles.listCard} activeOpacity={0.7}>
             <View style={styles.listCardInner}>
               <View style={styles.listTitleRow}>
-                <Ionicons name="notifications-outline" size={22} color="#1C1C1E" style={styles.listIcon} />
+                <Ionicons name="notifications-outline" size={22} color={COLORS.textPrimary} style={styles.listIcon} />
                 <Text style={styles.listTitle}>お知らせ</Text>
-                <Ionicons name="chevron-forward" size={16} color="#1C1C1E" />
+                <Ionicons name="chevron-forward" size={16} color={COLORS.textPrimary} />
               </View>
               <Text style={styles.listSubtitle}>アップデート情報をお届けします</Text>
             </View>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.listCardShadow} activeOpacity={0.7}>
+          <TouchableOpacity style={styles.listCard} activeOpacity={0.7}>
             <View style={styles.listCardInner}>
               <View style={styles.listTitleRow}>
-                <Ionicons name="information-circle-outline" size={22} color="#1C1C1E" style={styles.listIcon} />
+                <Ionicons name="information-circle-outline" size={22} color={COLORS.textPrimary} style={styles.listIcon} />
                 <Text style={styles.listTitle}>使い方ガイド</Text>
-                <Ionicons name="chevron-forward" size={16} color="#1C1C1E" />
+                <Ionicons name="chevron-forward" size={16} color={COLORS.textPrimary} />
               </View>
               <Text style={styles.listSubtitle}>決断スコアの使い方を確認する</Text>
             </View>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.listCardShadow} activeOpacity={0.7}>
+          <TouchableOpacity style={styles.listCard} activeOpacity={0.7}>
             <View style={styles.listCardInner}>
               <View style={styles.listTitleRow}>
-                <Ionicons name="star-outline" size={22} color="#1C1C1E" style={styles.listIcon} />
+                <Ionicons name="star-outline" size={22} color={COLORS.textPrimary} style={styles.listIcon} />
                 <Text style={styles.listTitle}>プレミアムプラン</Text>
-                <Ionicons name="chevron-forward" size={16} color="#1C1C1E" />
+                <Ionicons name="chevron-forward" size={16} color={COLORS.textPrimary} />
               </View>
               <Text style={styles.listSubtitle}>無制限で決断を作成できます</Text>
             </View>
@@ -230,10 +218,8 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: "#FFD4A8",
+    backgroundColor: COLORS.background,
   },
-
-  // ヘッダー
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -250,14 +236,14 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: "rgba(255,255,255,0.75)",
+    backgroundColor: COLORS.primaryLight,
     alignItems: "center",
     justifyContent: "center",
   },
   logoText: {
     fontSize: 20,
-    fontWeight: "700",
-    color: "#1C1C1E",
+    fontFamily: FLAT_FONTS.bold,
+    color: COLORS.textPrimary,
     letterSpacing: -0.3,
   },
   headerActions: {
@@ -268,29 +254,24 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: COLORS.surface,
+    borderWidth: 1,
+    borderColor: COLORS.border,
     alignItems: "center",
     justifyContent: "center",
   },
-
-  // メインカード（高さ固定）
   mainCardOuter: {
     marginHorizontal: 32,
     marginTop: 24,
     height: 280,
-    borderRadius: 36,
-    shadowColor: "#4A00B4",
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.35,
-    shadowRadius: 16,
-    elevation: 14,
+    borderRadius: RADIUS.lg,
   },
   mainCard: {
     flex: 1,
-    backgroundColor: "rgba(255,255,255,0.72)",
-    borderRadius: 20,
-    borderWidth: 4,
-    borderColor: "#FFFFFF",
+    backgroundColor: COLORS.surface,
+    borderRadius: RADIUS.lg,
+    borderWidth: 1,
+    borderColor: COLORS.border,
     overflow: "hidden",
   },
   cardScroll: {
@@ -306,27 +287,28 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: COLORS.primaryLight,
     alignItems: "center",
     justifyContent: "center",
   },
   mainCardTitle: {
     fontSize: 17,
-    fontWeight: "600",
-    color: "#1C1C1E",
+    fontFamily: FLAT_FONTS.medium,
+    color: COLORS.textPrimary,
     marginTop: 16,
   },
   mainCardSubtitle: {
     fontSize: 13,
-    color: "#4A4A4A",
+    fontFamily: FLAT_FONTS.regular,
+    color: COLORS.textSecondary,
     marginTop: 8,
     textAlign: "center",
     lineHeight: 20,
   },
   cardSectionLabel: {
     fontSize: 12,
-    fontWeight: "600",
-    color: "#8E8E93",
+    fontFamily: FLAT_FONTS.medium,
+    color: COLORS.textSecondary,
     textTransform: "uppercase",
     letterSpacing: 0.5,
     paddingHorizontal: 16,
@@ -334,8 +316,8 @@ const styles = StyleSheet.create({
     paddingBottom: 6,
   },
   cardSectionBorderTop: {
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: "rgba(0,0,0,0.08)",
+    borderTopWidth: 1,
+    borderTopColor: COLORS.border,
   },
   cardRow: {
     flexDirection: "row",
@@ -345,26 +327,27 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   cardRowBorder: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "rgba(0,0,0,0.08)",
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.border,
   },
   cardRowIcon: {
     width: 34,
     height: 34,
-    borderRadius: 8,
-    backgroundColor: "rgba(91,78,255,0.1)",
+    borderRadius: RADIUS.sm,
+    backgroundColor: COLORS.primaryLight,
     alignItems: "center",
     justifyContent: "center",
     flexShrink: 0,
   },
   cardRowIconDone: {
-    backgroundColor: "rgba(52,199,89,0.1)",
+    backgroundColor: "rgba(76,175,130,0.12)",
   },
   cardRowIconPlaceholder: {
     backgroundColor: "rgba(0,0,0,0.04)",
   },
   cardRowTitlePlaceholder: {
     fontSize: 15,
+    fontFamily: FLAT_FONTS.regular,
     color: "#C7C7CC",
     letterSpacing: -0.2,
   },
@@ -374,13 +357,14 @@ const styles = StyleSheet.create({
   },
   cardRowTitle: {
     fontSize: 15,
-    fontWeight: "500",
-    color: "#1C1C1E",
+    fontFamily: FLAT_FONTS.medium,
+    color: COLORS.textPrimary,
     letterSpacing: -0.2,
   },
   cardRowMeta: {
     fontSize: 12,
-    color: "#8E8E93",
+    fontFamily: FLAT_FONTS.regular,
+    color: COLORS.textSecondary,
   },
   seeAllBtn: {
     flexDirection: "row",
@@ -388,52 +372,45 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingVertical: 10,
     gap: 4,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: "rgba(0,0,0,0.08)",
+    borderTopWidth: 1,
+    borderTopColor: COLORS.border,
   },
   seeAllText: {
     fontSize: 14,
-    fontWeight: "600",
-    color: "#5B4EFF",
+    fontFamily: FLAT_FONTS.medium,
+    color: COLORS.primary,
   },
-
-  // CTAボタン
   ctaBtn: {
     alignSelf: "center",
-    backgroundColor: "#5B4EFF",
-    borderRadius: 20,
+    backgroundColor: COLORS.primary,
+    borderRadius: RADIUS.full,
     paddingVertical: 14,
     paddingHorizontal: 56,
     marginTop: 16,
   },
   ctaBtnText: {
     fontSize: 17,
-    fontWeight: "600",
+    fontFamily: FLAT_FONTS.medium,
     color: "#FFFFFF",
   },
-
-  // 下部グレーセクション
   bottomSection: {
-    backgroundColor: "#F2F2F7",
+    backgroundColor: COLORS.background,
     marginTop: 16,
     flex: 1,
   },
-  listCardShadow: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 20,
+  listCard: {
+    backgroundColor: COLORS.surface,
+    borderRadius: RADIUS.lg,
     marginHorizontal: 24,
     marginBottom: 8,
-    shadowColor: "#000000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    elevation: 2,
+    borderWidth: 1,
+    borderColor: COLORS.border,
   },
   listCardInner: {
-    borderRadius: 20,
+    borderRadius: RADIUS.lg,
     paddingVertical: 14,
     paddingHorizontal: 16,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: COLORS.surface,
     overflow: "hidden",
     flexDirection: "column",
   },
@@ -447,12 +424,13 @@ const styles = StyleSheet.create({
   },
   listTitle: {
     fontSize: 17,
-    fontWeight: "600",
-    color: "#1C1C1E",
+    fontFamily: FLAT_FONTS.medium,
+    color: COLORS.textPrimary,
     flex: 1,
   },
   listSubtitle: {
     fontSize: 12,
-    color: "#8E8E93",
+    fontFamily: FLAT_FONTS.regular,
+    color: COLORS.textSecondary,
   },
 });

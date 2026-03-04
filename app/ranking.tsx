@@ -14,10 +14,10 @@ import Animated, {
 } from "react-native-reanimated";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import DraggableFlatList, { RenderItemParams } from "react-native-draggable-flatlist";
-import { Ionicons } from "@expo/vector-icons";
 
 import { ScreenContainer } from "@/components/screen-container";
 import { IconSymbol } from "@/components/ui/icon-symbol";
+import { COLORS, FLAT_FONTS, RADIUS } from "@/constants/theme";
 
 export default function RankingScreen() {
   const router = useRouter();
@@ -108,18 +108,16 @@ export default function RankingScreen() {
 
   const renderItem = useCallback(({ item, drag, isActive, getIndex }: RenderItemParams<string>) => {
     const index = getIndex() ?? 0;
-    const isFirst = index === 0;
-    const isLastItem = index === currentOrder.length - 1;
     return (
       <TouchableOpacity
         onLongPress={drag}
         delayLongPress={150}
         activeOpacity={0.85}
         style={{
-          backgroundColor: isActive ? '#F0EEFF' : '#FFFFFF',
-          borderWidth: 2,
-          borderColor: isActive ? '#5B4EFF' : 'transparent',
-          borderRadius: 12,
+          backgroundColor: isActive ? COLORS.primaryLight : COLORS.surface,
+          borderWidth: isActive ? 2 : 1,
+          borderColor: isActive ? COLORS.primary : COLORS.border,
+          borderRadius: RADIUS.md,
           padding: 16,
           marginBottom: 8,
           flexDirection: 'row',
@@ -129,8 +127,8 @@ export default function RankingScreen() {
         <View style={{ width: 11, marginRight: 8 }}>
           {[0, 1, 2].map((row) => (
             <View key={row} style={{ flexDirection: 'row', marginBottom: row < 2 ? 5 : 0 }}>
-              <View style={{ width: 3, height: 3, borderRadius: 1.5, backgroundColor: '#D1D1D6' }} />
-              <View style={{ width: 3, height: 3, borderRadius: 1.5, backgroundColor: '#D1D1D6', marginLeft: 3 }} />
+              <View style={{ width: 3, height: 3, borderRadius: 1.5, backgroundColor: COLORS.textSecondary }} />
+              <View style={{ width: 3, height: 3, borderRadius: 1.5, backgroundColor: COLORS.textSecondary, marginLeft: 3 }} />
             </View>
           ))}
         </View>
@@ -150,7 +148,7 @@ export default function RankingScreen() {
             <IconSymbol
               name="chevron.up"
               size={14}
-              color={index === 0 ? 'transparent' : '#8E8E93'}
+              color={index === 0 ? 'transparent' : COLORS.textSecondary}
             />
           </TouchableOpacity>
           <View style={styles.stepperDivider} />
@@ -162,7 +160,7 @@ export default function RankingScreen() {
             <IconSymbol
               name="chevron.down"
               size={14}
-              color={index === candidates.length - 1 ? 'transparent' : '#8E8E93'}
+              color={index === candidates.length - 1 ? 'transparent' : COLORS.textSecondary}
             />
           </TouchableOpacity>
         </View>
@@ -172,14 +170,14 @@ export default function RankingScreen() {
 
   return (
     <ScreenContainer edges={["top", "left", "right"]} containerClassName="bg-background">
-      <View style={{ flex: 1, backgroundColor: '#F2F2F7' }}>
+      <View style={{ flex: 1, backgroundColor: COLORS.background }}>
         <Animated.View entering={FadeIn.duration(300)} style={styles.navHeader}>
           <TouchableOpacity
             onPress={handleBack}
             style={styles.navBackBtn}
             activeOpacity={0.7}
           >
-            <IconSymbol name="chevron.left" size={20} color="#5B4EFF" />
+            <IconSymbol name="chevron.left" size={20} color={COLORS.primary} />
             <Text style={styles.navBackText}>戻る</Text>
           </TouchableOpacity>
           <Text style={styles.navTitle}>順位をつける</Text>
@@ -188,14 +186,14 @@ export default function RankingScreen() {
 
         <Animated.View key={currentCriterionIndex} entering={FadeIn.duration(300)}>
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginHorizontal: 16, marginTop: 16, marginBottom: 4 }}>
-            <Text style={{ fontSize: 22, fontWeight: '700', color: '#1C1C1E' }}>
+            <Text style={{ fontSize: 22, fontFamily: FLAT_FONTS.bold, color: COLORS.textPrimary }}>
               {currentCriterion}
             </Text>
-            <Text style={{ fontSize: 15, color: '#8E8E93', fontWeight: '500' }}>
+            <Text style={{ fontSize: 15, fontFamily: FLAT_FONTS.medium, color: COLORS.textSecondary }}>
               {currentCriterionIndex + 1} / {criteria.length}
             </Text>
           </View>
-          <Text style={{ fontSize: 13, color: '#8E8E93', marginHorizontal: 16, marginBottom: 16 }}>
+          <Text style={{ fontSize: 13, fontFamily: FLAT_FONTS.regular, color: COLORS.textSecondary, marginHorizontal: 16, marginBottom: 16 }}>
             「{currentCriterion}」が優れていると思う順に並べてください。{'\n'}長押しでドラッグ、またはボタンで並び替えできます。
           </Text>
         </Animated.View>
@@ -217,20 +215,20 @@ export default function RankingScreen() {
               onPress={handleBack}
               style={{ alignItems: 'center', paddingVertical: 12 }}
             >
-              <Text style={{ fontSize: 14, color: '#5B4EFF' }}>← 前の項目に戻る</Text>
+              <Text style={{ fontSize: 14, fontFamily: FLAT_FONTS.medium, color: COLORS.primary }}>← 前の項目に戻る</Text>
             </TouchableOpacity>
           )}
           <TouchableOpacity
             onPress={handleNext}
             activeOpacity={0.85}
             style={{
-              backgroundColor: '#5B4EFF',
-              borderRadius: 20,
+              backgroundColor: COLORS.primary,
+              borderRadius: RADIUS.full,
               paddingVertical: 16,
               alignItems: 'center',
             }}
           >
-            <Text style={{ color: '#FFFFFF', fontSize: 17, fontWeight: '600' }}>
+            <Text style={{ color: '#FFFFFF', fontSize: 17, fontFamily: FLAT_FONTS.medium }}>
               {isLast ? '結果を見る' : '次の評価項目へ'}
             </Text>
           </TouchableOpacity>
@@ -246,9 +244,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 12,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "#E5E5EA",
-    backgroundColor: "#FFFFFF",
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.border,
+    backgroundColor: COLORS.surface,
   },
   navBackBtn: {
     flexDirection: "row",
@@ -260,14 +258,14 @@ const styles = StyleSheet.create({
   },
   navBackText: {
     fontSize: 16,
-    color: "#5B4EFF",
-    fontWeight: "500",
+    fontFamily: FLAT_FONTS.medium,
+    color: COLORS.primary,
   },
   navTitle: {
     flex: 1,
     fontSize: 17,
-    fontWeight: "700",
-    color: "#1C1C1E",
+    fontFamily: FLAT_FONTS.bold,
+    color: COLORS.textPrimary,
     textAlign: "center",
   },
   navSpacer: {
@@ -284,19 +282,19 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: '#5B4EFF',
+    backgroundColor: COLORS.primary,
     marginRight: 10,
   },
   rankText: {
     fontSize: 15,
-    fontWeight: "700",
+    fontFamily: FLAT_FONTS.bold,
     color: '#FFFFFF',
   },
   itemName: {
     flex: 1,
     fontSize: 16,
-    fontWeight: "600",
-    color: "#1C1C1E",
+    fontFamily: FLAT_FONTS.medium,
+    color: COLORS.textPrimary,
     paddingLeft: 4,
   },
   bottomBar: {
@@ -304,27 +302,13 @@ const styles = StyleSheet.create({
     paddingTop: 8,
     paddingBottom: 32,
   },
-  arrowTextBtn: {
-    width: 28,
-    height: 28,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#F2F2F7',
-    borderRadius: 6,
-  },
-  arrowBtnDisabled: {
-    opacity: 0.3,
-  },
-  arrowText: {
-    fontSize: 18,
-    color: '#AEAEB2',
-    fontWeight: '400',
-  },
   stepperContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F2F2F7',
-    borderRadius: 8,
+    backgroundColor: COLORS.background,
+    borderRadius: RADIUS.sm,
+    borderWidth: 1,
+    borderColor: COLORS.border,
     overflow: 'hidden',
   },
   stepperBtn: {
@@ -334,11 +318,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   stepperDivider: {
-    width: StyleSheet.hairlineWidth,
+    width: 1,
     height: 20,
-    backgroundColor: '#C7C7CC',
-  },
-  arrowTextDisabled: {
-    color: '#D1D1D6',
+    backgroundColor: COLORS.border,
   },
 });

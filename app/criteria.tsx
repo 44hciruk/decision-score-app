@@ -14,10 +14,10 @@ import * as Haptics from "expo-haptics";
 import Animated, { FadeInDown, FadeIn } from "react-native-reanimated";
 
 import { ScreenContainer } from "@/components/screen-container";
-import { GlassCard } from "@/components/glass-card";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useProjectContext } from "@/lib/project-context";
 import { PremiumModal } from "@/components/premium-modal";
+import { COLORS, FLAT_FONTS, RADIUS } from "@/constants/theme";
 
 const TEMPLATE_CRITERIA: Record<string, string[]> = {
   restaurant:    ["価格", "味", "雰囲気", "アクセス", "接客"],
@@ -114,7 +114,7 @@ export default function CriteriaScreen() {
               style={styles.navBackBtn}
               activeOpacity={0.7}
             >
-              <IconSymbol name="chevron.left" size={20} color="#5B4EFF" />
+              <IconSymbol name="chevron.left" size={20} color={COLORS.primary} />
               <Text style={styles.navBackText}>戻る</Text>
             </TouchableOpacity>
             <Text style={styles.navTitle}>評価項目</Text>
@@ -122,11 +122,11 @@ export default function CriteriaScreen() {
           </Animated.View>
 
           <View style={{ alignItems: 'center', marginTop: 16, marginBottom: 4 }}>
-            <Text style={{ fontSize: 13, color: '#8E8E93' }}>ステップ 3 / 3</Text>
+            <Text style={{ fontSize: 13, fontFamily: FLAT_FONTS.regular, color: COLORS.textSecondary }}>ステップ 3 / 3</Text>
           </View>
           <View style={{ marginTop: 4, marginBottom: 16, marginHorizontal: 32 }}>
-            <View style={{ height: 4, backgroundColor: '#E5E5EA', borderRadius: 2 }}>
-              <View style={{ width: '100%', height: 4, backgroundColor: '#5B4EFF', borderRadius: 2 }} />
+            <View style={{ height: 4, backgroundColor: COLORS.border, borderRadius: 2 }}>
+              <View style={{ width: '100%', height: 4, backgroundColor: COLORS.primary, borderRadius: 2 }} />
             </View>
           </View>
 
@@ -137,7 +137,7 @@ export default function CriteriaScreen() {
           >
             <Animated.View entering={FadeInDown.delay(100).duration(300)}>
               <Text style={styles.sectionTitle}>何を基準に比較しますか？</Text>
-              <Text style={{ fontSize: 13, color: '#8E8E93', marginBottom: 12 }}>
+              <Text style={{ fontSize: 13, fontFamily: FLAT_FONTS.regular, color: COLORS.textSecondary, marginBottom: 12 }}>
                 大事にしたいポイントを入力してください（例：価格、立地）
               </Text>
               {limits.criteria < Infinity && (
@@ -157,9 +157,9 @@ export default function CriteriaScreen() {
                 key={index}
                 entering={FadeInDown.delay(150 + index * 60).duration(300)}
               >
-                <GlassCard style={styles.inputCard}>
+                <View style={styles.inputCard}>
                   <View style={styles.inputRow}>
-                    <View style={[styles.indexBadge, { backgroundColor: '#5B4EFF' }]}>
+                    <View style={styles.indexBadge}>
                       <Text style={styles.indexText}>{index + 1}</Text>
                     </View>
                     <TextInput
@@ -178,11 +178,11 @@ export default function CriteriaScreen() {
                         activeOpacity={0.7}
                         hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
                       >
-                        <IconSymbol name="xmark" size={16} color="#DC2626" />
+                        <IconSymbol name="xmark" size={16} color={COLORS.danger} />
                       </TouchableOpacity>
                     )}
                   </View>
-                </GlassCard>
+                </View>
               </Animated.View>
             ))}
 
@@ -192,7 +192,7 @@ export default function CriteriaScreen() {
                 activeOpacity={0.75}
                 style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingVertical: 14 }}
               >
-                <IconSymbol name="plus" size={18} color="#5B4EFF" />
+                <IconSymbol name="plus" size={18} color={COLORS.primary} />
                 <Text style={styles.addBtnText}>項目を追加</Text>
               </TouchableOpacity>
             </Animated.View>
@@ -204,14 +204,14 @@ export default function CriteriaScreen() {
               disabled={!canProceed}
               activeOpacity={0.85}
               style={{
-                backgroundColor: isValid ? '#5B4EFF' : 'rgba(91, 78, 255, 0.45)',
-                borderRadius: 20,
+                backgroundColor: isValid ? COLORS.primary : COLORS.primaryLight,
+                borderRadius: RADIUS.full,
                 paddingVertical: 16,
                 alignItems: 'center',
                 alignSelf: 'stretch',
               }}
             >
-              <Text style={{ color: '#FFFFFF', fontSize: 17, fontWeight: '600' }}>
+              <Text style={{ color: isValid ? '#FFFFFF' : COLORS.primary, fontSize: 17, fontFamily: FLAT_FONTS.medium }}>
                 スコアリング開始
               </Text>
             </TouchableOpacity>
@@ -240,9 +240,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 12,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "#E5E5EA",
-    backgroundColor: "#FFFFFF",
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.border,
+    backgroundColor: COLORS.surface,
   },
   navBackBtn: {
     flexDirection: "row",
@@ -254,63 +254,18 @@ const styles = StyleSheet.create({
   },
   navBackText: {
     fontSize: 16,
-    color: "#5B4EFF",
-    fontWeight: "500",
+    fontFamily: FLAT_FONTS.medium,
+    color: COLORS.primary,
   },
   navTitle: {
     flex: 1,
     fontSize: 17,
-    fontWeight: "700",
-    color: "#1C1C1E",
+    fontFamily: FLAT_FONTS.bold,
+    color: COLORS.textPrimary,
     textAlign: "center",
   },
   navSpacer: {
     minWidth: 80,
-  },
-  stepRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 20,
-    marginBottom: 8,
-  },
-  stepItem: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  stepDot: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: "#5B4EFF",
-    justifyContent: "center",
-    alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#5B4EFF",
-  },
-  stepDotActive: {
-    backgroundColor: "#5B4EFF",
-    borderColor: "#5B4EFF",
-  },
-  stepNumActive: {
-    fontSize: 12,
-    fontWeight: "700",
-    color: "#FFFFFF",
-  },
-  stepLine: {
-    width: 40,
-    height: 2,
-    backgroundColor: "rgba(109, 40, 217, 0.1)",
-    marginHorizontal: 4,
-  },
-  stepLineActive: {
-    backgroundColor: "#5B4EFF",
-  },
-  stepLabel: {
-    textAlign: "center",
-    fontSize: 13,
-    color: "#8E8E93",
-    marginBottom: 24,
   },
   scrollContent: {
     paddingHorizontal: 20,
@@ -318,8 +273,8 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 20,
-    fontWeight: "700",
-    color: "#1C1C1E",
+    fontFamily: FLAT_FONTS.bold,
+    color: COLORS.textPrimary,
     marginBottom: 8,
     letterSpacing: -0.3,
   },
@@ -328,22 +283,27 @@ const styles = StyleSheet.create({
   },
   limitText: {
     fontSize: 12,
-    color: "#8E8E93",
+    fontFamily: FLAT_FONTS.regular,
+    color: COLORS.textSecondary,
     marginBottom: 6,
   },
   limitBarBg: {
     height: 4,
     borderRadius: 2,
     overflow: "hidden",
-    backgroundColor: "#EDEDFF",
+    backgroundColor: COLORS.primaryLight,
   },
   limitBarFill: {
     height: "100%",
     borderRadius: 2,
-    backgroundColor: "#5B4EFF",
+    backgroundColor: COLORS.primary,
   },
   inputCard: {
     marginBottom: 10,
+    backgroundColor: COLORS.surface,
+    borderRadius: RADIUS.md,
+    borderWidth: 1,
+    borderColor: COLORS.border,
   },
   inputRow: {
     flexDirection: "row",
@@ -359,80 +319,36 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: COLORS.primary,
   },
   indexText: {
     fontSize: 15,
-    fontWeight: "700",
+    fontFamily: FLAT_FONTS.bold,
     color: "#FFFFFF",
   },
   input: {
     flex: 1,
     fontSize: 16,
-    color: "#1C1C1E",
-    fontWeight: "500",
+    fontFamily: FLAT_FONTS.medium,
+    color: COLORS.textPrimary,
     paddingVertical: 4,
   },
   removeBtn: {
     width: 32,
     height: 32,
-    borderRadius: 8,
-    backgroundColor: "#FEF2F2",
+    borderRadius: RADIUS.sm,
+    backgroundColor: "rgba(255,82,82,0.08)",
     justifyContent: "center",
     alignItems: "center",
-  },
-  addBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 10,
-    paddingVertical: 18,
-    marginTop: 4,
-    borderRadius: 14,
-    borderWidth: 1.5,
-    borderColor: "#EDEDFF",
-    borderStyle: "dashed",
-    backgroundColor: "#FAFAFE",
-    minHeight: 56,
-  },
-  addBtnIcon: {
-    width: 28,
-    height: 28,
-    borderRadius: 8,
-    backgroundColor: "#EDEDFF",
-    alignItems: "center",
-    justifyContent: "center",
   },
   addBtnText: {
     fontSize: 15,
-    fontWeight: "600",
-    color: "#5B4EFF",
+    fontFamily: FLAT_FONTS.medium,
+    color: COLORS.primary,
   },
   bottomBar: {
     paddingHorizontal: 20,
     paddingVertical: 12,
     paddingBottom: 32,
-  },
-  nextBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 18,
-    borderRadius: 12,
-    backgroundColor: "#5B4EFF",
-    gap: 8,
-    minHeight: 56,
-  },
-  nextBtnDisabled: {
-    backgroundColor: "#EDEDFF",
-    shadowOpacity: 0,
-    elevation: 0,
-  },
-  nextBtnText: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#FFFFFF",
-  },
-  nextBtnTextDisabled: {
-    color: "#A89EFF",
   },
 });
