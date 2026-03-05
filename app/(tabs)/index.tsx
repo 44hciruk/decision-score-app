@@ -164,7 +164,7 @@ export default function HomeScreen() {
                     width: 36,
                     height: 36,
                     borderRadius: 18,
-                    borderWidth: 2,
+                    borderWidth: 1,
                     borderColor: '#CCCCCC',
                     borderStyle: 'dashed',
                     alignItems: 'center',
