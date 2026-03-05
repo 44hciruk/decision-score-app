@@ -18,7 +18,7 @@ export const COLORS = {
   secondary: '#4A90D9',
   accent: '#FF8C42',
   background: '#FFFFFF',
-  surface: '#F0F0F0',
+  surface: '#F9F9F9',
   surfaceWhite: '#FFFFFF',
   border: '#E0E0E0',
   textPrimary: '#1A1A1A',
@@ -51,12 +51,4 @@ export const SHADOW_NONE = {
   shadowOpacity: 0,
   shadowRadius: 0,
   elevation: 0,
-};
-
-export const SHADOW_BUTTON = {
-  shadowColor: '#1A4FA0',
-  shadowOffset: { width: 0, height: 6 },
-  shadowOpacity: 0.35,
-  shadowRadius: 8,
-  elevation: 8,
 };

@@ -13,21 +13,24 @@ import { Ionicons } from "@expo/vector-icons";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { loadProjects, type Project } from "@/lib/storage";
 import * as Haptics from "expo-haptics";
-import { COLORS, FONTS, RADIUS, SHADOW_BUTTON } from "@/constants/theme";
+import { COLORS, FONTS, RADIUS } from "@/constants/theme";
 
-// ─── メインボタン（後でSVGイラストに差し替え可能） ─────────
+// ─── メインボタン（積層構造：影レイヤー＋ボタンレイヤー） ─────────
 function MainButton({ onPress }: { onPress: () => void }) {
   return (
-    <TouchableOpacity
-      style={styles.mainCircle}
-      onPress={onPress}
-      activeOpacity={0.85}
-    >
-      <View style={styles.mainCircleContent}>
-        <Text style={styles.mainCirclePlus}>＋</Text>
+    <View style={styles.mainCircleWrapper}>
+      {/* 影レイヤー（濃い青・下にずらす） */}
+      <View style={styles.mainCircleShadow} />
+      {/* メインボタン（青・手前レイヤー） */}
+      <TouchableOpacity
+        style={styles.mainCircle}
+        onPress={onPress}
+        activeOpacity={0.85}
+      >
+        <Text style={styles.mainCirclePlus}>+</Text>
         <Text style={styles.mainCircleLabel}>決断を始める</Text>
-      </View>
-    </TouchableOpacity>
+      </TouchableOpacity>
+    </View>
   );
 }
 
@@ -239,22 +242,31 @@ const styles = StyleSheet.create({
     marginTop: 12,
     marginBottom: 28,
   },
+  mainCircleWrapper: {
+    position: "relative",
+    width: 200,
+    height: 208,
+    alignItems: "center",
+  },
+  mainCircleShadow: {
+    position: "absolute",
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    backgroundColor: '#1A4FA0',
+    top: 8,
+  },
   mainCircle: {
     width: 200,
     height: 200,
     borderRadius: 100,
-    backgroundColor: COLORS.primary,
+    backgroundColor: '#1E6FD9',
     alignItems: "center",
     justifyContent: "center",
-    borderBottomWidth: 4,
-    borderBottomColor: '#1A4FA0',
-    ...SHADOW_BUTTON,
-  },
-  mainCircleContent: {
-    alignItems: "center",
   },
   mainCirclePlus: {
     fontSize: 48,
+    fontFamily: FONTS.medium,
     color: "#FFFFFF",
     lineHeight: 56,
   },
