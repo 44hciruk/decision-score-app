@@ -128,7 +128,7 @@ export default function HomeScreen() {
                   style={[styles.savedRow, i < 2 && styles.savedRowBorder]}
                 >
                   <View style={styles.savedRowIconPlaceholder}>
-                    <IconSymbol name="clock" size={16} color="#D4C4B0" />
+                    <IconSymbol name="clock" size={16} color="#CCCCCC" />
                   </View>
                   <View style={styles.savedRowBody}>
                     <Text style={styles.savedRowPlaceholder}>決断を追加しよう</Text>
@@ -328,7 +328,7 @@ const styles = StyleSheet.create({
   savedRowPlaceholder: {
     fontSize: 15,
     fontFamily: FONTS.regular,
-    color: "#D4C4B0",
+    color: "#CCCCCC",
     letterSpacing: -0.2,
   },
   seeAllBtn: {

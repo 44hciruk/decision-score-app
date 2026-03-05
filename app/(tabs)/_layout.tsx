@@ -56,7 +56,7 @@ export default function TabLayout() {
         tabBarShowLabel: false,
         tabBarActiveTintColor: COLORS.primary,
         tabBarStyle: {
-          backgroundColor: COLORS.surface,
+          backgroundColor: COLORS.background,
           paddingBottom: Platform.OS === "ios" ? 24 : 12,
           paddingTop: 8,
           height: Platform.OS === "ios" ? 80 : 64,

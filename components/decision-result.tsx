@@ -361,7 +361,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   tabItemActive: {
-    backgroundColor: COLORS.surface,
+    backgroundColor: COLORS.surfaceWhite,
   },
   tabText: {
     fontSize: 14,
