@@ -137,8 +137,15 @@ export default function HomeScreen() {
                     onPress={() => handleOpenProject(item)}
                     activeOpacity={0.75}
                   >
-                    <View style={styles.savedRowIconDone}>
-                      <IconSymbol name="checkmark.circle.fill" size={16} color={COLORS.success} />
+                    <View style={{
+                      width: 36,
+                      height: 36,
+                      borderRadius: 18,
+                      backgroundColor: '#E8F5EE',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                      <Ionicons name="checkmark" size={18} color="#4CAF82" />
                     </View>
                     <View style={styles.savedRowBody}>
                       <Text style={styles.savedRowTitle} numberOfLines={1}>{item.title}</Text>
@@ -153,7 +160,17 @@ export default function HomeScreen() {
                   key={`placeholder-${i}`}
                   style={[styles.savedRow, i < 2 && styles.savedRowBorder]}
                 >
-                  <View style={styles.savedRowIconPlaceholder}>
+                  <View style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: 18,
+                    borderWidth: 2,
+                    borderColor: '#CCCCCC',
+                    borderStyle: 'dashed',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: 'transparent',
+                  }}>
                     <Ionicons name="time-outline" size={18} color="#CCCCCC" />
                   </View>
                   <View style={styles.savedRowBody}>
@@ -305,27 +322,6 @@ const styles = StyleSheet.create({
   savedRowBorder: {
     borderBottomWidth: 1,
     borderBottomColor: COLORS.border,
-  },
-  savedRowIconDone: {
-    width: 34,
-    height: 34,
-    borderRadius: RADIUS.sm,
-    backgroundColor: "rgba(76,175,130,0.12)",
-    alignItems: "center",
-    justifyContent: "center",
-    flexShrink: 0,
-  },
-  savedRowIconPlaceholder: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    borderWidth: 2,
-    borderColor: '#CCCCCC',
-    borderStyle: 'dashed',
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: 'transparent',
-    flexShrink: 0,
   },
   savedRowBody: {
     flex: 1,
