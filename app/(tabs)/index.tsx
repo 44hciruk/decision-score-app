@@ -15,17 +15,40 @@ import { loadProjects, type Project } from "@/lib/storage";
 import * as Haptics from "expo-haptics";
 import { COLORS, FONTS, RADIUS } from "@/constants/theme";
 
-// ─── メインボタン（積層構造：影レイヤー＋ボタンレイヤー） ─────────
+// ─── メインボタン（積層構造：押すと沈む演出） ─────────
 function MainButton({ onPress }: { onPress: () => void }) {
+  const [isPressed, setIsPressed] = useState(false);
   return (
-    <View style={styles.mainCircleWrapper}>
-      {/* 影レイヤー（濃い青・下にずらす） */}
-      <View style={styles.mainCircleShadow} />
-      {/* メインボタン（青・手前レイヤー） */}
+    <View style={{ position: 'relative', width: 200, height: 208, alignSelf: 'center' }}>
+      {/* 影レイヤー（押していない時のみ表示） */}
+      {!isPressed && (
+        <View style={{
+          position: 'absolute',
+          width: 200,
+          height: 200,
+          borderRadius: 100,
+          backgroundColor: '#1A4FA0',
+          top: 8,
+          left: 0,
+        }} />
+      )}
+      {/* メインボタン */}
       <TouchableOpacity
-        style={styles.mainCircle}
+        style={{
+          position: 'absolute',
+          width: 200,
+          height: 200,
+          borderRadius: 100,
+          backgroundColor: '#1E6FD9',
+          alignItems: 'center',
+          justifyContent: 'center',
+          top: isPressed ? 8 : 0,
+          left: 0,
+        }}
+        onPressIn={() => setIsPressed(true)}
+        onPressOut={() => setIsPressed(false)}
         onPress={onPress}
-        activeOpacity={0.85}
+        activeOpacity={1}
       >
         <Text style={styles.mainCirclePlus}>+</Text>
         <Text style={styles.mainCircleLabel}>決断を始める</Text>
@@ -241,28 +264,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 12,
     marginBottom: 28,
-  },
-  mainCircleWrapper: {
-    position: "relative",
-    width: 200,
-    height: 208,
-    alignItems: "center",
-  },
-  mainCircleShadow: {
-    position: "absolute",
-    width: 200,
-    height: 200,
-    borderRadius: 100,
-    backgroundColor: '#1A4FA0',
-    top: 8,
-  },
-  mainCircle: {
-    width: 200,
-    height: 200,
-    borderRadius: 100,
-    backgroundColor: '#1E6FD9',
-    alignItems: "center",
-    justifyContent: "center",
   },
   mainCirclePlus: {
     fontSize: 48,
