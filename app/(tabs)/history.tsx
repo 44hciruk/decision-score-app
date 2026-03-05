@@ -228,8 +228,6 @@ const styles = StyleSheet.create({
     height: 72,
     borderRadius: 36,
     backgroundColor: COLORS.surface,
-    borderWidth: 1,
-    borderColor: COLORS.border,
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 4,
@@ -250,8 +248,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.surface,
     borderRadius: RADIUS.lg,
     overflow: "hidden",
-    borderWidth: 1,
-    borderColor: COLORS.border,
   },
   sectionLabel: {
     fontSize: 12,

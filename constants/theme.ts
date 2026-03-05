@@ -13,14 +13,14 @@ export {
 
 // ─── フラットデザイン トークン ────────────────────────────
 export const COLORS = {
-  primary: '#FF8C42',
-  primaryLight: '#FFF0E4',
-  secondary: '#FFD166',
-  accent: '#FF6B9D',
+  primary: '#1E6FD9',
+  primaryLight: '#E8F0FB',
+  secondary: '#4A90D9',
+  accent: '#FF8C42',
   background: '#FFFFFF',
-  surface: '#F5F5F5',
+  surface: '#F0F0F0',
   surfaceWhite: '#FFFFFF',
-  border: '#E8E8E8',
+  border: '#E0E0E0',
   textPrimary: '#1A1A1A',
   textSecondary: '#888888',
   success: '#4CAF82',
@@ -51,4 +51,12 @@ export const SHADOW_NONE = {
   shadowOpacity: 0,
   shadowRadius: 0,
   elevation: 0,
+};
+
+export const SHADOW_BUTTON = {
+  shadowColor: '#1A4FA0',
+  shadowOffset: { width: 0, height: 6 },
+  shadowOpacity: 0.35,
+  shadowRadius: 8,
+  elevation: 8,
 };

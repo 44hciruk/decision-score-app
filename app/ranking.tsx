@@ -115,8 +115,8 @@ export default function RankingScreen() {
         activeOpacity={0.85}
         style={{
           backgroundColor: isActive ? COLORS.primaryLight : COLORS.surface,
-          borderWidth: isActive ? 2 : 1,
-          borderColor: isActive ? COLORS.primary : COLORS.border,
+          borderWidth: isActive ? 2 : 0,
+          borderColor: isActive ? COLORS.primary : 'transparent',
           borderRadius: RADIUS.md,
           padding: 16,
           marginBottom: 8,

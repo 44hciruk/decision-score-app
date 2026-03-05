@@ -225,8 +225,6 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     backgroundColor: COLORS.surface,
     borderRadius: RADIUS.lg,
-    borderWidth: 1,
-    borderColor: COLORS.border,
   },
   cardHeader: {
     flexDirection: "row",
@@ -240,8 +238,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primaryLight,
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 1,
-    borderColor: COLORS.border,
   },
   cardHeaderText: {
     flex: 1,
@@ -314,8 +310,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primaryLight,
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 1,
-    borderColor: COLORS.border,
   },
   infoRow: {
     flexDirection: "row",
@@ -376,8 +370,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 16,
-    borderWidth: 1,
-    borderColor: COLORS.border,
   },
   modalHeading: {
     fontSize: 24,
@@ -408,8 +400,6 @@ const styles = StyleSheet.create({
   pricingCard: {
     flex: 1,
     borderRadius: RADIUS.md,
-    borderWidth: 1,
-    borderColor: COLORS.border,
     padding: 16,
     alignItems: "center",
     backgroundColor: COLORS.surface,

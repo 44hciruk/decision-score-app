@@ -271,8 +271,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     backgroundColor: COLORS.surface,
     borderRadius: RADIUS.md,
-    borderWidth: 1,
-    borderColor: COLORS.border,
   },
   inputRow: {
     flexDirection: "row",

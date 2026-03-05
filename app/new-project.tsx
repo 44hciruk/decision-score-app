@@ -229,8 +229,6 @@ const styles = StyleSheet.create({
     marginBottom: 28,
   },
   input: {
-    borderWidth: 1,
-    borderColor: COLORS.border,
     borderRadius: RADIUS.md,
     paddingHorizontal: 16,
     paddingVertical: 14,
@@ -255,7 +253,7 @@ const styles = StyleSheet.create({
     borderRadius: RADIUS.md,
     backgroundColor: COLORS.surface,
     borderWidth: 2,
-    borderColor: COLORS.border,
+    borderColor: 'transparent',
     position: "relative",
   },
   templateCardSelected: {

@@ -13,7 +13,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { loadProjects, type Project } from "@/lib/storage";
 import * as Haptics from "expo-haptics";
-import { COLORS, FONTS, RADIUS } from "@/constants/theme";
+import { COLORS, FONTS, RADIUS, SHADOW_BUTTON } from "@/constants/theme";
 
 // ─── メインボタン（後でSVGイラストに差し替え可能） ─────────
 function MainButton({ onPress }: { onPress: () => void }) {
@@ -128,7 +128,7 @@ export default function HomeScreen() {
                   style={[styles.savedRow, i < 2 && styles.savedRowBorder]}
                 >
                   <View style={styles.savedRowIconPlaceholder}>
-                    <IconSymbol name="clock" size={16} color="#CCCCCC" />
+                    <Ionicons name="time-outline" size={18} color="#CCCCCC" />
                   </View>
                   <View style={styles.savedRowBody}>
                     <Text style={styles.savedRowPlaceholder}>決断を追加しよう</Text>
@@ -246,6 +246,9 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primary,
     alignItems: "center",
     justifyContent: "center",
+    borderBottomWidth: 4,
+    borderBottomColor: '#1A4FA0',
+    ...SHADOW_BUTTON,
   },
   mainCircleContent: {
     alignItems: "center",
@@ -277,8 +280,6 @@ const styles = StyleSheet.create({
   savedCard: {
     backgroundColor: COLORS.surface,
     borderRadius: RADIUS.lg,
-    borderWidth: 1,
-    borderColor: COLORS.border,
     overflow: "hidden",
   },
   savedRow: {
@@ -302,12 +303,15 @@ const styles = StyleSheet.create({
     flexShrink: 0,
   },
   savedRowIconPlaceholder: {
-    width: 34,
-    height: 34,
-    borderRadius: RADIUS.sm,
-    backgroundColor: COLORS.primaryLight,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    borderWidth: 2,
+    borderColor: '#CCCCCC',
+    borderStyle: 'dashed',
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: 'transparent',
     flexShrink: 0,
   },
   savedRowBody: {
@@ -352,8 +356,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.surface,
     borderRadius: RADIUS.lg,
     marginBottom: 8,
-    borderWidth: 1,
-    borderColor: COLORS.border,
   },
   infoCardInner: {
     flexDirection: "row",

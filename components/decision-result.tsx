@@ -335,9 +335,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: RADIUS.md,
-    borderWidth: 1,
     backgroundColor: COLORS.success + '15',
-    borderColor: COLORS.success + '30',
   },
   confidenceText: {
     fontSize: 15,
@@ -385,8 +383,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 4,
     marginBottom: 16,
-    borderWidth: 1,
-    borderColor: COLORS.border,
   },
   rankingRow: {
     flexDirection: 'row',
@@ -444,8 +440,6 @@ const styles = StyleSheet.create({
     paddingTop: 14,
     paddingBottom: 4,
     marginBottom: 16,
-    borderWidth: 1,
-    borderColor: COLORS.border,
   },
   criterionHeader: {
     flexDirection: 'row',
