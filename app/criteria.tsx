@@ -234,7 +234,7 @@ export default function CriteriaScreen() {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1 },
+  flex: { flex: 1, backgroundColor: COLORS.background },
   navHeader: {
     flexDirection: "row",
     alignItems: "center",
@@ -270,6 +270,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: 20,
     paddingBottom: 20,
+    backgroundColor: COLORS.background,
   },
   sectionTitle: {
     fontSize: 20,

@@ -203,6 +203,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 8,
     paddingBottom: 16,
+    backgroundColor: COLORS.background,
   },
   headerTitle: {
     fontSize: 28,
@@ -219,6 +220,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: 20,
     paddingBottom: 40,
+    backgroundColor: COLORS.background,
   },
   card: {
     padding: 16,
