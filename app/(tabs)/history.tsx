@@ -204,10 +204,6 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   deleteAllBtn: {
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: RADIUS.sm,
-    backgroundColor: "rgba(255,82,82,0.08)",
   },
   deleteAllText: {
     fontSize: 13,

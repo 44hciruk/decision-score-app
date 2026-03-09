@@ -45,7 +45,7 @@ export default function SettingsScreen() {
         showsVerticalScrollIndicator={false}
       >
         {/* Premium section */}
-        <View style={styles.card}>
+        <View style={[styles.card, { backgroundColor: COLORS.primaryLight }]}>
           <View style={styles.cardHeader}>
             <View style={styles.premiumIconWrap}>
               <IconSymbol name="star.fill" size={22} color={COLORS.primary} />

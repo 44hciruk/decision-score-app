@@ -254,7 +254,7 @@ function CircularScoreAnimated({ score }: { score: number }) {
         <Circle cx={size / 2} cy={size / 2} r={radius} stroke={COLORS.primaryLight} strokeWidth={strokeWidth} fill="none" />
         <AnimatedCircle
           cx={size / 2} cy={size / 2} r={radius}
-          stroke={COLORS.success} strokeWidth={strokeWidth} fill="none"
+          stroke={COLORS.primary} strokeWidth={strokeWidth} fill="none"
           strokeLinecap="round" strokeDasharray={circumference}
           animatedProps={animatedCircleProps}
           transform={`rotate(-90 ${size / 2} ${size / 2})`}
@@ -317,14 +317,14 @@ const styles = StyleSheet.create({
   scoreValue: {
     fontSize: 40,
     fontFamily: FONTS.bold,
-    color: COLORS.textPrimary,
+    color: COLORS.primary,
     letterSpacing: -2,
   },
   scoreUnit: {
     fontSize: 12,
     fontFamily: FONTS.regular,
     marginTop: -2,
-    color: COLORS.textSecondary,
+    color: COLORS.primary,
   },
   confidenceContainer: {
     alignItems: "center",
