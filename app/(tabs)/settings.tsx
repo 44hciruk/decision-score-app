@@ -34,13 +34,14 @@ export default function SettingsScreen() {
   const limits = state.settings.isPremium ? PREMIUM_LIMITS : FREE_LIMITS;
 
   return (
-    <ScreenContainer containerClassName="bg-background">
+    <ScreenContainer containerClassName="bg-[#FFFFFF]">
       <View style={styles.header}>
         <Text style={styles.headerTitle}>設定</Text>
         <Text style={styles.headerSubtitle}>アプリの設定を管理します</Text>
       </View>
 
       <ScrollView
+        style={{ backgroundColor: '#FFFFFF' }}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
