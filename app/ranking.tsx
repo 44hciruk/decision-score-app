@@ -92,7 +92,7 @@ export default function RankingScreen() {
     setRankings(updatedRankings);
     if (isLast) {
       router.push({
-        pathname: "/result",
+        pathname: "/result-animation",
         params: {
           title: params.title || "",
           candidates: params.candidates || "[]",

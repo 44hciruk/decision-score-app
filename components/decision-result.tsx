@@ -25,6 +25,7 @@ export type DecisionResultProps = {
   criteria: string[];
   rankings: Record<string, string[]>;
   animated?: boolean;
+  variant?: 'default' | 'blue';
 };
 
 // ─── ランク色 ─────────────────────────────────────────
@@ -35,6 +36,24 @@ function getRankColor(index: number, total: number): string {
   return COLORS.textSecondary;
 }
 
+// ─── テーマカラー ─────────────────────────────────────
+function getThemeColors(isBlue: boolean) {
+  return {
+    text: isBlue ? '#FFFFFF' : COLORS.textPrimary,
+    textSecondary: isBlue ? 'rgba(255,255,255,0.7)' : COLORS.textSecondary,
+    surface: isBlue ? 'rgba(255,255,255,0.15)' : COLORS.surface,
+    border: isBlue ? 'rgba(255,255,255,0.1)' : COLORS.border,
+    accent: isBlue ? '#FFFFFF' : COLORS.primary,
+    accentLight: isBlue ? 'rgba(255,255,255,0.2)' : COLORS.primaryLight,
+    success: isBlue ? '#FFFFFF' : COLORS.success,
+    tabBg: isBlue ? 'rgba(255,255,255,0.2)' : COLORS.border,
+    tabActiveBg: isBlue ? '#FFFFFF' : COLORS.surfaceWhite,
+    tabActiveText: isBlue ? COLORS.primary : COLORS.textPrimary,
+    scoreStroke: isBlue ? '#FFFFFF' : COLORS.primary,
+    scoreTrack: isBlue ? 'rgba(255,255,255,0.2)' : COLORS.primaryLight,
+  };
+}
+
 // ─── メインコンポーネント ─────────────────────────────
 export function DecisionResult({
   winner,
@@ -43,7 +62,10 @@ export function DecisionResult({
   criteria,
   rankings,
   animated = true,
+  variant = 'default',
 }: DecisionResultProps) {
+  const isBlue = variant === 'blue';
+  const t = getThemeColors(isBlue);
   const [activeTab, setActiveTab] = useState<'overall' | 'criteria'>('overall');
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const winnerScore = scores[winner] || 0;
@@ -58,7 +80,7 @@ export function DecisionResult({
         entering={animated ? FadeInDown.delay(200).duration(500) : undefined}
         style={styles.winnerSection}
       >
-        <Text style={styles.winnerName}>{winner}</Text>
+        <Text style={[styles.winnerName, { color: t.text }]}>{winner}</Text>
       </Animated.View>
 
       {/* 円形スコア */}
@@ -67,7 +89,13 @@ export function DecisionResult({
         style={styles.scoreCircleContainer}
       >
         {animated !== false && (
-          <CircularScoreAnimated score={winnerScore} />
+          <CircularScoreAnimated
+            score={winnerScore}
+            strokeColor={t.scoreStroke}
+            trackColor={t.scoreTrack}
+            scoreColor={t.accent}
+            unitColor={t.accent}
+          />
         )}
       </Animated.View>
 
@@ -76,30 +104,30 @@ export function DecisionResult({
         entering={animated ? FadeInDown.delay(800).duration(400) : undefined}
         style={styles.confidenceContainer}
       >
-        <View style={styles.confidenceBadge}>
-          <Text style={styles.confidenceText}>
+        <View style={[styles.confidenceBadge, isBlue && { backgroundColor: 'rgba(255,255,255,0.15)' }]}>
+          <Text style={[styles.confidenceText, isBlue && { color: '#FFFFFF' }]}>
             {scoreDiff}点差 — {confidenceMessage}
           </Text>
         </View>
       </Animated.View>
 
       {/* タブ */}
-      <View style={styles.tabContainer}>
+      <View style={[styles.tabContainer, { backgroundColor: t.tabBg }]}>
         <TouchableOpacity
-          style={[styles.tabItem, activeTab === 'overall' && styles.tabItemActive]}
+          style={[styles.tabItem, activeTab === 'overall' && [styles.tabItemActive, { backgroundColor: t.tabActiveBg }]]}
           onPress={() => setActiveTab('overall')}
           activeOpacity={0.7}
         >
-          <Text style={[styles.tabText, activeTab === 'overall' && styles.tabTextActive]}>
+          <Text style={[styles.tabText, { color: t.textSecondary }, activeTab === 'overall' && { color: t.tabActiveText, fontFamily: FONTS.bold }]}>
             総合
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.tabItem, activeTab === 'criteria' && styles.tabItemActive]}
+          style={[styles.tabItem, activeTab === 'criteria' && [styles.tabItemActive, { backgroundColor: t.tabActiveBg }]]}
           onPress={() => setActiveTab('criteria')}
           activeOpacity={0.7}
         >
-          <Text style={[styles.tabText, activeTab === 'criteria' && styles.tabTextActive]}>
+          <Text style={[styles.tabText, { color: t.textSecondary }, activeTab === 'criteria' && { color: t.tabActiveText, fontFamily: FONTS.bold }]}>
             項目別
           </Text>
         </TouchableOpacity>
@@ -108,36 +136,46 @@ export function DecisionResult({
       {/* ランキング */}
       {activeTab === 'overall' && (
         <View>
-          <Text style={styles.rankingTitle}>ランキング</Text>
-          <View style={styles.rankingCard}>
+          <Text style={[styles.rankingTitle, { color: t.text }]}>ランキング</Text>
+          <View style={[styles.rankingCard, { backgroundColor: t.surface }]}>
             {sortedCandidates.map((candidate, index) => (
               <View
                 key={`${candidate}-${index}`}
                 style={[
                   styles.rankingRow,
+                  { borderBottomColor: t.border },
                   index === sortedCandidates.length - 1 && { borderBottomWidth: 0 },
                 ]}
               >
                 <View style={styles.rankingRowLeft}>
                   {index === 0 ? (
-                    <View style={styles.rankNumber1}>
-                      <IconSymbol name="trophy.fill" size={16} color={COLORS.success} />
+                    <View style={[styles.rankNumber1, isBlue && {
+                      backgroundColor: 'rgba(255,255,255,0.2)',
+                      borderColor: 'rgba(255,255,255,0.4)',
+                    }]}>
+                      <IconSymbol name="trophy.fill" size={16} color={t.success} />
                     </View>
                   ) : (
                     <View
                       style={[
                         styles.rankNumber,
-                        {
-                          backgroundColor: getRankColor(index, sortedCandidates.length) + '20',
-                          borderColor: getRankColor(index, sortedCandidates.length) + '40',
-                          borderWidth: 1,
-                        },
+                        isBlue
+                          ? {
+                              backgroundColor: 'rgba(255,255,255,0.1)',
+                              borderColor: 'rgba(255,255,255,0.2)',
+                              borderWidth: 1,
+                            }
+                          : {
+                              backgroundColor: getRankColor(index, sortedCandidates.length) + '20',
+                              borderColor: getRankColor(index, sortedCandidates.length) + '40',
+                              borderWidth: 1,
+                            },
                       ]}
                     >
                       <Text
                         style={[
                           styles.rankNumberText,
-                          { color: getRankColor(index, sortedCandidates.length) },
+                          { color: isBlue ? 'rgba(255,255,255,0.8)' : getRankColor(index, sortedCandidates.length) },
                         ]}
                       >
                         {index + 1}
@@ -147,7 +185,8 @@ export function DecisionResult({
                   <Text
                     style={[
                       styles.rankName,
-                      index === 0 && { color: COLORS.textPrimary, fontFamily: FONTS.bold },
+                      { color: isBlue ? 'rgba(255,255,255,0.8)' : undefined },
+                      index === 0 && { color: t.text, fontFamily: FONTS.bold },
                     ]}
                   >
                     {candidate}
@@ -156,11 +195,11 @@ export function DecisionResult({
                 <Text
                   style={[
                     styles.rankScore,
-                    { color: index === 0 ? COLORS.success : getRankColor(index, sortedCandidates.length) },
+                    { color: isBlue ? '#FFFFFF' : (index === 0 ? COLORS.success : getRankColor(index, sortedCandidates.length)) },
                   ]}
                 >
                   {scores[candidate]}
-                  <Text style={styles.rankScoreUnit}>点</Text>
+                  <Text style={[styles.rankScoreUnit, { color: t.textSecondary }]}>点</Text>
                 </Text>
               </View>
             ))}
@@ -176,26 +215,28 @@ export function DecisionResult({
             const isExpanded = expanded[criterion] || false;
             const displayList = isExpanded ? ordered : ordered.slice(0, 3);
             return (
-              <View key={`${criterion}-${criterionIndex}`} style={styles.criterionCard}>
+              <View key={`${criterion}-${criterionIndex}`} style={[styles.criterionCard, { backgroundColor: t.surface }]}>
                 <View style={styles.criterionHeader}>
-                  <View style={styles.criterionHeaderAccent} />
-                  <Text style={styles.criterionHeaderText}>{criterion}</Text>
+                  <View style={[styles.criterionHeaderAccent, isBlue && { backgroundColor: '#FFFFFF' }]} />
+                  <Text style={[styles.criterionHeaderText, { color: t.text }]}>{criterion}</Text>
                 </View>
 
                 {displayList.map((candidate, idx) => (
                   <View
                     key={`${candidate}-${idx}`}
-                    style={styles.criterionRow}
+                    style={[styles.criterionRow, { borderTopColor: t.border }]}
                   >
                     <Text style={[
                       styles.criterionName,
-                      idx === 0 && styles.criterionNameFirst,
+                      { color: t.textSecondary },
+                      idx === 0 && { color: t.text, fontFamily: FONTS.medium },
                     ]}>
                       {candidate}
                     </Text>
                     <Text style={[
                       styles.criterionRankLabel,
-                      idx === 0 && styles.criterionRankLabelFirst,
+                      { color: t.textSecondary },
+                      idx === 0 && { color: t.text, fontFamily: FONTS.medium },
                     ]}>
                       {idx + 1}位
                     </Text>
@@ -208,13 +249,13 @@ export function DecisionResult({
                     style={styles.expandButton}
                     activeOpacity={0.7}
                   >
-                    <Text style={styles.expandButtonText}>
+                    <Text style={[styles.expandButtonText, { color: t.accent }]}>
                       {isExpanded ? '閉じる' : `もっと見る（残り${ordered.length - 3}件）`}
                     </Text>
                     <IconSymbol
                       name={isExpanded ? 'chevron.up' : 'chevron.down'}
                       size={14}
-                      color={COLORS.primary}
+                      color={t.accent}
                     />
                   </TouchableOpacity>
                 )}
@@ -230,7 +271,19 @@ export function DecisionResult({
 // ─── アニメーションあり円グラフ ──────────────────────
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
-function CircularScoreAnimated({ score }: { score: number }) {
+function CircularScoreAnimated({
+  score,
+  strokeColor = COLORS.primary,
+  trackColor = COLORS.primaryLight,
+  scoreColor = COLORS.primary,
+  unitColor = COLORS.primary,
+}: {
+  score: number;
+  strokeColor?: string;
+  trackColor?: string;
+  scoreColor?: string;
+  unitColor?: string;
+}) {
   const size = 160;
   const strokeWidth = 14;
   const radius = (size - strokeWidth) / 2;
@@ -251,24 +304,24 @@ function CircularScoreAnimated({ score }: { score: number }) {
   return (
     <View style={styles.circularContainer}>
       <Svg width={size} height={size}>
-        <Circle cx={size / 2} cy={size / 2} r={radius} stroke={COLORS.primaryLight} strokeWidth={strokeWidth} fill="none" />
+        <Circle cx={size / 2} cy={size / 2} r={radius} stroke={trackColor} strokeWidth={strokeWidth} fill="none" />
         <AnimatedCircle
           cx={size / 2} cy={size / 2} r={radius}
-          stroke={COLORS.primary} strokeWidth={strokeWidth} fill="none"
+          stroke={strokeColor} strokeWidth={strokeWidth} fill="none"
           strokeLinecap="round" strokeDasharray={circumference}
           animatedProps={animatedCircleProps}
           transform={`rotate(-90 ${size / 2} ${size / 2})`}
         />
       </Svg>
       <View style={styles.scoreTextContainer}>
-        <AnimatedScoreText score={score} />
-        <Text style={styles.scoreUnit}>/ 100点</Text>
+        <AnimatedScoreText score={score} color={scoreColor} />
+        <Text style={[styles.scoreUnit, { color: unitColor }]}>/ 100点</Text>
       </View>
     </View>
   );
 }
 
-function AnimatedScoreText({ score }: { score: number }) {
+function AnimatedScoreText({ score, color = COLORS.primary }: { score: number; color?: string }) {
   const [displayValue, setDisplayValue] = useState(0);
   useEffect(() => {
     const duration = 1400;
@@ -282,7 +335,7 @@ function AnimatedScoreText({ score }: { score: number }) {
     };
     requestAnimationFrame(animate);
   }, [score]);
-  return <Text style={styles.scoreValue}>{displayValue}</Text>;
+  return <Text style={[styles.scoreValue, { color }]}>{displayValue}</Text>;
 }
 
 // ─── スタイル ─────────────────────────────────────────
