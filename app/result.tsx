@@ -88,15 +88,15 @@ export default function ResultScreen() {
   }, [router]);
 
   return (
-    <ScreenContainer edges={["top", "left", "right"]} containerClassName="bg-[#FF8C42]">
-      <View style={{ flex: 1, backgroundColor: COLORS.primary }}>
+    <ScreenContainer edges={["top", "left", "right"]} containerClassName="bg-[#FFFFFF]">
+      <View style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
         <Animated.View entering={FadeIn.duration(300)} style={styles.navHeader}>
           <TouchableOpacity
             onPress={handleRetry}
             style={styles.navBackBtn}
             activeOpacity={0.7}
           >
-            <IconSymbol name="chevron.left" size={20} color="#FFFFFF" />
+            <IconSymbol name="chevron.left" size={20} color={COLORS.textPrimary} />
             <Text style={styles.navBackText}>戻る</Text>
           </TouchableOpacity>
           <Text style={styles.navTitle}>結果発表</Text>
@@ -106,6 +106,7 @@ export default function ResultScreen() {
         <ScrollView
           contentContainerStyle={[styles.scrollContent, { paddingBottom: 24 }]}
           showsVerticalScrollIndicator={false}
+          style={{ backgroundColor: '#FFFFFF' }}
         >
           <DecisionResult
             winner={winner}
@@ -114,7 +115,6 @@ export default function ResultScreen() {
             criteria={criteria}
             rankings={rankings}
             animated={true}
-            variant="blue"
           />
         </ScrollView>
       </View>
@@ -125,7 +125,7 @@ export default function ResultScreen() {
           activeOpacity={0.85}
           style={styles.primaryBtn}
         >
-          <IconSymbol name="checkmark" size={18} color={COLORS.primary} />
+          <IconSymbol name="checkmark" size={18} color="#FFFFFF" />
           <Text style={styles.primaryBtnText}>保存して戻る</Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -147,9 +147,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 16,
     paddingVertical: 14,
-    backgroundColor: COLORS.primary,
+    backgroundColor: "#FFFFFF",
     borderBottomWidth: 1,
-    borderBottomColor: "rgba(255,255,255,0.1)",
+    borderBottomColor: COLORS.border,
   },
   navBackBtn: {
     flexDirection: "row",
@@ -162,13 +162,13 @@ const styles = StyleSheet.create({
   navBackText: {
     fontSize: 16,
     fontFamily: FONTS.medium,
-    color: "#FFFFFF",
+    color: COLORS.textPrimary,
   },
   navSpacer: { minWidth: 80 },
   navTitle: {
     fontSize: 17,
     fontFamily: FONTS.bold,
-    color: "#FFFFFF",
+    color: COLORS.textPrimary,
     letterSpacing: -0.3,
   },
   scrollContent: {
@@ -178,10 +178,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 8,
     paddingBottom: 16,
-    backgroundColor: COLORS.primary,
+    backgroundColor: "#FFFFFF",
+    borderTopWidth: 1,
+    borderTopColor: COLORS.border,
   },
   primaryBtn: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: COLORS.primary,
     borderRadius: RADIUS.full,
     paddingVertical: 16,
     alignItems: "center",
@@ -191,7 +193,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   primaryBtnText: {
-    color: COLORS.primary,
+    color: "#FFFFFF",
     fontSize: 17,
     fontFamily: FONTS.medium,
   },
@@ -202,6 +204,6 @@ const styles = StyleSheet.create({
   secondaryBtnText: {
     fontSize: 14,
     fontFamily: FONTS.medium,
-    color: "rgba(255,255,255,0.7)",
+    color: COLORS.primary,
   },
 });
