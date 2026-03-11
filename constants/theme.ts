@@ -13,9 +13,9 @@ export {
 
 // ─── フラットデザイン トークン ────────────────────────────
 export const COLORS = {
-  primary: '#1E6FD9',
-  primaryLight: '#E8F0FB',
-  secondary: '#4A90D9',
+  primary: '#FF8C42',
+  primaryLight: '#FFF0E4',
+  secondary: '#FF6B35',
   accent: '#FF8C42',
   background: '#FFFFFF',
   surface: '#F9F9F9',

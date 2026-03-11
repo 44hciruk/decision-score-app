@@ -88,7 +88,7 @@ export default function ResultScreen() {
   }, [router]);
 
   return (
-    <ScreenContainer edges={["top", "left", "right"]} containerClassName="bg-[#1E6FD9]">
+    <ScreenContainer edges={["top", "left", "right"]} containerClassName="bg-[#FF8C42]">
       <View style={{ flex: 1, backgroundColor: COLORS.primary }}>
         <Animated.View entering={FadeIn.duration(300)} style={styles.navHeader}>
           <TouchableOpacity

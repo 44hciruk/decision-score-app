@@ -27,7 +27,7 @@ function MainButton({ onPress }: { onPress: () => void }) {
           width: 200,
           height: 200,
           borderRadius: 100,
-          backgroundColor: '#1A4FA0',
+          backgroundColor: '#C45000',
           top: 8,
           left: 0,
         }} />
@@ -39,7 +39,7 @@ function MainButton({ onPress }: { onPress: () => void }) {
           width: 200,
           height: 200,
           borderRadius: 100,
-          backgroundColor: '#1E6FD9',
+          backgroundColor: COLORS.primary,
           alignItems: 'center',
           justifyContent: 'center',
           top: isPressed ? 8 : 0,
