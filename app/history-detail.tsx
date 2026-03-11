@@ -100,6 +100,9 @@ export default function HistoryDetailScreen() {
             criteria={project.criteria}
             rankings={project.rankings}
             animated={true}
+            scoreStrokeColor="#4CAF82"
+            scoreTextColor="#4CAF82"
+            scoreUnitColor={COLORS.textSecondary}
           />
         </ScrollView>
       </View>
