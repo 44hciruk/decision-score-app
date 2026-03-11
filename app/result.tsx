@@ -115,6 +115,9 @@ export default function ResultScreen() {
             criteria={criteria}
             rankings={rankings}
             animated={true}
+            scoreStrokeColor="#4CAF82"
+            scoreTextColor="#4CAF82"
+            scoreUnitColor={COLORS.textSecondary}
           />
         </ScrollView>
       </View>

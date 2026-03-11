@@ -26,6 +26,9 @@ export type DecisionResultProps = {
   rankings: Record<string, string[]>;
   animated?: boolean;
   variant?: 'default' | 'blue';
+  scoreStrokeColor?: string;
+  scoreTextColor?: string;
+  scoreUnitColor?: string;
 };
 
 // ─── ランク色 ─────────────────────────────────────────
@@ -63,6 +66,9 @@ export function DecisionResult({
   rankings,
   animated = true,
   variant = 'default',
+  scoreStrokeColor,
+  scoreTextColor,
+  scoreUnitColor,
 }: DecisionResultProps) {
   const isBlue = variant === 'blue';
   const t = getThemeColors(isBlue);
@@ -91,10 +97,10 @@ export function DecisionResult({
         {animated !== false && (
           <CircularScoreAnimated
             score={winnerScore}
-            strokeColor={t.scoreStroke}
+            strokeColor={scoreStrokeColor ?? t.scoreStroke}
             trackColor={t.scoreTrack}
-            scoreColor={t.accent}
-            unitColor={t.accent}
+            scoreColor={scoreTextColor ?? t.accent}
+            unitColor={scoreUnitColor ?? COLORS.textSecondary}
           />
         )}
       </Animated.View>
