@@ -97,7 +97,7 @@ export default function SettingsScreen() {
           </View>
           <View style={styles.divider} />
           <InfoRow label="バージョン" value="1.0.0" />
-          <InfoRow label="開発" value="決断スコア" />
+          <InfoRow label="開発" value="とっとと決め太郎" />
         </View>
 
         <Text style={styles.noteText}>

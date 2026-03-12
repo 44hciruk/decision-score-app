@@ -103,7 +103,7 @@ export default function HomeScreen() {
       >
         {/* ─── ヘッダー（中央寄せ） ─── */}
         <View style={styles.header}>
-          <Text style={styles.logoText}>✦ 決断スコア</Text>
+          <Text style={styles.logoText}>✦ とっとと決め太郎</Text>
         </View>
 
         {/* ─── 吹き出し ─── */}
